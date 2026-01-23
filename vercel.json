@@ -1,0 +1,32 @@
+{
+  "version": 2,
+  "buildCommand": null,
+  "outputDirectory": ".",
+  "rewrites": [
+    {
+      "source": "/api/photos",
+      "destination": "/api/photos.js"
+    },
+    {
+      "source": "/api/header-images",
+      "destination": "/api/header-images.js"
+    },
+    {
+      "source": "/api/upload",
+      "destination": "/api/upload.js"
+    },
+    {
+      "source": "/(.*\\.(js|css|jpg|jpeg|png|gif|webp|ico|svg|woff|woff2|ttf|eot|HEIC))",
+      "destination": "/$1"
+    },
+    {
+      "source": "/photos/(.*)",
+      "destination": "/photos/$1"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
+
