@@ -2,30 +2,37 @@
   "version": 2,
   "buildCommand": null,
   "outputDirectory": ".",
-  "rewrites": [
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "functions": {
+    "api/**/*.js": {
+      "runtime": "@vercel/node"
+    }
+  },
+  "routes": [
     {
-      "source": "/api/photos",
-      "destination": "/api/photos.js"
+      "src": "/api/photos",
+      "dest": "/api/photos.js"
     },
     {
-      "source": "/api/header-images",
-      "destination": "/api/header-images.js"
+      "src": "/api/header-images",
+      "dest": "/api/header-images.js"
     },
     {
-      "source": "/api/upload",
-      "destination": "/api/upload.js"
+      "src": "/api/upload",
+      "dest": "/api/upload.js"
     },
     {
-      "source": "/(.*\\.(js|css|jpg|jpeg|png|gif|webp|ico|svg|woff|woff2|ttf|eot|HEIC))",
-      "destination": "/$1"
+      "src": "/(.*\\.(js|css|jpg|jpeg|png|gif|webp|ico|svg|woff|woff2|ttf|eot|HEIC))",
+      "dest": "/$1"
     },
     {
-      "source": "/photos/(.*)",
-      "destination": "/photos/$1"
+      "src": "/photos/(.*)",
+      "dest": "/photos/$1"
     },
     {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "src": "/(.*)",
+      "dest": "/index.html"
     }
   ]
 }
