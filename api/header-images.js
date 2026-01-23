@@ -12,28 +12,15 @@ module.exports = async (req, res) => {
     }
     
     try {
-        // Check both 'header' and 'headder' folder names
-        const folderPath = path.join(process.cwd(), 'photos', 'headder');
-        const altFolderPath = path.join(process.cwd(), 'photos', 'header');
-        
-        let folderPathToUse = null;
-        if (fs.existsSync(folderPath)) {
-            folderPathToUse = folderPath;
-        } else if (fs.existsSync(altFolderPath)) {
-            folderPathToUse = altFolderPath;
-        }
-        
-        if (!folderPathToUse) {
+        const folderPath = path.join(process.cwd(), 'photos', 'header');
+        if (!fs.existsSync(folderPath)) {
             return res.json({ images: [], folder: 'none' });
         }
-        
-        const files = fs.readdirSync(folderPathToUse).filter(f => 
+        const files = fs.readdirSync(folderPath).filter(f => 
             /\.(jpg|jpeg|png|webp)$/i.test(f)
         );
-        
-        // Return the actual folder name that was found
-        const actualFolderName = fs.existsSync(folderPath) ? 'headder' : 'header';
-        res.json({ images: files, folder: actualFolderName });
+        console.log(`Header images API: Found ${files.length} images in folder: header`);
+        res.json({ images: files, folder: 'header' });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

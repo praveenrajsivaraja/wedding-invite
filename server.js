@@ -51,22 +51,11 @@ app.get('/api/photos', (req, res) => {
 });
 
 app.get('/api/header-images', (req, res) => {
-    // Check both 'header' and 'headder' folder names
-    const folderPath = path.join(__dirname, 'photos', 'headder');
-    const altFolderPath = path.join(__dirname, 'photos', 'header');
-    
-    let folderPathToUse = null;
-    if (fs.existsSync(folderPath)) {
-        folderPathToUse = folderPath;
-    } else if (fs.existsSync(altFolderPath)) {
-        folderPathToUse = altFolderPath;
-    }
-    
-    if (!folderPathToUse) {
+    const folderPath = path.join(__dirname, 'photos', 'header');
+    if (!fs.existsSync(folderPath)) {
         return res.json({ images: [], folder: 'none' });
     }
-    
-    const files = fs.readdirSync(folderPathToUse).filter(f => /\.(jpg|jpeg|png|webp)$/i.test(f));
+    const files = fs.readdirSync(folderPath).filter(f => /\.(jpg|jpeg|png|webp)$/i.test(f));
     res.json({ images: files, folder: 'header' });
 });
 

@@ -365,52 +365,24 @@ async function initHeaderSlideshow() {
         if (response.ok) {
             const data = await response.json();
             headerImages = data.images || [];
-            const folderName = data.folder || 'headder'; // Use folder name from server
+            const folderName = data.folder || 'header'; // Use folder name from server
             console.log(`Found ${headerImages.length} header images from ${folderName} folder:`, headerImages);
             
             if (headerImages.length > 0) {
                 const slideshowEl = document.getElementById('headerSlideshow');
                 if (slideshowEl) {
-                    // Clear any existing content
-                    slideshowEl.innerHTML = '';
-                    
-                    // Create image elements using the folder name from server
-                    let loadedCount = 0;
-                    const totalImages = headerImages.length;
-                    
-                    headerImages.forEach((img, index) => {
+                    // Create image elements using the folder name from server (simpler innerHTML approach)
+                    slideshowEl.innerHTML = headerImages.map((img, index) => {
                         const imgPath = `photos/${folderName}/${img}`;
-                        const imgElement = document.createElement('img');
-                        imgElement.src = imgPath;
-                        imgElement.alt = `Header ${index + 1}`;
-                        imgElement.className = index === 0 ? 'active' : '';
-                        
-                        imgElement.onload = () => {
-                            loadedCount++;
-                            console.log(`✅ Header image ${loadedCount}/${totalImages} loaded: ${img}`);
-                            if (loadedCount === totalImages) {
-                                console.log('All header images loaded, starting slideshow...');
-                                setTimeout(() => {
-                                    startHeaderSlideshow();
-                                }, 1000);
-                            }
-                        };
-                        
-                        imgElement.onerror = () => {
-                            console.error(`❌ Failed to load: ${imgPath}`);
-                            imgElement.style.display = 'none';
-                            loadedCount++;
-                            if (loadedCount === totalImages) {
-                                setTimeout(() => {
-                                    startHeaderSlideshow();
-                                }, 1000);
-                            }
-                        };
-                        
-                        slideshowEl.appendChild(imgElement);
-                    });
+                        return `<img src="${imgPath}" alt="Header ${index + 1}" class="${index === 0 ? 'active' : ''}" onload="console.log('✅ Header image ${index + 1} loaded:', '${img}')" onerror="console.error('❌ Failed to load:', '${imgPath}'); this.style.display='none';">`;
+                    }).join('');
                     
                     console.log(`Header slideshow initialized with ${headerImages.length} images from ${folderName} folder`);
+                    
+                    // Wait a bit for images to start loading, then start slideshow
+                    setTimeout(() => {
+                        startHeaderSlideshow();
+                    }, 500);
                 } else {
                     console.error('Header slideshow element not found');
                 }
