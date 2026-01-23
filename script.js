@@ -1,0 +1,661 @@
+// Configuration
+const CONFIG = {
+    ENGAGEMENT_DATE: new Date('2026-01-28T00:00:00').getTime(),
+    MARRIAGE_DATE: new Date('2026-06-18T00:00:00').getTime(),
+    GOOGLE_MAPS_API_KEY: 'YOUR_GOOGLE_MAPS_API_KEY', // Replace with your key in index.html script tag
+    LOCATIONS: {
+        engagement: {
+            name: 'Hotel Padmavathi',
+            address: 'Palpannai, Trichy, Tamil Nadu',
+            lat: 10.8131113,
+            lng: 78.7057293,
+            mapLink: 'https://maps.app.goo.gl/7YjUhTCX7Niii8My6'
+        },
+        marriage: {
+            name: 'Sri Naraiyana Mahal',
+            address: 'Trichy, Tamil Nadu',
+            lat: 10.8732209,
+            lng: 78.7062234,
+            mapLink: 'https://maps.app.goo.gl/aerwBkYg2dg1Xda67'
+        }
+    },
+    // Photos will be loaded from photos.json file (auto-generated)
+    // Run: node generate-photos.js to create photos.json from folders
+};
+
+// Countdown Timer
+let timerInterval = null;
+
+function formatDate(date) {
+    const day = date.getDate();
+    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'];
+    const month = monthNames[date.getMonth()];
+    const year = date.getFullYear();
+    
+    const getOrdinal = (n) => {
+        const s = ['th', 'st', 'nd', 'rd'];
+        const v = n % 100;
+        return n + (s[(v - 20) % 10] || s[v] || s[0]);
+    };
+    
+    return `${getOrdinal(day)} ${month} ${year}`;
+}
+
+function formatFooterDate(date) {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}.${month}.${year}`;
+}
+
+function updateCountdown() {
+    try {
+        const now = Date.now();
+        let targetDate, eventName, isEngagement;
+
+        if (now < CONFIG.ENGAGEMENT_DATE) {
+            targetDate = CONFIG.ENGAGEMENT_DATE;
+            eventName = 'Engagement';
+            isEngagement = true;
+        } else if (now < CONFIG.MARRIAGE_DATE) {
+            targetDate = CONFIG.MARRIAGE_DATE;
+            eventName = 'Wedding';
+            isEngagement = false;
+        } else {
+            const daysEl = document.getElementById('days');
+            const hoursEl = document.getElementById('hours');
+            const minutesEl = document.getElementById('minutes');
+            const secondsEl = document.getElementById('seconds');
+            
+            if (daysEl) daysEl.textContent = '00';
+            if (hoursEl) hoursEl.textContent = '00';
+            if (minutesEl) minutesEl.textContent = '00';
+            if (secondsEl) secondsEl.textContent = '00';
+            
+            const eventDateEl = document.getElementById('eventDate');
+            if (eventDateEl) {
+                eventDateEl.textContent = formatDate(new Date(CONFIG.MARRIAGE_DATE));
+            }
+            const footerDateEl = document.getElementById('footerDate');
+            if (footerDateEl) {
+                footerDateEl.textContent = formatFooterDate(new Date(CONFIG.MARRIAGE_DATE));
+            }
+            // Update status to "Married" after marriage date
+            const statusTextEl = document.getElementById('statusText');
+            if (statusTextEl) {
+                statusTextEl.textContent = 'Married';
+            }
+            updateVenueDisplay('marriage');
+            return;
+        }
+
+        // Update date display
+        const eventDateEl = document.getElementById('eventDate');
+        if (eventDateEl) {
+            if (isEngagement) {
+                eventDateEl.textContent = formatDate(new Date(CONFIG.ENGAGEMENT_DATE));
+            } else {
+                eventDateEl.textContent = formatDate(new Date(CONFIG.MARRIAGE_DATE));
+            }
+        }
+
+        // Update footer date
+        const footerDateEl = document.getElementById('footerDate');
+        if (footerDateEl) {
+            footerDateEl.textContent = formatFooterDate(new Date(CONFIG.MARRIAGE_DATE));
+        }
+
+        // Update venue display based on current event
+        updateVenueDisplay(isEngagement ? 'engagement' : 'marriage');
+
+        // Update header status text
+        const statusTextEl = document.getElementById('statusText');
+        if (statusTextEl) {
+            if (now < CONFIG.ENGAGEMENT_DATE) {
+                statusTextEl.textContent = 'Engaged';
+            } else {
+                statusTextEl.textContent = 'Married';
+            }
+        }
+
+        const difference = targetDate - now;
+
+        if (difference > 0) {
+            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+            const daysEl = document.getElementById('days');
+            const hoursEl = document.getElementById('hours');
+            const minutesEl = document.getElementById('minutes');
+            const secondsEl = document.getElementById('seconds');
+            
+            if (daysEl) daysEl.textContent = String(days).padStart(2, '0');
+            if (hoursEl) hoursEl.textContent = String(hours).padStart(2, '0');
+            if (minutesEl) minutesEl.textContent = String(minutes).padStart(2, '0');
+            if (secondsEl) secondsEl.textContent = String(seconds).padStart(2, '0');
+        }
+    } catch (error) {
+        console.error('Error in updateCountdown:', error);
+    }
+}
+
+function updateVenueDisplay(locationType) {
+    const location = CONFIG.LOCATIONS[locationType];
+    if (!location) return;
+
+    const venueLabel = document.getElementById('venueLabel');
+    const venueName = document.getElementById('venueName');
+    const venueAddress = document.getElementById('venueAddress');
+    
+    if (venueLabel) {
+        venueLabel.textContent = locationType === 'engagement' ? 'Engagement Venue' : 'Wedding Venue';
+    }
+    if (venueName) {
+        venueName.textContent = location.name;
+    }
+    if (venueAddress) {
+        venueAddress.textContent = location.address;
+    }
+}
+
+function startCountdown() {
+    updateCountdown();
+    timerInterval = setInterval(updateCountdown, 1000);
+}
+
+// Photo Gallery
+let currentCategory = 'wedding';
+let photosData = { wedding: [], engagement: [], others: [] };
+let currentPage = 1;
+const IMAGES_PER_PAGE = 20;
+
+// Get images list from server
+async function getImagesList(category) {
+    try {
+        const response = await fetch(`/api/photos?category=${category}`);
+        console.log('Fetch response:', response.status, response.statusText);
+        if (response.ok) {
+            const data = await response.json();
+            console.log(`Found ${data.images?.length || 0} images for ${category}:`, data.images?.slice(0, 5));
+            return data.images || [];
+        } else {
+            console.error('Response not OK:', response.status, response.statusText);
+            const errorText = await response.text();
+            console.error('Error response:', errorText);
+        }
+    } catch (error) {
+        console.error('Error fetching images:', error);
+        console.error('Make sure the server is running: node server.js');
+    }
+    return [];
+}
+
+async function fetchPhotos(category, page = 1) {
+    const loadingEl = document.getElementById('galleryLoading');
+    const errorEl = document.getElementById('galleryError');
+    const gridEl = document.getElementById('photoGrid');
+    const paginationEl = document.getElementById('pagination');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const paginationInfo = document.getElementById('paginationInfo');
+
+    loadingEl.style.display = 'block';
+    errorEl.style.display = 'none';
+    gridEl.innerHTML = '';
+    paginationEl.style.display = 'none';
+
+    try {
+        // Get all images from server
+        console.log(`Fetching photos for category: ${category}, page: ${page}`);
+        const allImages = await getImagesList(category);
+        console.log(`Total images received: ${allImages.length}`);
+        loadingEl.style.display = 'none';
+        
+        if (allImages.length > 0) {
+            // Calculate pagination
+            const totalPages = Math.ceil(allImages.length / IMAGES_PER_PAGE);
+            const startIndex = (page - 1) * IMAGES_PER_PAGE;
+            const endIndex = startIndex + IMAGES_PER_PAGE;
+            const photos = allImages.slice(startIndex, endIndex);
+
+            // Display photos for current page
+            gridEl.innerHTML = photos.map((photo) => {
+                const photoUrl = `photos/${category}/${photo}`;
+                return `
+                    <div class="photo-item" onclick="window.open('${photoUrl}', '_blank')">
+                        <img src="${photoUrl}" alt="${photo}" loading="lazy">
+                    </div>
+                `;
+            }).join('');
+
+            // Show pagination
+            if (totalPages > 1) {
+                paginationEl.style.display = 'flex';
+                paginationInfo.textContent = `Page ${page} of ${totalPages} (${allImages.length} photos)`;
+                
+                prevBtn.disabled = page === 1;
+                nextBtn.disabled = page >= totalPages;
+                
+                prevBtn.onclick = () => {
+                    if (page > 1) {
+                        currentPage = page - 1;
+                        fetchPhotos(category, currentPage);
+                        window.scrollTo({ top: gridEl.offsetTop - 100, behavior: 'smooth' });
+                    }
+                };
+                
+                nextBtn.onclick = () => {
+                    if (page < totalPages) {
+                        currentPage = page + 1;
+                        fetchPhotos(category, currentPage);
+                        window.scrollTo({ top: gridEl.offsetTop - 100, behavior: 'smooth' });
+                    }
+                };
+            }
+        } else {
+            gridEl.innerHTML = '<div class="error" style="display: block; grid-column: 1/-1; padding: 20px; text-align: center; color: #8B0000;">No photos available to view</div>';
+        }
+    } catch (error) {
+        loadingEl.style.display = 'none';
+        errorEl.textContent = 'Error loading photos. Make sure the server is running.';
+        errorEl.style.display = 'block';
+    }
+}
+
+async function initGallery() {
+    // Reset discovered images when switching categories
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    
+    tabButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            tabButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentCategory = btn.dataset.category;
+            currentPage = 1; // Reset to first page when switching categories
+            // Don't reset discoveredImages - keep them cached for faster switching
+            fetchPhotos(currentCategory, currentPage);
+        });
+    });
+
+    fetchPhotos(currentCategory, currentPage);
+}
+
+
+// Google Maps - Using embedded iframes (no API key required)
+let currentMapLocation = 'engagement';
+
+// Convert Google Maps share link to embed URL
+function getEmbedUrl(shareLink) {
+    // Extract place ID or coordinates from share link
+    // For now, we'll use the share link directly in an iframe
+    // Google Maps embed URLs format: https://www.google.com/maps/embed?pb=...
+    // Since we have share links, we'll convert them to embed format
+    
+    // Try to extract place ID from the share link
+    // If it's a maps.app.goo.gl link, we need to get the actual place ID
+    // For simplicity, we'll use the coordinates to create an embed URL
+    
+    return shareLink;
+}
+
+// Create embed URL from coordinates
+function createEmbedUrl(lat, lng, name) {
+    // Use Google Maps embed with coordinates
+    const encodedName = encodeURIComponent(name);
+    return `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3928.5!2d${lng}!3d${lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTAuNDc5MDUgNzguNzA0Nw!5e0!3m2!1sen!2sin!4v1234567890123!5m2!1sen!2sin`;
+}
+
+function updateMapLocation(locationType) {
+    const location = CONFIG.LOCATIONS[locationType];
+    if (!location) return;
+
+    currentMapLocation = locationType;
+    const mapFrame = document.getElementById('mapFrame');
+    const mapElement = document.getElementById('map');
+
+    if (!mapElement || !mapFrame) {
+        console.error('Map element not found');
+        return;
+    }
+
+    // Create embed URL using coordinates and place name (no API key required)
+    // Using the place name in the query for better accuracy
+    const placeName = encodeURIComponent(location.name + ' ' + location.address);
+    const embedUrl = `https://www.google.com/maps?q=${placeName}&ll=${location.lat},${location.lng}&z=15&output=embed`;
+    mapFrame.src = embedUrl;
+
+    // Update map info display
+    document.getElementById('mapVenueName').textContent = location.name;
+    document.getElementById('mapVenueAddress').textContent = location.address;
+    document.getElementById('mapLink').href = location.mapLink;
+
+    // Update active tab
+    document.querySelectorAll('.location-tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    document.querySelector(`.location-tab-btn[data-location="${locationType}"]`).classList.add('active');
+}
+
+function initLocationTabs() {
+    const tabButtons = document.querySelectorAll('.location-tab-btn');
+    
+    tabButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const locationType = btn.dataset.location;
+            updateMapLocation(locationType);
+        });
+    });
+}
+
+
+// Header Slideshow
+let currentHeaderImageIndex = 0;
+let headerImages = [];
+let headerSlideshowInterval = null;
+
+async function initHeaderSlideshow() {
+    try {
+        console.log('Loading header images...');
+        const response = await fetch('/api/header-images');
+        console.log('Header images response:', response.status);
+        
+        if (response.ok) {
+            const data = await response.json();
+            headerImages = data.images || [];
+            const folderName = data.folder || 'hedder'; // Use folder name from server
+            console.log(`Found ${headerImages.length} header images from ${folderName} folder:`, headerImages);
+            
+            if (headerImages.length > 0) {
+                const slideshowEl = document.getElementById('headerSlideshow');
+                if (slideshowEl) {
+                    // Create image elements using the folder name from server
+                    slideshowEl.innerHTML = headerImages.map((img, index) => {
+                        const imgPath = `photos/${folderName}/${img}`;
+                        return `<img src="${imgPath}" alt="Header ${index + 1}" class="${index === 0 ? 'active' : ''}" onload="console.log('✅ Header image ${index + 1} loaded:', '${img}')" onerror="console.error('❌ Failed to load:', '${imgPath}'); this.style.display='none';">`;
+                    }).join('');
+                    
+                    console.log(`Header slideshow initialized with ${headerImages.length} images from ${folderName} folder`);
+                    
+                    // Wait a bit for images to start loading, then start slideshow
+                    setTimeout(() => {
+                        startHeaderSlideshow();
+                    }, 500);
+                } else {
+                    console.error('Header slideshow element not found');
+                }
+            } else {
+                console.warn('No header images found. Using default background.');
+                // If no header images, use default background
+                const headerSection = document.querySelector('.header-section');
+                if (headerSection) {
+                    headerSection.style.background = '#8B0000';
+                }
+            }
+        } else {
+            console.error('Failed to fetch header images:', response.status, response.statusText);
+            const headerSection = document.querySelector('.header-section');
+            if (headerSection) {
+                headerSection.style.background = '#8B0000';
+            }
+        }
+    } catch (error) {
+        console.error('Error loading header images:', error);
+        console.error('Make sure the server is running: node server.js');
+        // Fallback to default background
+        const headerSection = document.querySelector('.header-section');
+        if (headerSection) {
+            headerSection.style.background = '#8B0000';
+        }
+    }
+}
+
+function startHeaderSlideshow() {
+    // Clear any existing interval
+    if (headerSlideshowInterval) {
+        clearInterval(headerSlideshowInterval);
+    }
+    
+    const images = document.querySelectorAll('.header-slideshow img');
+    if (images.length === 0) {
+        console.warn('⚠️ No images found in slideshow container');
+        return;
+    }
+    
+    console.log(`✅ Found ${images.length} image elements in DOM`);
+    
+    // If only one image, just show it
+    if (headerImages.length <= 1) {
+        console.log('Single header image - showing static image');
+        if (images[0]) {
+            images[0].classList.add('active');
+            console.log('✅ Single image activated');
+        }
+        return;
+    }
+    
+    console.log(`🎬 Starting header slideshow with ${headerImages.length} images`);
+    
+    // Ensure first image is visible and others are hidden
+    images.forEach((img, idx) => {
+        if (idx === 0) {
+            img.classList.add('active');
+            console.log(`✅ Image 1/${images.length} activated`);
+        } else {
+            img.classList.remove('active');
+        }
+    });
+    
+    currentHeaderImageIndex = 0;
+    
+    // Start cycling through images
+    headerSlideshowInterval = setInterval(() => {
+        const currentImages = document.querySelectorAll('.header-slideshow img');
+        if (currentImages.length === 0) {
+            console.warn('⚠️ No images found during slideshow cycle');
+            clearInterval(headerSlideshowInterval);
+            return;
+        }
+        
+        // Remove active class from current image
+        if (currentImages[currentHeaderImageIndex]) {
+            currentImages[currentHeaderImageIndex].classList.remove('active');
+        }
+        
+        // Move to next image
+        currentHeaderImageIndex = (currentHeaderImageIndex + 1) % headerImages.length;
+        
+        // Add active class to new image
+        if (currentImages[currentHeaderImageIndex]) {
+            currentImages[currentHeaderImageIndex].classList.add('active');
+            console.log(`🔄 Switched to image ${currentHeaderImageIndex + 1}/${headerImages.length}`);
+        }
+    }, 4000); // Change image every 4 seconds
+    
+    console.log('✅ Slideshow interval started');
+}
+
+// Initialize everything
+document.addEventListener('DOMContentLoaded', async () => {
+    await initHeaderSlideshow();
+    startCountdown();
+    await initGallery();
+    initLocationTabs();
+    
+    // Initialize footer date
+    const footerDateEl = document.getElementById('footerDate');
+    if (footerDateEl) {
+        footerDateEl.textContent = formatFooterDate(new Date(CONFIG.MARRIAGE_DATE));
+    }
+    
+
+    // Initialize map with embedded iframe (no API key needed)
+    updateMapLocation('engagement');
+    
+    // Initialize photo upload
+    initPhotoUpload();
+});
+
+// Photo Upload Functionality
+function initPhotoUpload() {
+    const uploadBtn = document.getElementById('uploadBtn');
+    const fileInput = document.getElementById('photoUpload');
+    const uploadProgress = document.getElementById('uploadProgress');
+    const progressFill = document.getElementById('progressFill');
+    const progressText = document.getElementById('progressText');
+    const uploadMessage = document.getElementById('uploadMessage');
+    const uploadedPreview = document.getElementById('uploadedPreview');
+    
+    if (!fileInput) {
+        console.error('File input not found');
+        return;
+    }
+    
+    console.log('Initializing photo upload...');
+    
+    // Upload button click
+    if (uploadBtn) {
+        uploadBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Upload button clicked');
+            fileInput.click();
+        });
+    }
+    
+    // File input change
+    fileInput.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+            console.log('Files selected:', e.target.files.length);
+            handleFileUpload(e.target.files);
+        }
+    });
+    
+    async function handleFileUpload(files) {
+        const validFiles = Array.from(files).filter(file => {
+            const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'image/bmp'];
+            return validTypes.includes(file.type);
+        });
+        
+        if (validFiles.length === 0) {
+            showUploadMessage('Please select valid image files (JPG, PNG, GIF, WEBP, BMP)', 'error');
+            return;
+        }
+        
+        if (validFiles.length > 20) {
+            showUploadMessage('Maximum 20 files allowed at once', 'error');
+            return;
+        }
+        
+        // Check file sizes
+        const oversizedFiles = validFiles.filter(file => file.size > 10 * 1024 * 1024);
+        if (oversizedFiles.length > 0) {
+            showUploadMessage('Some files exceed 10MB limit. Please resize them.', 'error');
+            return;
+        }
+        
+        // Show progress
+        uploadProgress.style.display = 'block';
+        uploadMessage.style.display = 'none';
+        uploadedPreview.innerHTML = '';
+        progressFill.style.width = '0%';
+        progressText.textContent = 'Preparing upload...';
+        
+        const formData = new FormData();
+        validFiles.forEach(file => {
+            formData.append('photos', file);
+        });
+        
+        try {
+            const xhr = new XMLHttpRequest();
+            
+            // Track upload progress
+            xhr.upload.addEventListener('progress', (e) => {
+                if (e.lengthComputable) {
+                    const percentComplete = (e.loaded / e.total) * 100;
+                    progressFill.style.width = percentComplete + '%';
+                    progressText.textContent = `Uploading... ${Math.round(percentComplete)}%`;
+                }
+            });
+            
+            xhr.addEventListener('load', () => {
+                console.log('Upload response status:', xhr.status);
+                console.log('Upload response:', xhr.responseText);
+                
+                if (xhr.status === 200) {
+                    try {
+                        const response = JSON.parse(xhr.responseText);
+                        progressFill.style.width = '100%';
+                        progressText.textContent = 'Upload complete!';
+                        
+                        console.log('✅ Upload successful:', response);
+                        showUploadMessage(`✅ Successfully uploaded ${response.files.length} photo(s)!`, 'success');
+                        
+                        // Show preview of uploaded files
+                        uploadedPreview.innerHTML = `<p class="uploaded-count">${response.files.length} photo(s) uploaded</p>`;
+                        
+                        // Refresh the gallery if "Others" tab is active
+                        const activeTab = document.querySelector('.tab-btn.active');
+                        if (activeTab && activeTab.dataset.category === 'others') {
+                            setTimeout(() => {
+                                initGallery();
+                            }, 1000);
+                        }
+                        
+                        // Hide progress after 2 seconds
+                        setTimeout(() => {
+                            uploadProgress.style.display = 'none';
+                            fileInput.value = ''; // Reset input
+                        }, 2000);
+                    } catch (parseError) {
+                        console.error('Error parsing response:', parseError);
+                        showUploadMessage('❌ Upload response error', 'error');
+                        uploadProgress.style.display = 'none';
+                    }
+                } else {
+                    try {
+                        const error = JSON.parse(xhr.responseText);
+                        console.error('Upload failed:', error);
+                        showUploadMessage(`❌ Upload failed: ${error.error || 'Unknown error'}`, 'error');
+                    } catch (parseError) {
+                        console.error('Upload failed with status:', xhr.status, 'Response:', xhr.responseText);
+                        showUploadMessage(`❌ Upload failed: Server error (${xhr.status})`, 'error');
+                    }
+                    uploadProgress.style.display = 'none';
+                }
+            });
+            
+            xhr.addEventListener('error', () => {
+                showUploadMessage('❌ Network error. Please try again.', 'error');
+                uploadProgress.style.display = 'none';
+            });
+            
+            xhr.open('POST', '/api/upload');
+            xhr.send(formData);
+            
+        } catch (error) {
+            console.error('Upload error:', error);
+            showUploadMessage('❌ Upload failed. Please try again.', 'error');
+            uploadProgress.style.display = 'none';
+        }
+    }
+    
+    function showUploadMessage(message, type) {
+        uploadMessage.textContent = message;
+        uploadMessage.className = `upload-message ${type}`;
+        uploadMessage.style.display = 'block';
+        
+        // Auto-hide after 5 seconds
+        setTimeout(() => {
+            uploadMessage.style.display = 'none';
+        }, 5000);
+    }
+}
+
+// Cleanup on page unload
+window.addEventListener('beforeunload', () => {
+    if (timerInterval) clearInterval(timerInterval);
+});
+

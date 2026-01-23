@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Praveenraj & Madhumitha - Engagement & Wedding</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600&family=Dancing+Script:wght@400;600;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <!-- Header Section -->
+    <section class="header-section">
+        <div class="header-slideshow" id="headerSlideshow">
+            <!-- Images will be loaded dynamically -->
+        </div>
+        <div class="header-overlay"></div>
+        <div class="container header-content">
+            <p class="together-forever gold-text">TOGETHER FOREVER</p>
+            <h2 class="were-getting">We're Getting</h2>
+            <h1 class="were-getting gold-text" id="statusText">Engaged</h1>
+
+            <h2 class="were-getting">Praveenraj & Madhumitha</h2>
+
+            <p class="event-date" id="eventDate">18th January 2026</p>
+            <p class="save-the-date">SAVE THE DATE</p>
+            <div class="timer" id="timer">
+                <div class="time-unit">
+                    <div class="time-value" id="days">00</div>
+                    <div class="time-label">DAYS</div>
+                </div>
+                <div class="time-unit">
+                    <div class="time-value" id="hours">00</div>
+                    <div class="time-label">HOURS</div>
+                </div>
+                <div class="time-unit">
+                    <div class="time-value" id="minutes">00</div>
+                    <div class="time-label">MINUTES</div>
+                </div>
+                <div class="time-unit">
+                    <div class="time-value" id="seconds">00</div>
+                    <div class="time-label">SECONDS</div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Photo Gallery Section -->
+    <section class="gallery-section">
+        <div class="container">
+            <h2 class="section-title">
+                <span class="gold-text">Our Memories</span><br>
+                <span class="header-style-text">Gallery</span>
+            </h2>
+            <div class="tab-container">
+                <button class="tab-btn active" data-category="wedding">Wedding</button>
+                <button class="tab-btn" data-category="engagement">Engagement</button>
+                <button class="tab-btn" data-category="others">Others</button>
+            </div>
+            <div class="gallery-content">
+                <div class="loading" id="galleryLoading" style="display: none;">Loading photos...</div>
+                <div class="error" id="galleryError" style="display: none;"></div>
+                <div class="photo-grid" id="photoGrid"></div>
+                <div class="pagination" id="pagination" style="display: none;">
+                    <button class="pagination-btn" id="prevBtn">Previous</button>
+                    <span class="pagination-info" id="paginationInfo"></span>
+                    <button class="pagination-btn" id="nextBtn">Next</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Photo Upload Section -->
+    <section class="upload-section">
+        <div class="container">
+            <h2 class="section-title">Upload Your Photos</h2>
+            <p class="upload-description">Share your favorite moments with us! Photos will be added to the "Others"
+                gallery.</p>
+            <div class="upload-controls">
+                <button class="upload-btn-small" id="uploadBtn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                    Upload Photos
+                </button>
+                <input type="file" id="photoUpload" accept="image/*" multiple style="display: none;">
+            </div>
+            <div class="upload-progress" id="uploadProgress" style="display: none;">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <p class="progress-text" id="progressText">Uploading...</p>
+            </div>
+            <div class="upload-message" id="uploadMessage" style="display: none;"></div>
+            <div class="uploaded-preview" id="uploadedPreview"></div>
+        </div>
+    </section>
+
+    <!-- Location Map Section -->
+    <section class="map-section">
+        <div class="container">
+            <h2 class="section-title">Venue Locations</h2>
+            <div class="location-tabs">
+                <button class="location-tab-btn active" data-location="engagement">Engagement</button>
+                <button class="location-tab-btn" data-location="marriage">Wedding</button>
+            </div>
+            <div class="map-info">
+                <p class="venue-name" id="mapVenueName">Hotel Padmavathi</p>
+                <p class="venue-address" id="mapVenueAddress"></p>
+                <a href="#" id="mapLink" target="_blank" class="map-link">📍 Open in Google Maps</a>
+            </div>
+            <div id="map" class="map">
+                <iframe id="mapFrame" src="" width="100%" height="100%" style="border:0; border-radius: 20px;"
+                    allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+            <div class="map-note">
+                <p>Interactive map - Click and drag to explore</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <h2 class="footer-title">Forever & Always</h2>
+            <p class="footer-date" id="footerDate">18.06.2026</p>
+            <div class="footer-heart-divider">
+                <div class="heart-line"></div>
+                <div class="heart-icon">❤️</div>
+                <div class="heart-line"></div>
+            </div>
+            <p class="footer-love">MADE WITH LOVE</p>
+            <p class="footer-rights">Designed and Developed by Praveenraj Madhumitha</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
