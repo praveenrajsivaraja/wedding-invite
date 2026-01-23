@@ -31,7 +31,9 @@ module.exports = async (req, res) => {
             /\.(jpg|jpeg|png|webp)$/i.test(f)
         );
         
-        res.json({ images: files, folder: 'header' });
+        // Return the actual folder name that was found
+        const actualFolderName = fs.existsSync(folderPath) ? 'headder' : 'header';
+        res.json({ images: files, folder: actualFolderName });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

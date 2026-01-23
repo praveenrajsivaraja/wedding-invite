@@ -365,24 +365,52 @@ async function initHeaderSlideshow() {
         if (response.ok) {
             const data = await response.json();
             headerImages = data.images || [];
-            const folderName = data.folder || 'hedder'; // Use folder name from server
+            const folderName = data.folder || 'headder'; // Use folder name from server
             console.log(`Found ${headerImages.length} header images from ${folderName} folder:`, headerImages);
             
             if (headerImages.length > 0) {
                 const slideshowEl = document.getElementById('headerSlideshow');
                 if (slideshowEl) {
+                    // Clear any existing content
+                    slideshowEl.innerHTML = '';
+                    
                     // Create image elements using the folder name from server
-                    slideshowEl.innerHTML = headerImages.map((img, index) => {
+                    let loadedCount = 0;
+                    const totalImages = headerImages.length;
+                    
+                    headerImages.forEach((img, index) => {
                         const imgPath = `photos/${folderName}/${img}`;
-                        return `<img src="${imgPath}" alt="Header ${index + 1}" class="${index === 0 ? 'active' : ''}" onload="console.log('✅ Header image ${index + 1} loaded:', '${img}')" onerror="console.error('❌ Failed to load:', '${imgPath}'); this.style.display='none';">`;
-                    }).join('');
+                        const imgElement = document.createElement('img');
+                        imgElement.src = imgPath;
+                        imgElement.alt = `Header ${index + 1}`;
+                        imgElement.className = index === 0 ? 'active' : '';
+                        
+                        imgElement.onload = () => {
+                            loadedCount++;
+                            console.log(`✅ Header image ${loadedCount}/${totalImages} loaded: ${img}`);
+                            if (loadedCount === totalImages) {
+                                console.log('All header images loaded, starting slideshow...');
+                                setTimeout(() => {
+                                    startHeaderSlideshow();
+                                }, 1000);
+                            }
+                        };
+                        
+                        imgElement.onerror = () => {
+                            console.error(`❌ Failed to load: ${imgPath}`);
+                            imgElement.style.display = 'none';
+                            loadedCount++;
+                            if (loadedCount === totalImages) {
+                                setTimeout(() => {
+                                    startHeaderSlideshow();
+                                }, 1000);
+                            }
+                        };
+                        
+                        slideshowEl.appendChild(imgElement);
+                    });
                     
                     console.log(`Header slideshow initialized with ${headerImages.length} images from ${folderName} folder`);
-                    
-                    // Wait a bit for images to start loading, then start slideshow
-                    setTimeout(() => {
-                        startHeaderSlideshow();
-                    }, 500);
                 } else {
                     console.error('Header slideshow element not found');
                 }
@@ -418,16 +446,24 @@ function startHeaderSlideshow() {
         clearInterval(headerSlideshowInterval);
     }
     
-    const images = document.querySelectorAll('.header-slideshow img');
+    // Get only visible images (not hidden due to errors)
+    const images = Array.from(document.querySelectorAll('.header-slideshow img')).filter(img => 
+        img.style.display !== 'none'
+    );
+    
     if (images.length === 0) {
-        console.warn('⚠️ No images found in slideshow container');
+        console.warn('⚠️ No visible images found in slideshow container');
+        const headerSection = document.querySelector('.header-section');
+        if (headerSection) {
+            headerSection.style.background = '#8B0000';
+        }
         return;
     }
     
-    console.log(`✅ Found ${images.length} image elements in DOM`);
+    console.log(`✅ Found ${images.length} visible image elements in DOM`);
     
     // If only one image, just show it
-    if (headerImages.length <= 1) {
+    if (images.length <= 1) {
         console.log('Single header image - showing static image');
         if (images[0]) {
             images[0].classList.add('active');
@@ -436,7 +472,7 @@ function startHeaderSlideshow() {
         return;
     }
     
-    console.log(`🎬 Starting header slideshow with ${headerImages.length} images`);
+    console.log(`🎬 Starting header slideshow with ${images.length} images`);
     
     // Ensure first image is visible and others are hidden
     images.forEach((img, idx) => {
@@ -452,9 +488,12 @@ function startHeaderSlideshow() {
     
     // Start cycling through images
     headerSlideshowInterval = setInterval(() => {
-        const currentImages = document.querySelectorAll('.header-slideshow img');
+        const currentImages = Array.from(document.querySelectorAll('.header-slideshow img')).filter(img => 
+            img.style.display !== 'none'
+        );
+        
         if (currentImages.length === 0) {
-            console.warn('⚠️ No images found during slideshow cycle');
+            console.warn('⚠️ No visible images found during slideshow cycle');
             clearInterval(headerSlideshowInterval);
             return;
         }
@@ -465,12 +504,12 @@ function startHeaderSlideshow() {
         }
         
         // Move to next image
-        currentHeaderImageIndex = (currentHeaderImageIndex + 1) % headerImages.length;
+        currentHeaderImageIndex = (currentHeaderImageIndex + 1) % currentImages.length;
         
         // Add active class to new image
         if (currentImages[currentHeaderImageIndex]) {
             currentImages[currentHeaderImageIndex].classList.add('active');
-            console.log(`🔄 Switched to image ${currentHeaderImageIndex + 1}/${headerImages.length}`);
+            console.log(`🔄 Switched to image ${currentHeaderImageIndex + 1}/${currentImages.length}`);
         }
     }, 4000); // Change image every 4 seconds
     
