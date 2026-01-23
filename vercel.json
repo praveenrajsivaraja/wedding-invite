@@ -13,10 +13,6 @@
       "destination": "/api/favicon.js"
     },
     {
-      "source": "/photos/(.*)",
-      "destination": "/photos/$1"
-    },
-    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
