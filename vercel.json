@@ -8,10 +8,6 @@
     {
       "source": "/favicon.ico",
       "destination": "/api/favicon.js"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
     }
   ]
 }
