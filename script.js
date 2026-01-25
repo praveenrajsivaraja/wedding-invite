@@ -167,7 +167,7 @@ function startCountdown() {
 }
 
 // Photo Gallery
-let currentCategory = 'wedding';
+let currentCategory = 'others';
 let photosData = { wedding: [], engagement: [], others: [] };
 let currentPage = 1;
 const IMAGES_PER_PAGE = 20;
