@@ -100,10 +100,10 @@ function updateCountdown() {
             }
         }
 
-        // Update footer date
+        // Update footer date dynamically based on current event
         const footerDateEl = document.getElementById('footerDate');
         if (footerDateEl) {
-            footerDateEl.textContent = formatFooterDate(new Date(CONFIG.MARRIAGE_DATE));
+            footerDateEl.textContent = formatFooterDate(new Date(targetDate));
         }
 
         // Update venue display based on current event
@@ -334,6 +334,16 @@ function updateMapLocation(locationType) {
     document.getElementById('mapVenueName').textContent = location.name;
     document.getElementById('mapVenueAddress').textContent = location.address;
     document.getElementById('mapLink').href = location.mapLink;
+    
+    // Update event date based on location type
+    const venueDateEl = document.getElementById('mapVenueDate');
+    if (venueDateEl) {
+        if (locationType === 'engagement') {
+            venueDateEl.textContent = formatDate(new Date(CONFIG.ENGAGEMENT_DATE));
+        } else if (locationType === 'marriage') {
+            venueDateEl.textContent = formatDate(new Date(CONFIG.MARRIAGE_DATE));
+        }
+    }
 
     // Update active tab
     document.querySelectorAll('.location-tab-btn').forEach(btn => {
@@ -498,11 +508,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     await initGallery();
     initLocationTabs();
     
-    // Initialize footer date
-    const footerDateEl = document.getElementById('footerDate');
-    if (footerDateEl) {
-        footerDateEl.textContent = formatFooterDate(new Date(CONFIG.MARRIAGE_DATE));
-    }
+    // Initialize footer date dynamically
+    updateCountdown(); // This will set the footer date based on current event
     
 
     // Initialize map with embedded iframe (no API key needed)
