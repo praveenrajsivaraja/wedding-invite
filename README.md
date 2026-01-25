@@ -15,11 +15,11 @@ This project uses only **3 files**:
    ```bash
    node server.js
    ```
-   The server will run on `http://localhost:3001`
+   The server will run on `http://localhost:2801`
 
 2. **Open your browser**:
    ```
-   http://localhost:3001
+   http://localhost:2801
    ```
 
 **Important**: The server must be running for images to load. The server reads all image files directly from the folders.
