@@ -696,6 +696,14 @@ body {
     color: #8B0000;
 }
 
+.venue-date {
+    font-size: 1.4rem;
+    font-weight: 500;
+    margin-bottom: 10px;
+    color: #8B0000;
+    font-family: 'Playfair Display', serif;
+}
+
 .venue-address {
     font-size: 1.3rem;
     color: #666666;
