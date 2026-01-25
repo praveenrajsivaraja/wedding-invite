@@ -223,10 +223,13 @@ async function fetchPhotos(category, page = 1) {
 
             // Display photos for current page
             gridEl.innerHTML = photos.map((photo) => {
-                const photoUrl = `photos/${category}/${photo}`;
+                // Handle both string (filename) and object (filename + url) formats
+                const photoData = typeof photo === 'string' ? { filename: photo, url: null } : photo;
+                const photoUrl = photoData.url || `photos/${category}/${photoData.filename}`;
+                const photoAlt = photoData.filename;
                 return `
                     <div class="photo-item" onclick="window.open('${photoUrl}', '_blank')">
-                        <img src="${photoUrl}" alt="${photo}" loading="lazy">
+                        <img src="${photoUrl}" alt="${photoAlt}" loading="lazy">
                     </div>
                 `;
             }).join('');

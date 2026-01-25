@@ -54,6 +54,15 @@ This project uses only **3 files**:
 
 See [DEPLOYMENT.md](./DEPLOYMENT.md) for free hosting options (Render, Railway, Fly.io, etc.)
 
+### Vercel Deployment with File Uploads
+
+For file uploads to work on Vercel, you need to set up Vercel Blob Storage. See [BLOB_SETUP.md](./BLOB_SETUP.md) for detailed instructions.
+
+**Quick setup:**
+1. Create a Blob store in your Vercel project (Storage tab)
+2. Deploy - the `BLOB_READ_WRITE_TOKEN` is automatically available
+3. Uploads will be stored in Vercel Blob Storage
+
 ## Local Development
 
 This requires a Node.js server to run. See "Quick Start" above.
