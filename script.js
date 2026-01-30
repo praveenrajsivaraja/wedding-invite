@@ -167,14 +167,56 @@ function startCountdown() {
 }
 
 // Photo Gallery
-let currentCategory = 'engagement';
+let currentCategory = 'others';
+let currentSubCategory = 'all'; // For filtering within "others"
 let photosData = { wedding: [], engagement: [], others: [] };
 let currentPage = 1;
 const IMAGES_PER_PAGE = 24; // Increased to fill more space
 
 // Get images list from server
-async function getImagesList(category) {
+async function getImagesList(category, subCategory = 'all') {
     try {
+        // For "others" category, combine or filter team-bride and team-groom photos
+        if (category === 'others') {
+            const allImages = [];
+            
+            // Fetch team-bride photos if needed
+            if (subCategory === 'all' || subCategory === 'team-bride') {
+                const teamBrideResponse = await fetch(`/api/photos?category=team-bride`);
+                if (teamBrideResponse.ok) {
+                    const brideData = await teamBrideResponse.json();
+                    const brideImages = (brideData.images || []).map(img => {
+                        const photoData = typeof img === 'string' ? { filename: img, url: null } : img;
+                        return {
+                            ...photoData,
+                            url: photoData.url || `photos/team-bride/${photoData.filename}`
+                        };
+                    });
+                    allImages.push(...brideImages);
+                }
+            }
+            
+            // Fetch team-groom photos if needed
+            if (subCategory === 'all' || subCategory === 'team-groom') {
+                const teamGroomResponse = await fetch(`/api/photos?category=team-groom`);
+                if (teamGroomResponse.ok) {
+                    const groomData = await teamGroomResponse.json();
+                    const groomImages = (groomData.images || []).map(img => {
+                        const photoData = typeof img === 'string' ? { filename: img, url: null } : img;
+                        return {
+                            ...photoData,
+                            url: photoData.url || `photos/team-groom/${photoData.filename}`
+                        };
+                    });
+                    allImages.push(...groomImages);
+                }
+            }
+            
+            console.log(`Found ${allImages.length} images for others (subCategory: ${subCategory})`);
+            return allImages;
+        }
+        
+        // For other categories, fetch normally
         const response = await fetch(`/api/photos?category=${category}`);
         console.log('Fetch response:', response.status, response.statusText);
         if (response.ok) {
@@ -209,8 +251,8 @@ async function fetchPhotos(category, page = 1) {
 
     try {
         // Get all images from server
-        console.log(`Fetching photos for category: ${category}, page: ${page}`);
-        const allImages = await getImagesList(category);
+        console.log(`Fetching photos for category: ${category}, subCategory: ${currentSubCategory}, page: ${page}`);
+        const allImages = await getImagesList(category, currentSubCategory);
         console.log(`Total images received: ${allImages.length}`);
         loadingEl.style.display = 'none';
         
@@ -228,11 +270,24 @@ async function fetchPhotos(category, page = 1) {
             gridEl.innerHTML = photos.map((photo) => {
                 // Handle both string (filename) and object (filename + url) formats
                 const photoData = typeof photo === 'string' ? { filename: photo, url: null } : photo;
+                // For "others" category, URL is already set in getImagesList, otherwise use default path
                 const photoUrl = photoData.url || `photos/${category}/${photoData.filename}`;
                 const photoAlt = photoData.filename;
+                const photoFilename = photoData.filename || photoUrl.split('/').pop();
+                // Escape quotes in URLs and filenames for safe HTML insertion
+                const safeUrl = photoUrl.replace(/'/g, "\\'");
+                const safeFilename = photoFilename.replace(/'/g, "\\'");
+                
                 return `
-                    <div class="photo-item" onclick="window.open('${photoUrl}', '_blank')">
-                        <img src="${photoUrl}" alt="${photoAlt}" loading="lazy">
+                    <div class="photo-item">
+                        <img src="${photoUrl}" alt="${photoAlt}" loading="lazy" onclick="window.open('${safeUrl}', '_blank')">
+                        <button class="download-btn" onclick="event.stopPropagation(); event.preventDefault(); downloadImage('${safeUrl}', '${safeFilename}'); return false;" title="Download image" type="button">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                        </button>
                     </div>
                 `;
             }).join('');
@@ -274,6 +329,17 @@ async function fetchPhotos(category, page = 1) {
 async function initGallery() {
     // Reset discovered images when switching categories
     const tabButtons = document.querySelectorAll('.tab-btn');
+    const subTabContainer = document.getElementById('subTabContainer');
+    const subTabButtons = document.querySelectorAll('.sub-tab-btn');
+    
+    // Show/hide sub-tabs based on initial category
+    if (currentCategory === 'others') {
+        subTabContainer.style.display = 'flex';
+        subTabButtons.forEach(b => b.classList.remove('active'));
+        document.querySelector('.sub-tab-btn[data-subcategory="all"]')?.classList.add('active');
+    } else {
+        subTabContainer.style.display = 'none';
+    }
     
     tabButtons.forEach(btn => {
         btn.addEventListener('click', () => {
@@ -281,7 +347,31 @@ async function initGallery() {
             btn.classList.add('active');
             currentCategory = btn.dataset.category;
             currentPage = 1; // Reset to first page when switching categories
-            // Don't reset discoveredImages - keep them cached for faster switching
+            
+            // Show/hide sub-tabs based on category
+            if (currentCategory === 'others') {
+                subTabContainer.style.display = 'flex';
+                currentSubCategory = 'all'; // Reset to 'all' when switching to others
+                subTabButtons.forEach(b => b.classList.remove('active'));
+                document.querySelector('.sub-tab-btn[data-subcategory="all"]')?.classList.add('active');
+            } else {
+                subTabContainer.style.display = 'none';
+                currentSubCategory = 'all';
+            }
+            
+            fetchPhotos(currentCategory, currentPage);
+        });
+    });
+    
+    // Handle sub-tab clicks
+    subTabButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            if (currentCategory !== 'others') return;
+            
+            subTabButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentSubCategory = btn.dataset.subcategory;
+            currentPage = 1; // Reset to first page when switching sub-categories
             fetchPhotos(currentCategory, currentPage);
         });
     });
@@ -556,8 +646,18 @@ function initNavigation() {
             const targetElement = document.getElementById(targetId);
             
             if (targetElement) {
-                const navHeight = document.querySelector('.main-nav').offsetHeight;
-                const targetPosition = targetElement.offsetTop - navHeight;
+                // On desktop, menu is a left sidebar, so we don't need to account for its height
+                // On mobile, menu is a top bar, so we need to account for its height
+                const isMobile = document.body.classList.contains('mobile-device');
+                let targetPosition = targetElement.offsetTop;
+                
+                if (isMobile) {
+                    const navHeight = document.querySelector('.main-nav').offsetHeight;
+                    targetPosition = targetElement.offsetTop - navHeight;
+                } else {
+                    // On desktop, just add a small offset for better positioning
+                    targetPosition = targetElement.offsetTop - 20;
+                }
                 
                 window.scrollTo({
                     top: targetPosition,
@@ -634,7 +734,10 @@ function initNavigation() {
     // Update active nav link on scroll
     window.addEventListener('scroll', () => {
         const sections = document.querySelectorAll('section[id]');
-        const navHeight = document.querySelector('.main-nav').offsetHeight;
+        const isMobile = document.body.classList.contains('mobile-device');
+        // On desktop, menu is on the left, so we don't need to add navHeight
+        // On mobile, menu is on top, so we need to account for it
+        const navHeight = isMobile ? document.querySelector('.main-nav').offsetHeight : 0;
         const scrollPos = window.scrollY + navHeight + 100;
 
         sections.forEach(section => {
@@ -897,6 +1000,42 @@ function initPhotoUpload() {
         }, 5000);
     }
 }
+
+// Download image function
+async function downloadImage(imageUrl, filename) {
+    try {
+        // Fetch the image as a blob
+        const response = await fetch(imageUrl);
+        if (!response.ok) {
+            throw new Error('Failed to fetch image');
+        }
+        
+        const blob = await response.blob();
+        
+        // Create a temporary URL for the blob
+        const blobUrl = window.URL.createObjectURL(blob);
+        
+        // Create a temporary anchor element and trigger download
+        const link = document.createElement('a');
+        link.href = blobUrl;
+        link.download = filename || 'image.jpg';
+        document.body.appendChild(link);
+        link.click();
+        
+        // Clean up
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(blobUrl);
+        
+        console.log('Image downloaded successfully:', filename);
+    } catch (error) {
+        console.error('Error downloading image:', error);
+        // Fallback: open image in new tab if download fails
+        window.open(imageUrl, '_blank');
+    }
+}
+
+// Make downloadImage available globally
+window.downloadImage = downloadImage;
 
 // Cleanup on page unload
 window.addEventListener('beforeunload', () => {
