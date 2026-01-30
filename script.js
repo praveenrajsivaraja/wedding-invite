@@ -1001,8 +1001,141 @@ function initPhotoUpload() {
         progressFill.style.width = '0%';
         progressText.textContent = 'Preparing upload...';
         
+        // Check if mobile device - upload files sequentially for better reliability
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        
+        if (isMobile && validFiles.length > 1) {
+            // Sequential upload for mobile (more reliable)
+            uploadFilesSequentially(validFiles);
+        } else {
+            // Batch upload for desktop (faster)
+            uploadFilesBatch(validFiles);
+        }
+    }
+    
+    async function uploadFilesSequentially(files) {
+        const totalFiles = files.length;
+        let uploadedCount = 0;
+        let failedCount = 0;
+        const uploadedFiles = [];
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        const uploadProgress = document.getElementById('uploadProgress');
+        const uploadedPreview = document.getElementById('uploadedPreview');
+        const fileInput = document.getElementById('photoUpload');
+        
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            const fileNumber = i + 1;
+            
+            progressText.textContent = `Uploading ${fileNumber}/${totalFiles}...`;
+            
+            try {
+                const result = await uploadSingleFile(file, i, totalFiles, uploadedCount, failedCount);
+                if (result.success) {
+                    uploadedCount++;
+                    uploadedFiles.push(result.file);
+                    const progress = ((uploadedCount + failedCount) / totalFiles) * 100;
+                    progressFill.style.width = progress + '%';
+                } else {
+                    failedCount++;
+                    console.error(`Failed to upload file ${fileNumber}:`, result.error);
+                }
+            } catch (error) {
+                failedCount++;
+                console.error(`Error uploading file ${fileNumber}:`, error);
+            }
+        }
+        
+        // Final status
+        progressFill.style.width = '100%';
+        if (uploadedCount > 0) {
+            progressText.textContent = `Upload complete! ${uploadedCount} of ${totalFiles} uploaded`;
+            showUploadMessage(`✅ Successfully uploaded ${uploadedCount} photo(s)!${failedCount > 0 ? ` (${failedCount} failed)` : ''}`, 'success');
+            uploadedPreview.innerHTML = `<p class="uploaded-count">${uploadedCount} photo(s) uploaded</p>`;
+            
+            // Refresh the gallery if "Others" tab is active
+            const activeTab = document.querySelector('.tab-btn.active');
+            if (activeTab && activeTab.dataset.category === 'others') {
+                setTimeout(() => {
+                    initGallery();
+                }, 1000);
+            }
+        } else {
+            progressText.textContent = 'Upload failed';
+            showUploadMessage(`❌ Failed to upload files. Please try again.`, 'error');
+        }
+        
+        // Hide progress after 2 seconds
+        setTimeout(() => {
+            uploadProgress.style.display = 'none';
+            fileInput.value = ''; // Reset input
+        }, 2000);
+    }
+    
+    function uploadSingleFile(file, fileIndex, totalFiles, currentUploaded, currentFailed) {
+        return new Promise((resolve, reject) => {
+            const formData = new FormData();
+            formData.append('photos', file);
+            const progressFill = document.getElementById('progressFill');
+            
+            const xhr = new XMLHttpRequest();
+            
+            // Track upload progress for single file
+            xhr.upload.addEventListener('progress', (e) => {
+                if (e.lengthComputable) {
+                    const percentComplete = (e.loaded / e.total) * 100;
+                    // Update progress within the current file's portion
+                    const baseProgress = (currentUploaded + currentFailed) / totalFiles * 100;
+                    const fileProgress = percentComplete / totalFiles;
+                    progressFill.style.width = Math.min(baseProgress + fileProgress, 100) + '%';
+                }
+            });
+            
+            xhr.addEventListener('load', () => {
+                if (xhr.status === 200) {
+                    try {
+                        const response = JSON.parse(xhr.responseText);
+                        if (response.files && response.files.length > 0) {
+                            resolve({ success: true, file: response.files[0] });
+                        } else {
+                            resolve({ success: false, error: 'No file in response' });
+                        }
+                    } catch (parseError) {
+                        console.error('Error parsing response:', parseError);
+                        resolve({ success: false, error: 'Invalid response' });
+                    }
+                } else {
+                    try {
+                        const error = JSON.parse(xhr.responseText);
+                        resolve({ success: false, error: error.error || 'Upload failed' });
+                    } catch (parseError) {
+                        resolve({ success: false, error: `Server error (${xhr.status})` });
+                    }
+                }
+            });
+            
+            xhr.addEventListener('error', (e) => {
+                console.error('XHR error:', e);
+                resolve({ success: false, error: 'Network error' });
+            });
+            
+            xhr.addEventListener('timeout', () => {
+                console.error('Upload timeout');
+                resolve({ success: false, error: 'Upload timeout' });
+            });
+            
+            // Set timeout for mobile (longer timeout for slower connections)
+            xhr.timeout = 60000; // 1 minute per file
+            
+            xhr.open('POST', '/api/upload');
+            xhr.send(formData);
+        });
+    }
+    
+    function uploadFilesBatch(files) {
         const formData = new FormData();
-        validFiles.forEach(file => {
+        files.forEach(file => {
             formData.append('photos', file);
         });
         
