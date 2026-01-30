@@ -884,26 +884,83 @@ function initPhotoUpload() {
             e.preventDefault();
             e.stopPropagation();
             console.log('Upload button clicked');
-            fileInput.click();
+            try {
+                // For mobile, ensure the input is accessible
+                fileInput.style.display = 'block';
+                fileInput.style.position = 'absolute';
+                fileInput.style.opacity = '0';
+                fileInput.style.width = '100%';
+                fileInput.style.height = '100%';
+                fileInput.style.top = '0';
+                fileInput.style.left = '0';
+                fileInput.click();
+                // Reset after a short delay
+                setTimeout(() => {
+                    fileInput.style.display = 'none';
+                }, 100);
+            } catch (error) {
+                console.error('Error triggering file input:', error);
+                // Fallback: try direct click
+                fileInput.click();
+            }
         });
     }
     
     // File input change
     fileInput.addEventListener('change', (e) => {
-        if (e.target.files.length > 0) {
+        console.log('File input changed, files:', e.target.files);
+        if (e.target.files && e.target.files.length > 0) {
             console.log('Files selected:', e.target.files.length);
+            handleFileUpload(e.target.files);
+        } else {
+            console.warn('No files selected or files array is empty');
+        }
+    });
+    
+    // Also handle input event for better mobile support
+    fileInput.addEventListener('input', (e) => {
+        console.log('File input event triggered, files:', e.target.files);
+        if (e.target.files && e.target.files.length > 0) {
+            console.log('Files selected via input event:', e.target.files.length);
             handleFileUpload(e.target.files);
         }
     });
     
     async function handleFileUpload(files) {
+        if (!files || files.length === 0) {
+            showUploadMessage('No files selected. Please try again.', 'error');
+            return;
+        }
+        
         const validFiles = Array.from(files).filter(file => {
+            console.log('Validating file:', {
+                name: file.name,
+                type: file.type,
+                size: file.size
+            });
+            
+            // Check MIME type (case-insensitive check)
             const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'image/bmp'];
-            return validTypes.includes(file.type);
+            const fileType = file.type ? file.type.toLowerCase() : '';
+            const hasValidMimeType = validTypes.includes(fileType);
+            
+            // Also check file extension for mobile browsers that might not set MIME type correctly
+            const validExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.JPG', '.JPEG', '.PNG', '.GIF', '.WEBP', '.BMP'];
+            const fileName = file.name || '';
+            const hasValidExtension = validExtensions.some(ext => fileName.endsWith(ext));
+            
+            // If MIME type is empty or not recognized, rely on extension
+            const isValid = hasValidMimeType || (fileType === '' && hasValidExtension) || hasValidExtension;
+            
+            if (!isValid) {
+                console.warn('File rejected:', file.name, 'Type:', file.type, 'Extension check:', hasValidExtension);
+            }
+            
+            return isValid;
         });
         
         if (validFiles.length === 0) {
-            showUploadMessage('Please select valid image files (JPG, PNG, GIF, WEBP, BMP)', 'error');
+            showUploadMessage('Please select valid image files (JPG, PNG, GIF, WEBP, BMP). Some mobile browsers may require selecting images from the gallery.', 'error');
             return;
         }
         
@@ -990,10 +1047,26 @@ function initPhotoUpload() {
                 }
             });
             
-            xhr.addEventListener('error', () => {
-                showUploadMessage('❌ Network error. Please try again.', 'error');
+            xhr.addEventListener('error', (e) => {
+                console.error('XHR error:', e);
+                showUploadMessage('❌ Network error. Please check your connection and try again.', 'error');
                 uploadProgress.style.display = 'none';
             });
+            
+            xhr.addEventListener('abort', () => {
+                console.warn('Upload aborted');
+                showUploadMessage('❌ Upload was cancelled. Please try again.', 'error');
+                uploadProgress.style.display = 'none';
+            });
+            
+            xhr.addEventListener('timeout', () => {
+                console.error('Upload timeout');
+                showUploadMessage('❌ Upload timed out. Please try again with smaller files or better connection.', 'error');
+                uploadProgress.style.display = 'none';
+            });
+            
+            // Set timeout for mobile (longer timeout for slower connections)
+            xhr.timeout = 120000; // 2 minutes
             
             xhr.open('POST', '/api/upload');
             xhr.send(formData);
