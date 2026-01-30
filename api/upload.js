@@ -38,9 +38,16 @@ module.exports = async (req, res) => {
         bb.on('file', (name, file, info) => {
             const { filename, encoding, mimeType } = info;
             
-            // Validate file type
+            // Validate file type (case-insensitive)
             const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'image/bmp'];
-            if (!validTypes.includes(mimeType)) {
+            const normalizedMimeType = mimeType ? mimeType.toLowerCase() : '';
+            
+            // Also check file extension as fallback for mobile
+            const validExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp'];
+            const hasValidExtension = validExtensions.some(ext => filename.toLowerCase().endsWith(ext));
+            
+            if (!validTypes.includes(normalizedMimeType) && !hasValidExtension) {
+                console.warn('File rejected - invalid type:', filename, 'MIME:', mimeType);
                 file.resume(); // Drain the file stream
                 return;
             }
