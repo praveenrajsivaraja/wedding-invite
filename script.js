@@ -176,9 +176,25 @@ const IMAGES_PER_PAGE = 24; // Increased to fill more space
 // Get images list from server
 async function getImagesList(category, subCategory = 'all') {
     try {
-        // For "others" category, combine or filter team-bride and team-groom photos
+        // For "others" category, combine or filter team-bride and team-groom photos, plus uploaded photos
         if (category === 'others') {
             const allImages = [];
+            
+            // Fetch uploaded photos from "others" folder (for photos uploaded via portal)
+            if (subCategory === 'all') {
+                const othersResponse = await fetch(`/api/photos?category=others`);
+                if (othersResponse.ok) {
+                    const othersData = await othersResponse.json();
+                    const othersImages = (othersData.images || []).map(img => {
+                        const photoData = typeof img === 'string' ? { filename: img, url: null } : img;
+                        return {
+                            ...photoData,
+                            url: photoData.url || `photos/others/${photoData.filename}`
+                        };
+                    });
+                    allImages.push(...othersImages);
+                }
+            }
             
             // Fetch team-bride photos if needed
             if (subCategory === 'all' || subCategory === 'team-bride') {
