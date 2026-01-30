@@ -924,6 +924,9 @@ function initPhotoUpload() {
         });
     }
     
+    // Track if upload is in progress to prevent duplicate uploads
+    let isUploading = false;
+    
     // File input change
     fileInput.addEventListener('change', (e) => {
         console.log('File input changed, files:', e.target.files);
@@ -933,22 +936,25 @@ function initPhotoUpload() {
         } else {
             console.warn('No files selected or files array is empty');
         }
-    });
-    
-    // Also handle input event for better mobile support
-    fileInput.addEventListener('input', (e) => {
-        console.log('File input event triggered, files:', e.target.files);
-        if (e.target.files && e.target.files.length > 0) {
-            console.log('Files selected via input event:', e.target.files.length);
-            handleFileUpload(e.target.files);
-        }
+        // Reset input value after processing to allow selecting same files again
+        setTimeout(() => {
+            e.target.value = '';
+        }, 100);
     });
     
     async function handleFileUpload(files) {
+        // Prevent duplicate uploads
+        if (isUploading) {
+            console.warn('Upload already in progress, ignoring duplicate request');
+            return;
+        }
+        
         if (!files || files.length === 0) {
             showUploadMessage('No files selected. Please try again.', 'error');
             return;
         }
+        
+        isUploading = true;
         
         const validFiles = Array.from(files).filter(file => {
             console.log('Validating file:', {
@@ -1064,12 +1070,16 @@ function initPhotoUpload() {
         } else {
             progressText.textContent = 'Upload failed';
             showUploadMessage(`❌ Failed to upload files. Please try again.`, 'error');
+            isUploading = false; // Reset upload flag immediately on failure
         }
         
         // Hide progress after 2 seconds
         setTimeout(() => {
             uploadProgress.style.display = 'none';
             fileInput.value = ''; // Reset input
+            if (!isUploading) {
+                isUploading = false; // Ensure flag is reset
+            }
         }, 2000);
     }
     
@@ -1179,11 +1189,13 @@ function initPhotoUpload() {
                         setTimeout(() => {
                             uploadProgress.style.display = 'none';
                             fileInput.value = ''; // Reset input
+                            isUploading = false; // Reset upload flag
                         }, 2000);
                     } catch (parseError) {
                         console.error('Error parsing response:', parseError);
                         showUploadMessage('❌ Upload response error', 'error');
                         uploadProgress.style.display = 'none';
+                        isUploading = false; // Reset upload flag
                     }
                 } else {
                     try {
@@ -1195,6 +1207,7 @@ function initPhotoUpload() {
                         showUploadMessage(`❌ Upload failed: Server error (${xhr.status})`, 'error');
                     }
                     uploadProgress.style.display = 'none';
+                    isUploading = false; // Reset upload flag
                 }
             });
             
@@ -1202,18 +1215,21 @@ function initPhotoUpload() {
                 console.error('XHR error:', e);
                 showUploadMessage('❌ Network error. Please check your connection and try again.', 'error');
                 uploadProgress.style.display = 'none';
+                isUploading = false; // Reset upload flag
             });
             
             xhr.addEventListener('abort', () => {
                 console.warn('Upload aborted');
                 showUploadMessage('❌ Upload was cancelled. Please try again.', 'error');
                 uploadProgress.style.display = 'none';
+                isUploading = false; // Reset upload flag
             });
             
             xhr.addEventListener('timeout', () => {
                 console.error('Upload timeout');
                 showUploadMessage('❌ Upload timed out. Please try again with smaller files or better connection.', 'error');
                 uploadProgress.style.display = 'none';
+                isUploading = false; // Reset upload flag
             });
             
             // Set timeout for mobile (longer timeout for slower connections)
@@ -1226,6 +1242,7 @@ function initPhotoUpload() {
             console.error('Upload error:', error);
             showUploadMessage('❌ Upload failed. Please try again.', 'error');
             uploadProgress.style.display = 'none';
+            isUploading = false; // Reset upload flag
         }
     }
     
