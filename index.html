@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Praveenraj & Madhumitha - Engagement & Wedding</title>
+    <title>Praveenraj & Madhumitha - Wedding</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,18 +14,67 @@
 </head>
 
 <body>
+    <!-- Menu Toggle Button -->
+    <button class="menu-toggle-btn" id="menuToggleBtn" aria-label="Toggle menu">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+    </button>
+
+    <!-- Navigation Bar -->
+    <nav class="main-nav" id="mainNav">
+        <div class="nav-top-bar"></div>
+        <ul class="nav-menu">
+            <li>
+                <a href="#home" class="nav-link" title="Home">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                    </svg>
+                </a>
+            </li>
+            <li>
+                <a href="#about" class="nav-link" title="Our Story">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </a>
+            </li>
+            <li>
+                <a href="#gallery" class="nav-link" title="Gallery">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                        <polyline points="21 15 16 10 5 21"></polyline>
+                    </svg>
+                </a>
+            </li>
+            <li>
+                <a href="#venue" class="nav-link" title="Venue">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                        <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                </a>
+            </li>
+        </ul>
+          
+        </div>
+    </nav>
+
     <!-- Header Section -->
-    <section class="header-section">
+    <section id="home" class="header-section">
         <div class="header-slideshow" id="headerSlideshow">
             <!-- Images will be loaded dynamically -->
         </div>
         <div class="header-overlay"></div>
         <div class="container header-content">
-            <p class="together-forever gold-text">TOGETHER FOREVER</p>
-            <h2 class="were-getting">We're Getting</h2>
-            <h1 class="were-getting gold-text" id="statusText">Engaged</h1>
-
-            <h2 class="were-getting">Praveenraj & Madhumitha</h2>
+            <h2 class="were-getting">Chennai Paiyan </h2>
+            <h1 class="were-getting gold-text">Weds</h1>
+            <h2 class="were-getting">Trichy Ponnu </h2>            
+            <!-- <h2 class="were-getting">Praveenraj </h2>
+            <h2 class="were-getting"> & Madhumitha</h2> -->
 
             <p class="event-date" id="eventDate">18th January 2026</p>
             <p class="save-the-date">SAVE THE DATE</p>
@@ -51,26 +100,91 @@
         </div>
     </section>
 
+    <!-- Our Story Section -->
+    <section id="about" class="about-section">
+        <div class="container">
+            <h2 class="section-title">
+                <span class="diamond">◇</span>
+                <span class="gold-text">Our Story</span>
+                <span class="diamond">◇</span>
+            </h2>
+            <div class="about-people">
+                <div class="person-card person-left">
+                    <div class="person-image">
+                        <div class="about-image-frame">
+                            <img src="photos/header/WIN_4969.JPG" alt="Praveenraj" id="praveenrajImage" onerror="this.style.display='none'">
+                        </div>
+                    </div>
+                    <div class="about-story">
+                        <p>Two souls, one heart. Our journey together began with a connection that felt like destiny. Through shared dreams, laughter, and countless beautiful moments, we found in each other not just a partner, but a best friend, a confidant, and the love of our lives.</p>
+                        <p>As we take this beautiful step forward, we invite you to be part of our celebration. Your presence and blessings make our special day even more meaningful.</p>
+                        <button class="read-more-btn" onclick="document.getElementById('gallery').scrollIntoView({behavior: 'smooth'})">VIEW GALLERY</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Wedding Gallery Preview Section -->
+    <section id="gallery-preview" class="gallery-preview-section">
+        <div class="container">
+            <h2 class="section-title">
+                <span class="diamond">◇</span>
+                <span class="gold-text">Engagement Story</span>
+                <span class="diamond">◇</span>
+            </h2>
+            <div class="gallery-preview-content">
+                <div class="gallery-preview-text">
+                    <p>Welcome to our Wedding Photography Galleries—a captivating journey through the cherished moments we've been honored to capture. Immerse yourself in meticulously curated collections, each a visual narrative woven with artistry, emotion, and diverse styles that define our celebration.</p>
+                    <p>Step into the essence of intimate ceremonies, grand receptions, and the unique moments that make our love story extraordinary. Join us on this visual exploration where emotions and distinctive expressions unfold, showcasing the heart and soul of our commitment to capturing the beauty of our special day.</p>
+                    <button class="discover-more-btn" onclick="document.getElementById('gallery').scrollIntoView({behavior: 'smooth'})">DISCOVER MORE</button>
+                </div>
+                <div class="gallery-preview-grid" id="galleryPreviewGrid">
+                    <!-- Static engagement photos -->
+                    <div class="gallery-preview-item" onclick="window.open('photos/engagement/WIN_5084.JPG', '_blank')">
+                        <img src="photos/engagement/WIN_4488.JPG" alt="Engagement Photo 1" loading="lazy">
+                    </div>
+                    <div class="gallery-preview-item" onclick="window.open('photos/engagement/WIN_5080.JPG', '_blank')">
+                        <img src="photos/engagement/WIN_4269.JPG" alt="Engagement Photo 2" loading="lazy">
+                    </div>
+                    <div class="gallery-preview-item" onclick="window.open('photos/engagement/WIN_5066.JPG', '_blank')">
+                        <img src="photos/engagement/WIN_4401.JPG" alt="Engagement Photo 3" loading="lazy">
+                    </div>
+                    <div class="gallery-preview-item" onclick="window.open('photos/engagement/WIN_5063.JPG', '_blank')">
+                        <img src="photos/engagement/WIN_4415.JPG" alt="Engagement Photo 4" loading="lazy">
+                    </div>
+                    <div class="gallery-preview-item" onclick="window.open('photos/engagement/WIN_5040.JPG', '_blank')">
+                        <img src="photos/engagement/WIN_4698.JPG" alt="Engagement Photo 5" loading="lazy">
+                    </div>
+                    <div class="gallery-preview-item" onclick="window.open('photos/engagement/WIN_5038.JPG', '_blank')">
+                        <img src="photos/engagement/WIN_5084.JPG" alt="Engagement Photo 6" loading="lazy">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Photo Gallery Section -->
-    <section class="gallery-section">
+    <section id="gallery" class="gallery-section">
         <div class="container">
             <h2 class="section-title">
                 <span class="gold-text">Our Memories</span><br>
                 <span class="header-style-text">Gallery</span>
             </h2>
             <div class="tab-container">
-                <button class="tab-btn" data-category="engagement">Engagement</button>
+                <button class="tab-btn active" data-category="engagement">Engagement</button>
                 <button class="tab-btn" data-category="wedding">Wedding</button>
-                <button class="tab-btn active" data-category="others">Others</button>
+                <button class="tab-btn" data-category="others">Others</button>
             </div>
             <div class="gallery-content">
                 <div class="loading" id="galleryLoading" style="display: none;">Loading photos...</div>
                 <div class="error" id="galleryError" style="display: none;"></div>
                 <div class="photo-grid" id="photoGrid"></div>
                 <div class="pagination" id="pagination" style="display: none;">
-                    <button class="pagination-btn" id="prevBtn">Previous</button>
+                    <button class="pagination-btn" id="prevBtn">&lt;</button>
                     <span class="pagination-info" id="paginationInfo"></span>
-                    <button class="pagination-btn" id="nextBtn">Next</button>
+                    <button class="pagination-btn" id="nextBtn">&gt;</button>
                 </div>
             </div>
         </div>
@@ -105,12 +219,12 @@
     </section>
 
     <!-- Location Map Section -->
-    <section class="map-section">
+    <section id="venue" class="map-section">
         <div class="container">
             <h2 class="section-title">Venue Locations</h2>
             <div class="location-tabs">
-                <button class="location-tab-btn active" data-location="engagement">Engagement</button>
-                <button class="location-tab-btn" data-location="marriage">Wedding</button>
+                <button class="location-tab-btn" data-location="engagement">Engagement</button>
+                <button class="location-tab-btn active" data-location="marriage">Wedding</button>
             </div>
             <div class="map-info">
                 <p class="venue-name" id="mapVenueName">Hotel Padmavathi</p>

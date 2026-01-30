@@ -167,10 +167,10 @@ function startCountdown() {
 }
 
 // Photo Gallery
-let currentCategory = 'others';
+let currentCategory = 'engagement';
 let photosData = { wedding: [], engagement: [], others: [] };
 let currentPage = 1;
-const IMAGES_PER_PAGE = 20;
+const IMAGES_PER_PAGE = 24; // Increased to fill more space
 
 // Get images list from server
 async function getImagesList(category) {
@@ -215,11 +215,14 @@ async function fetchPhotos(category, page = 1) {
         loadingEl.style.display = 'none';
         
         if (allImages.length > 0) {
+            // Shuffle photos for assorted layout
+            const shuffledImages = [...allImages].sort(() => Math.random() - 0.5);
+            
             // Calculate pagination
-            const totalPages = Math.ceil(allImages.length / IMAGES_PER_PAGE);
+            const totalPages = Math.ceil(shuffledImages.length / IMAGES_PER_PAGE);
             const startIndex = (page - 1) * IMAGES_PER_PAGE;
             const endIndex = startIndex + IMAGES_PER_PAGE;
-            const photos = allImages.slice(startIndex, endIndex);
+            const photos = shuffledImages.slice(startIndex, endIndex);
 
             // Display photos for current page
             gridEl.innerHTML = photos.map((photo) => {
@@ -237,7 +240,7 @@ async function fetchPhotos(category, page = 1) {
             // Show pagination
             if (totalPages > 1) {
                 paginationEl.style.display = 'flex';
-                paginationInfo.textContent = `Page ${page} of ${totalPages} (${allImages.length} photos)`;
+                paginationInfo.textContent = `Page ${page} of ${totalPages} (${shuffledImages.length} photos)`;
                 
                 prevBtn.disabled = page === 1;
                 nextBtn.disabled = page >= totalPages;
@@ -259,7 +262,7 @@ async function fetchPhotos(category, page = 1) {
                 };
             }
         } else {
-            gridEl.innerHTML = '<div class="error" style="display: block; grid-column: 1/-1; padding: 20px; text-align: center; color: #8B0000;">No photos available to view</div>';
+            gridEl.innerHTML = '<div class="error" style="display: flex; align-items: center; justify-content: center; padding: 40px 20px; text-align: center; color: #8B0000; font-size: 1.2rem; min-height: 200px; width: 100%;">No photos available to view</div>';
         }
     } catch (error) {
         loadingEl.style.display = 'none';
@@ -288,7 +291,7 @@ async function initGallery() {
 
 
 // Google Maps - Using embedded iframes (no API key required)
-let currentMapLocation = 'engagement';
+let currentMapLocation = 'marriage';
 
 // Convert Google Maps share link to embed URL
 function getEmbedUrl(shareLink) {
@@ -501,22 +504,242 @@ function startHeaderSlideshow() {
     console.log('✅ Slideshow interval started');
 }
 
-// Initialize everything
+// Gallery Preview
+async function loadGalleryPreview() {
+    const previewGrid = document.getElementById('galleryPreviewGrid');
+    if (!previewGrid) return;
+
+    try {
+        // Get engagement photos only for Engagement Story section
+        const images = await getImagesList('engagement');
+        
+        // Map images to include URL
+        const previewImages = images.map(img => {
+            const photoData = typeof img === 'string' ? { filename: img, url: null } : img;
+            return {
+                ...photoData,
+                category: 'engagement',
+                url: photoData.url || `photos/engagement/${photoData.filename}`
+            };
+        });
+
+        // Shuffle and take up to 6 images for preview (or all if less than 6)
+        const shuffled = previewImages.sort(() => 0.5 - Math.random());
+        const selected = shuffled.slice(0, Math.min(6, shuffled.length));
+
+        if (selected.length === 0) {
+            previewGrid.innerHTML = '<div class="preview-loading">No photos available for preview</div>';
+            return;
+        }
+
+        previewGrid.innerHTML = selected.map(photo => `
+            <div class="gallery-preview-item" onclick="window.open('${photo.url}', '_blank')">
+                <img src="${photo.url}" alt="${photo.filename}" loading="lazy">
+            </div>
+        `).join('');
+    } catch (error) {
+        console.error('Error loading gallery preview:', error);
+        previewGrid.innerHTML = '<div class="preview-loading">Error loading preview</div>';
+    }
+}
+
+// Smooth scroll navigation
+function initNavigation() {
+    const navLinks = document.querySelectorAll('.nav-link');
+    const navMenu = document.querySelector('.nav-menu');
+    const mainNav = document.querySelector('.main-nav');
+    
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetId = link.getAttribute('href').substring(1);
+            const targetElement = document.getElementById(targetId);
+            
+            if (targetElement) {
+                const navHeight = document.querySelector('.main-nav').offsetHeight;
+                const targetPosition = targetElement.offsetTop - navHeight;
+                
+                window.scrollTo({
+                    top: targetPosition,
+                    behavior: 'smooth'
+                });
+                
+                // Don't hide menu on mobile - keep it always visible
+            }
+        });
+    });
+    
+    // Also hide menu when clicking on logo (home link)
+    const logoLink = document.querySelector('.nav-logo-text');
+    if (logoLink) {
+        logoLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetElement = document.getElementById('home');
+            
+            if (targetElement) {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+                
+                // Don't hide menu on mobile - keep it always visible
+            }
+        });
+    }
+    
+    // Keep menu always visible on mobile - no auto-hide on scroll
+    
+    // Menu toggle button functionality
+    const menuToggleBtn = document.getElementById('menuToggleBtn');
+    if (menuToggleBtn && mainNav) {
+        menuToggleBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const isClosed = mainNav.classList.contains('menu-closed');
+            
+            if (isClosed) {
+                mainNav.classList.remove('menu-closed');
+                if (!document.body.classList.contains('mobile-device')) {
+                    document.body.classList.remove('menu-closed');
+                }
+                menuToggleBtn.classList.add('active');
+            } else {
+                mainNav.classList.add('menu-closed');
+                if (!document.body.classList.contains('mobile-device')) {
+                    document.body.classList.add('menu-closed');
+                }
+                menuToggleBtn.classList.remove('active');
+            }
+        });
+        
+        // Close menu when clicking outside on desktop
+        if (window.innerWidth >= 768 && !document.body.classList.contains('mobile-device')) {
+            document.addEventListener('click', (e) => {
+                if (mainNav && !mainNav.contains(e.target) && 
+                    menuToggleBtn && !menuToggleBtn.contains(e.target) &&
+                    !mainNav.classList.contains('menu-closed')) {
+                    mainNav.classList.add('menu-closed');
+                    if (document.body.classList.contains('mobile-device')) {
+                        document.body.classList.add('menu-closed');
+                    } else {
+                        document.body.classList.add('menu-closed');
+                    }
+                    menuToggleBtn.classList.remove('active');
+                }
+            });
+        }
+    }
+
+    // Update active nav link on scroll
+    window.addEventListener('scroll', () => {
+        const sections = document.querySelectorAll('section[id]');
+        const navHeight = document.querySelector('.main-nav').offsetHeight;
+        const scrollPos = window.scrollY + navHeight + 100;
+
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            const sectionHeight = section.offsetHeight;
+            const sectionId = section.getAttribute('id');
+            const navLink = document.querySelector(`.nav-link[href="#${sectionId}"]`);
+
+            if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
+                navLinks.forEach(link => link.classList.remove('active'));
+                if (navLink) navLink.classList.add('active');
+            }
+        });
+    });
+}
+
+// Device Detection
+function detectDevice() {
+    const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+    const isMobile = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent.toLowerCase());
+    const isTablet = /ipad|android(?!.*mobile)|tablet/i.test(userAgent.toLowerCase());
+    const screenWidth = window.innerWidth || document.documentElement.clientWidth;
+    
+    // Consider mobile if screen width is less than 768px or device is detected as mobile
+    const isMobileDevice = isMobile || (!isTablet && screenWidth < 768);
+    
+    // Add device class to body
+    if (isMobileDevice) {
+        document.body.classList.add('mobile-device');
+        document.documentElement.classList.add('mobile-device');
+    } else {
+        document.body.classList.add('desktop-device');
+        document.documentElement.classList.add('desktop-device');
+    }
+    
+    console.log('Device detected:', {
+        isMobile: isMobileDevice,
+        userAgent: userAgent,
+        screenWidth: screenWidth
+    });
+    
+    return isMobileDevice;
+}
+
+    // Initialize everything
 document.addEventListener('DOMContentLoaded', async () => {
+    // Detect device first
+    detectDevice();
+    
+    // Initialize menu - start closed on desktop, open on mobile
+    const mainNav = document.getElementById('mainNav');
+    const menuToggleBtn = document.getElementById('menuToggleBtn');
+    if (mainNav && menuToggleBtn) {
+        if (window.innerWidth >= 768 && !document.body.classList.contains('mobile-device')) {
+            // Desktop: start closed
+            mainNav.classList.add('menu-closed');
+            document.body.classList.add('menu-closed');
+        } else {
+            // Mobile: always visible, never closed
+            mainNav.classList.remove('menu-closed');
+            document.body.classList.remove('menu-closed');
+            menuToggleBtn.classList.add('active');
+            // Force menu to stay visible on mobile
+            mainNav.style.transform = 'translateY(0)';
+            mainNav.style.opacity = '1';
+            mainNav.style.pointerEvents = 'auto';
+        }
+    }
+    
     await initHeaderSlideshow();
     startCountdown();
     await initGallery();
+    // Gallery preview now uses static photos in HTML
     initLocationTabs();
+    initNavigation();
     
     // Initialize footer date dynamically
     updateCountdown(); // This will set the footer date based on current event
     
 
     // Initialize map with embedded iframe (no API key needed)
-    updateMapLocation('engagement');
+    updateMapLocation('marriage');
     
     // Initialize photo upload
     initPhotoUpload();
+    
+    // Re-detect on resize (but don't change class if already set)
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+            const screenWidth = window.innerWidth || document.documentElement.clientWidth;
+            if (screenWidth < 768 && !document.body.classList.contains('mobile-device')) {
+                document.body.classList.remove('desktop-device');
+                document.body.classList.add('mobile-device');
+                document.documentElement.classList.remove('desktop-device');
+                document.documentElement.classList.add('mobile-device');
+            } else if (screenWidth >= 768 && !document.body.classList.contains('desktop-device')) {
+                document.body.classList.remove('mobile-device');
+                document.body.classList.add('desktop-device');
+                document.documentElement.classList.remove('mobile-device');
+                document.documentElement.classList.add('desktop-device');
+            }
+        }, 250);
+    });
 });
 
 // Photo Upload Functionality
@@ -679,4 +902,3 @@ function initPhotoUpload() {
 window.addEventListener('beforeunload', () => {
     if (timerInterval) clearInterval(timerInterval);
 });
-

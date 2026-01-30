@@ -12,10 +12,6 @@
       "destination": "/api/favicon.js"
     },
     {
-      "source": "/api/(.*)",
-      "destination": "/api/$1"
-    },
-    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
