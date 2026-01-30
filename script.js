@@ -876,6 +876,14 @@ function initPhotoUpload() {
         return;
     }
     
+    // Ensure no capture attribute is set (to prevent camera from opening)
+    if (fileInput.hasAttribute('capture')) {
+        fileInput.removeAttribute('capture');
+    }
+    
+    // Set specific accept types to prefer gallery over camera
+    fileInput.setAttribute('accept', 'image/jpeg,image/jpg,image/png,image/gif,image/webp');
+    
     console.log('Initializing photo upload...');
     
     // Upload button click
@@ -884,8 +892,14 @@ function initPhotoUpload() {
             e.preventDefault();
             e.stopPropagation();
             console.log('Upload button clicked');
+            
+            // Remove any capture attribute that might force camera
+            if (fileInput.hasAttribute('capture')) {
+                fileInput.removeAttribute('capture');
+            }
+            
             try {
-                // For mobile, ensure the input is accessible
+                // For mobile, ensure the input is accessible but don't force camera
                 fileInput.style.display = 'block';
                 fileInput.style.position = 'absolute';
                 fileInput.style.opacity = '0';
@@ -893,11 +907,15 @@ function initPhotoUpload() {
                 fileInput.style.height = '100%';
                 fileInput.style.top = '0';
                 fileInput.style.left = '0';
-                fileInput.click();
-                // Reset after a short delay
+                
+                // Small delay to ensure styles are applied
                 setTimeout(() => {
-                    fileInput.style.display = 'none';
-                }, 100);
+                    fileInput.click();
+                    // Reset after click
+                    setTimeout(() => {
+                        fileInput.style.display = 'none';
+                    }, 100);
+                }, 10);
             } catch (error) {
                 console.error('Error triggering file input:', error);
                 // Fallback: try direct click
