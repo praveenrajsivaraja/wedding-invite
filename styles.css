@@ -328,9 +328,11 @@ body.menu-closed {
 .tab-container {
     display: flex;
     justify-content: center;
-    gap: 20px;
+    gap: 15px;
     margin-bottom: 40px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .tab-btn {
@@ -359,11 +361,59 @@ body.menu-closed {
     box-shadow: 0 4px 20px rgba(246, 211, 101, 0.4);
 }
 
+.sub-tab-container {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 30px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.sub-tab-btn {
+    padding: 10px 25px;
+    background: #f9f9f9;
+    border: 2px solid #e0e0e0;
+    border-radius: 30px;
+    color: #8B0000;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Poppins', sans-serif;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.sub-tab-btn:hover {
+    background: #e8e8e8;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.sub-tab-btn.active {
+    background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+    border-color: #f6d365;
+    color: #8B0000;
+    box-shadow: 0 2px 12px rgba(246, 211, 101, 0.4);
+}
+
 .photo-grid {
     column-count: 4;
     column-gap: 8px;
     margin-top: 30px;
     width: 100%;
+}
+
+.photo-grid .error {
+    column-span: all;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    width: 100% !important;
+    margin: 0 auto !important;
 }
 
 .photo-item {
@@ -387,12 +437,53 @@ body.menu-closed {
     position: relative;
 }
 
+.photo-item:hover .download-btn {
+    opacity: 1;
+    visibility: visible;
+}
+
 .photo-item img {
     width: 100%;
     height: auto;
     display: block;
     object-fit: cover;
     border-radius: 12px;
+    cursor: pointer;
+}
+
+.download-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.7);
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 20;
+    color: #fff;
+    backdrop-filter: blur(5px);
+}
+
+.download-btn:hover {
+    background: rgba(0, 0, 0, 0.9);
+    transform: scale(1.1);
+}
+
+.download-btn:active {
+    transform: scale(0.95);
+}
+
+.download-btn svg {
+    width: 18px;
+    height: 18px;
 }
 
 /* Pagination */
@@ -446,6 +537,15 @@ body.menu-closed {
 
 .error {
     color: #ff6b6b;
+}
+
+.photo-grid .error {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    width: 100% !important;
+    margin: 0 auto !important;
 }
 
 /* Upload Section */
@@ -856,6 +956,33 @@ body.menu-closed {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+    .tab-container {
+        flex-wrap: nowrap;
+        gap: 10px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        justify-content: flex-start;
+    }
+    
+    .tab-btn {
+        padding: 12px 25px;
+        font-size: 0.95rem;
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+    
+    .sub-tab-container {
+        flex-wrap: nowrap;
+        gap: 8px;
+        margin-bottom: 20px;
+        justify-content: flex-start;
+    }
+    
+    .sub-tab-btn {
+        padding: 8px 18px;
+        font-size: 0.85rem;
+    }
+    
     .event-title {
         font-size: 2.5rem;
     }
@@ -1143,7 +1270,7 @@ body.menu-closed {
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 40px;
+    gap: 20px;
     padding: 40px;
     background: #f9f9f9;
     border-radius: 15px;
@@ -1298,7 +1425,7 @@ body.menu-closed {
 
 .gallery-preview-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 15px;
 }
 
@@ -1727,15 +1854,38 @@ body.menu-closed {
     text-align: center;
 }
 
-.mobile-device .gallery-tabs {
-    flex-wrap: wrap;
+.mobile-device .tab-container {
+    flex-wrap: nowrap !important;
     gap: 8px;
     margin-bottom: 20px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    justify-content: flex-start;
+    padding-bottom: 5px;
 }
 
-.mobile-device .gallery-tab {
-    padding: 8px 15px;
+.mobile-device .tab-btn {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.mobile-device .sub-tab-container {
+    flex-wrap: nowrap !important;
+    gap: 8px;
+    margin-bottom: 20px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    justify-content: flex-start;
+    padding-bottom: 5px;
+}
+
+.mobile-device .sub-tab-btn {
+    padding: 8px 16px;
     font-size: 0.85rem;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .mobile-device .photo-grid {
@@ -1750,6 +1900,20 @@ body.menu-closed {
 
 .mobile-device .photo-item img {
     border-radius: 12px;
+}
+
+.mobile-device .download-btn {
+    opacity: 1;
+    visibility: visible;
+    width: 35px;
+    height: 35px;
+    top: 8px;
+    right: 8px;
+}
+
+.mobile-device .download-btn svg {
+    width: 16px;
+    height: 16px;
 }
 
 .mobile-device .gallery-item {

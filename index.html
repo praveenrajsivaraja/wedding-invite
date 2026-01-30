@@ -103,23 +103,24 @@
     <!-- Our Story Section -->
     <section id="about" class="about-section">
         <div class="container">
-            <h2 class="section-title">
-                <span class="diamond">◇</span>
-                <span class="gold-text">Our Story</span>
-                <span class="diamond">◇</span>
-            </h2>
+           
             <div class="about-people">
+                <h2 class="section-title">
+                    <span class="diamond">◇</span>  
+                    <span class="gold-text">Our Story</span>
+                    <span class="diamond">◇</span>
+                </h2>
                 <div class="person-card person-left">
                     <div class="person-image">
                         <div class="about-image-frame">
                             <img src="photos/header/WIN_4969.JPG" alt="Praveenraj" id="praveenrajImage" onerror="this.style.display='none'">
                         </div>
                     </div>
-                    <div class="about-story">
-                        <p>Two souls, one heart. Our journey together began with a connection that felt like destiny. Through shared dreams, laughter, and countless beautiful moments, we found in each other not just a partner, but a best friend, a confidant, and the love of our lives.</p>
+                   
+                        <p>It was at the divine Srirangam Temple where our eyes first met, and in that moment, we fell in love at first sight. What started as a traditional matchmaking turned into an extraordinary journey of discovery, filled with love, laughter, and countless emotions.</p>
+                        <p>From romantic dinners at Rough Top Restaurant to exploring the wonders of Birds Park, from thrilling bike rides to cozy car rides, and even trying ice skating together—every moment became a cherished memory. </p>
                         <p>As we take this beautiful step forward, we invite you to be part of our celebration. Your presence and blessings make our special day even more meaningful.</p>
-                        <button class="read-more-btn" onclick="document.getElementById('gallery').scrollIntoView({behavior: 'smooth'})">VIEW GALLERY</button>
-                    </div>
+                    
                 </div>
             </div>
 
@@ -136,8 +137,11 @@
             </h2>
             <div class="gallery-preview-content">
                 <div class="gallery-preview-text">
-                    <p>Welcome to our Wedding Photography Galleries—a captivating journey through the cherished moments we've been honored to capture. Immerse yourself in meticulously curated collections, each a visual narrative woven with artistry, emotion, and diverse styles that define our celebration.</p>
-                    <p>Step into the essence of intimate ceremonies, grand receptions, and the unique moments that make our love story extraordinary. Join us on this visual exploration where emotions and distinctive expressions unfold, showcasing the heart and soul of our commitment to capturing the beauty of our special day.</p>
+                    <p>As we exchanged rings, time seemed to stand still. In that quiet yet powerful moment, promises were sealed and their journey toward forever truly began.</p>
+                    <p>The celebration grew sweeter with the cake cutting, followed by an unforgettable surprise. Hidden within the cake was a special gift for her an iPhone and her reaction, filled with pure happiness and delightful excitement, became one of the most cherished moments of the day.</p>
+                    <p>Equally touching was a gesture straight from the heart. She gifted him a silver bangle, delicately engraved with our  names a timeless symbol of love, thoughtfulness, and a bond meant to last forever.</p>
+                    <p>Reuniting with cousins after a long time filled the celebration with warmth and laughter. Endless selfies, group photos, shared stories, and joyful moments turned the gathering into a beautiful reunion of love and togetherness.</p>
+                    <p>More than a celebration, the engagement marked the beginning of their forever, a day filled with memories they will cherish for a lifetime.</p>
                     <button class="discover-more-btn" onclick="document.getElementById('gallery').scrollIntoView({behavior: 'smooth'})">DISCOVER MORE</button>
                 </div>
                 <div class="gallery-preview-grid" id="galleryPreviewGrid">
@@ -173,9 +177,14 @@
                 <span class="header-style-text">Gallery</span>
             </h2>
             <div class="tab-container">
-                <button class="tab-btn active" data-category="engagement">Engagement</button>
+                <button class="tab-btn" data-category="engagement">Engagement</button>
                 <button class="tab-btn" data-category="wedding">Wedding</button>
-                <button class="tab-btn" data-category="others">Others</button>
+                <button class="tab-btn active" data-category="others">Others</button>
+            </div>
+            <div class="sub-tab-container" id="subTabContainer" style="display: none;">
+                <button class="sub-tab-btn active" data-subcategory="all">All</button>
+                <button class="sub-tab-btn" data-subcategory="team-bride">Team Bride</button>
+                <button class="sub-tab-btn" data-subcategory="team-groom">Team Groom</button>
             </div>
             <div class="gallery-content">
                 <div class="loading" id="galleryLoading" style="display: none;">Loading photos...</div>
@@ -194,8 +203,7 @@
     <section class="upload-section">
         <div class="container">
             <h2 class="section-title">Upload Your Photos</h2>
-            <p class="upload-description">Share your favorite moments with us! Photos will be added to the "Others"
-                gallery.</p>
+            <p class="upload-description">Share your favorite moments with us! Please select the appropriate category when uploading.</p>
             <div class="upload-controls">
                 <button class="upload-btn-small" id="uploadBtn">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
