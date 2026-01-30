@@ -406,6 +406,16 @@ body.menu-closed {
     width: 100%;
 }
 
+.photo-grid .error {
+    column-span: all;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+}
+
 .photo-item {
     position: relative;
     overflow: hidden;
@@ -527,6 +537,15 @@ body.menu-closed {
 
 .error {
     color: #ff6b6b;
+}
+
+.photo-grid .error {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    width: 100% !important;
+    margin: 0 auto !important;
 }
 
 /* Upload Section */
@@ -1251,7 +1270,7 @@ body.menu-closed {
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 40px;
+    gap: 20px;
     padding: 40px;
     background: #f9f9f9;
     border-radius: 15px;
@@ -1406,7 +1425,7 @@ body.menu-closed {
 
 .gallery-preview-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 15px;
 }
 

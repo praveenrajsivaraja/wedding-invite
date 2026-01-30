@@ -317,7 +317,7 @@ async function fetchPhotos(category, page = 1) {
                 };
             }
         } else {
-            gridEl.innerHTML = '<div class="error" style="display: flex; align-items: center; justify-content: center; padding: 40px 20px; text-align: center; color: #8B0000; font-size: 1.2rem; min-height: 200px; width: 100%;">No photos available to view</div>';
+            gridEl.innerHTML = '<div class="error" style="display: flex; align-items: center; justify-content: center; padding: 40px 20px; text-align: center; color: #8B0000; font-size: 1.2rem; min-height: 200px; width: 100%; margin: 0 auto;">No photos available to view</div>';
         }
     } catch (error) {
         loadingEl.style.display = 'none';
