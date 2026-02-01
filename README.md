@@ -56,7 +56,7 @@ See [DEPLOYMENT.md](./DEPLOYMENT.md) for free hosting options (Render, Railway, 
 
 ### Vercel Deployment with File Uploads
 
-For file uploads to work on Vercel, you need to set up Vercel Blob Storage. See [BLOB_SETUP.md](./BLOB_SETUP.md) for detailed instructions.
+For file uploads to work on Vercel, you need to set up Vercel Blob Storage.
 
 **Quick setup:**
 1. Create a Blob store in your Vercel project (Storage tab)

@@ -18,9 +18,7 @@ const CONFIG = {
             lng: 78.7062234,
             mapLink: 'https://maps.app.goo.gl/aerwBkYg2dg1Xda67'
         }
-    },
-    // Photos will be loaded from photos.json file (auto-generated)
-    // Run: node generate-photos.js to create photos.json from folders
+    }
 };
 
 // Countdown Timer
@@ -228,16 +226,13 @@ async function getImagesList(category, subCategory = 'all') {
                 }
             }
             
-            console.log(`Found ${allImages.length} images for others (subCategory: ${subCategory})`);
             return allImages;
         }
         
         // For other categories, fetch normally
         const response = await fetch(`/api/photos?category=${category}`);
-        console.log('Fetch response:', response.status, response.statusText);
         if (response.ok) {
             const data = await response.json();
-            console.log(`Found ${data.images?.length || 0} images for ${category}:`, data.images?.slice(0, 5));
             return data.images || [];
         } else {
             console.error('Response not OK:', response.status, response.statusText);
@@ -267,9 +262,7 @@ async function fetchPhotos(category, page = 1) {
 
     try {
         // Get all images from server
-        console.log(`Fetching photos for category: ${category}, subCategory: ${currentSubCategory}, page: ${page}`);
         const allImages = await getImagesList(category, currentSubCategory);
-        console.log(`Total images received: ${allImages.length}`);
         loadingEl.style.display = 'none';
         
         if (allImages.length > 0) {
@@ -484,15 +477,12 @@ let headerSlideshowInterval = null;
 
 async function initHeaderSlideshow() {
     try {
-        console.log('Loading header images...');
         const response = await fetch('/api/header-images');
-        console.log('Header images response:', response.status);
         
         if (response.ok) {
             const data = await response.json();
             headerImages = data.images || [];
             const folderName = data.folder || 'header'; // Use folder name from server
-            console.log(`Found ${headerImages.length} header images from ${folderName} folder:`, headerImages);
             
             if (headerImages.length > 0) {
                 const slideshowEl = document.getElementById('headerSlideshow');
@@ -500,10 +490,8 @@ async function initHeaderSlideshow() {
                     // Create image elements using the folder name from server (simpler innerHTML approach)
                     slideshowEl.innerHTML = headerImages.map((img, index) => {
                         const imgPath = `photos/${folderName}/${img}`;
-                        return `<img src="${imgPath}" alt="Header ${index + 1}" class="${index === 0 ? 'active' : ''}" onload="console.log('✅ Header image ${index + 1} loaded:', '${img}')" onerror="console.error('❌ Failed to load:', '${imgPath}'); this.style.display='none';">`;
+                        return `<img src="${imgPath}" alt="Header ${index + 1}" class="${index === 0 ? 'active' : ''}" onerror="this.style.display='none';">`;
                     }).join('');
-                    
-                    console.log(`Header slideshow initialized with ${headerImages.length} images from ${folderName} folder`);
                     
                     // Wait a bit for images to start loading, then start slideshow
                     setTimeout(() => {
@@ -513,7 +501,6 @@ async function initHeaderSlideshow() {
                     console.error('Header slideshow element not found');
                 }
             } else {
-                console.warn('No header images found. Using default background.');
                 // If no header images, use default background
                 const headerSection = document.querySelector('.header-section');
                 if (headerSection) {
@@ -550,7 +537,6 @@ function startHeaderSlideshow() {
     );
     
     if (images.length === 0) {
-        console.warn('⚠️ No visible images found in slideshow container');
         const headerSection = document.querySelector('.header-section');
         if (headerSection) {
             headerSection.style.background = '#8B0000';
@@ -558,25 +544,18 @@ function startHeaderSlideshow() {
         return;
     }
     
-    console.log(`✅ Found ${images.length} visible image elements in DOM`);
-    
     // If only one image, just show it
     if (images.length <= 1) {
-        console.log('Single header image - showing static image');
         if (images[0]) {
             images[0].classList.add('active');
-            console.log('✅ Single image activated');
         }
         return;
     }
-    
-    console.log(`🎬 Starting header slideshow with ${images.length} images`);
     
     // Ensure first image is visible and others are hidden
     images.forEach((img, idx) => {
         if (idx === 0) {
             img.classList.add('active');
-            console.log(`✅ Image 1/${images.length} activated`);
         } else {
             img.classList.remove('active');
         }
@@ -591,7 +570,6 @@ function startHeaderSlideshow() {
         );
         
         if (currentImages.length === 0) {
-            console.warn('⚠️ No visible images found during slideshow cycle');
             clearInterval(headerSlideshowInterval);
             return;
         }
@@ -607,11 +585,9 @@ function startHeaderSlideshow() {
         // Add active class to new image
         if (currentImages[currentHeaderImageIndex]) {
             currentImages[currentHeaderImageIndex].classList.add('active');
-            console.log(`🔄 Switched to image ${currentHeaderImageIndex + 1}/${currentImages.length}`);
         }
     }, 4000); // Change image every 4 seconds
     
-    console.log('✅ Slideshow interval started');
 }
 
 // Gallery Preview
@@ -793,12 +769,6 @@ function detectDevice() {
         document.documentElement.classList.add('desktop-device');
     }
     
-    console.log('Device detected:', {
-        isMobile: isMobileDevice,
-        userAgent: userAgent,
-        screenWidth: screenWidth
-    });
-    
     return isMobileDevice;
 }
 
@@ -821,7 +791,7 @@ const translations = {
         about: {
             title: 'Our Story',
             paragraph1: 'It was at the divine Thiruvanaikoil Temple where our eyes first met, and in that moment, we fell in love at first sight. What started as a traditional matchmaking turned into an extraordinary journey of discovery, filled with love, laughter, and countless emotions.',
-            paragraph2: 'From romantic dinners at Rough Top Restaurant to exploring the wonders of Birds Park, from thrilling bike rides to cozy car rides, and even trying ice skating together—every moment became a cherished memory.',
+            paragraph2: 'From romantic dinners at Roof Top Restaurant to exploring the wonders of Birds Park, from thrilling bike rides to cozy car rides, and even trying ice skating together—every moment became a cherished memory.',
             paragraph3: 'As we take this beautiful step forward, we invite you to be part of our celebration. Your presence and blessings make our special day even more meaningful.'
         },
         engagement: {
@@ -870,7 +840,7 @@ const translations = {
             groom: 'சென்னை பையன்',
             weds: 'திருமணம்',
             bride: 'திருச்சி பொண்ணு',
-            saveTheDate: 'தேதியை சேமிக்கவும்'
+            saveTheDate: 'தேதியை நினைவில் கொள்ளுங்கள்'
         },
         timer: {
             days: 'நாட்கள்',
@@ -880,17 +850,17 @@ const translations = {
         },
         about: {
             title: 'எங்கள் கதை',
-            paragraph1: 'புனிதமான திருவணைகோயில் கோவிலில் நம் கண்கள் முதல் முறையாக சந்தித்தன, அந்த தருணத்தில், நாம் முதல் பார்வையில் காதலில் விழுந்தோம். பாரம்பரிய திருமண ஏற்பாட்டாக தொடங்கியது அன்பு, சிரிப்பு மற்றும் எண்ணற்ற உணர்ச்சிகளால் நிரப்பப்பட்ட ஒரு அசாதாரண கண்டுபிடிப்பு பயணமாக மாறியது.',
-            paragraph2: 'உணவகத்தில் ரொமான்டிக் இரவு உணவிலிருந்து பேர்ட்ஸ் பார்க்கின் அதிசயங்களை ஆராய்வது, உற்சாகமான பைக் சவாரிகளிலிருந்து வசதியான கார் சவாரிகள், மற்றும் ஒன்றாக ஐஸ் ஸ்கேட்டிங் முயற்சிப்பது வரை - ஒவ்வொரு தருணமும் ஒரு விலைமதிப்பற்ற நினைவாக மாறியது.',
+            paragraph1: 'புனிதமான திருவணைகோயில் கோவிலில் நம் கண்கள் முதல் முறையாக சந்தித்தன. அந்த தருணத்தில், நாம் முதல் பார்வையிலேயே காதலில் விழுந்தோம். பாரம்பரிய திருமண ஏற்பாட்டாகத் தொடங்கியது, அன்பு, சிரிப்பு மற்றும் எண்ணற்ற உணர்ச்சிகளால் நிரப்பப்பட்ட ஒரு அசாதாரண கண்டுபிடிப்பு பயணமாக மாறியது.',
+            paragraph2: 'ரெஸ்டாரண்டில் ரொமான்டிக் இரவு உணவிலிருந்து பேர்ட்ஸ் பார்க்கின் அதிசயங்களை ஆராய்வது, உற்சாகமான பைக் சவாரிகளிலிருந்து வசதியான கார் சவாரிகள், மற்றும் ஒன்றாக ஐஸ் ஸ்கேட்டிங் முயற்சிப்பது வரை - ஒவ்வொரு தருணமும் ஒரு விலைமதிப்பற்ற நினைவாக மாறியது.',
             paragraph3: 'நாம் இந்த அழகான படியை முன்னோக்கி எடுக்கும்போது, எங்கள் கொண்டாட்டத்தின் ஒரு பகுதியாக நீங்கள் இருக்குமாறு அழைக்கிறோம். உங்கள் வருகை மற்றும் ஆசீர்வாதங்கள் எங்கள் சிறப்பு நாளை இன்னும் அர்த்தமுள்ளதாக்குகின்றன.'
         },
         engagement: {
             title: 'நிச்சயதார்த்த கதை',
-            paragraph1: 'நாங்கள் மோதிரங்களை பரிமாறிக்கொண்டபோது, நேரம் நிற்கிறது போல் தோன்றியது. அந்த அமைதியான ஆனால் சக்திவாய்ந்த தருணத்தில், வாக்குறுதிகள் முத்திரையிடப்பட்டன மற்றும் அவர்களின் என்றென்றும் நடக்கும் பயணம் உண்மையில் தொடங்கியது.',
-            paragraph2: 'கேக் வெட்டுவதுடன் கொண்டாட்டம் இனிமையாக வளர்ந்தது, அதைத் தொடர்ந்து மறக்கமுடியாத ஆச்சரியம். கேக்கிற்குள் மறைக்கப்பட்டிருந்தது அவளுக்கான ஒரு சிறப்பு பரிசு - ஒரு ஐஃபோன் மற்றும் அவளின் எதிர்வினை, தூய மகிழ்ச்சி மற்றும் மகிழ்ச்சிகரமான உற்சாகத்தால் நிரப்பப்பட்டது, அது நாளின் மிகவும் விலைமதிப்பற்ற தருணங்களில் ஒன்றாக மாறியது.',
-            paragraph3: 'சமமாக தொடர்புடையது இதயத்திலிருந்து நேரடியாக ஒரு சைகை. அவள் அவனுக்கு ஒரு வெள்ளி காப்பு பரிசளித்தாள், நம் பெயர்களுடன் நுட்பமாக செதுக்கப்பட்டது - அன்பு, சிந்தனை மற்றும் என்றென்றும் நீடிக்கும் பிணைப்பின் காலமற்ற சின்னம்.',
-            paragraph4: 'நீண்ட காலத்திற்குப் பிறகு உறவினர்களுடன் மீண்டும் சேர்வது கொண்டாட்டத்தை வெப்பம் மற்றும் சிரிப்பால் நிரப்பியது. முடிவில்லாத செல்ஃபிகள், குழு புகைப்படங்கள், பகிரப்பட்ட கதைகள் மற்றும் மகிழ்ச்சியான தருணங்கள் கூட்டத்தை அன்பு மற்றும் ஒற்றுமையின் அழகான மீண்டும் சேர்த்தலாக மாற்றியது.',
-            paragraph5: 'ஒரு கொண்டாட்டத்தை விட, நிச்சயதார்த்தம் அவர்களின் என்றென்றும் நடக்கும் தொடக்கத்தைக் குறித்தது, அவர்கள் வாழ்நாள் முழுவதும் வைத்திருப்பார்கள் என்ற நினைவுகளால் நிரப்பப்பட்ட ஒரு நாள்.',
+            paragraph1: 'நாங்கள் மோதிரங்களை பரிமாறிக்கொண்டபோது, நேரம் நிற்கிறது போல் தோன்றியது. அந்த அமைதியான ஆனால் சக்திவாய்ந்த தருணத்தில், வாக்குறுதிகள் முத்திரையிடப்பட்டன மற்றும் எங்களின் என்றென்றும் நடக்கும் பயணம் உண்மையில் தொடங்கியது.',
+            paragraph2: 'கேக் வெட்டுவதுடன் கொண்டாட்டம் இனிமையாக வளர்ந்தது, அதைத் தொடர்ந்து மறக்கமுடியாத ஆச்சரியம். கேக்கிற்குள் மறைக்கப்பட்டிருந்தது அவளுக்கான ஒரு சிறப்பு பரிசு - ஒரு ஐஃபோன். அவளின் எதிர்வினை, தூய மகிழ்ச்சி மற்றும் மகிழ்ச்சிகரமான உற்சாகத்தால் நிரப்பப்பட்டது, அது நாளின் மிகவும் விலைமதிப்பற்ற தருணங்களில் ஒன்றாக மாறியது.',
+            paragraph3: 'சமமாக இதயத்திலிருந்து வந்த ஒரு அன்பான சைகை. அவள் அவனுக்கு ஒரு வெள்ளி வளையம் பரிசளித்தாள், நம் பெயர்களுடன் நுட்பமாக செதுக்கப்பட்டது - அன்பு, சிந்தனை மற்றும் என்றென்றும் நீடிக்கும் பிணைப்பின் காலமற்ற சின்னம்.',
+            paragraph4: 'நீண்ட காலத்திற்குப் பிறகு உறவினர்களுடன் மீண்டும் சேர்வது கொண்டாட்டத்தை வெப்பம் மற்றும் சிரிப்பால் நிரப்பியது. முடிவில்லாத செல்ஃபிகள், குழு புகைப்படங்கள், பகிரப்பட்ட கதைகள் மற்றும் மகிழ்ச்சியான தருணங்கள் கூட்டத்தை அன்பு மற்றும் ஒற்றுமையின் அழகான மறுசந்திப்பாக மாற்றியது.',
+            paragraph5: 'ஒரு கொண்டாட்டத்தை விட, நிச்சயதார்த்தம் எங்களின் என்றென்றும் நடக்கும் பயணத்தின் தொடக்கத்தைக் குறித்தது, நாங்கள் வாழ்நாள் முழுவதும் வைத்திருப்போம் என்ற நினைவுகளால் நிரப்பப்பட்ட ஒரு நாள்.',
             discoverMore: 'மேலும் கண்டறிய'
         },
         gallery: {
@@ -920,7 +890,7 @@ const translations = {
             mapNote: 'ஊடாடும் வரைபடம் - ஆராய கிளிக் செய்து இழுக்கவும்'
         },
         footer: {
-            title: 'அன்புக்கும் உண்டு அடைக்கும் தாள்',
+            title: 'என்றென்றும் அன்புடன்',
             madeWithLove: 'அன்புடன் உருவாக்கப்பட்டது',
             developedBy: 'பிரவீன்ராஜ் மதுமிதாவால் வடிவமைக்கப்பட்டு உருவாக்கப்பட்டது'
         }
@@ -1099,15 +1069,11 @@ function initPhotoUpload() {
     // Set specific accept types to prefer gallery over camera
     fileInput.setAttribute('accept', 'image/jpeg,image/jpg,image/png,image/gif,image/webp');
     
-    console.log('Initializing photo upload...');
-    
     // Upload button click
     if (uploadBtn) {
         uploadBtn.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
-            console.log('Upload button clicked');
-            
             // Remove any capture attribute that might force camera
             if (fileInput.hasAttribute('capture')) {
                 fileInput.removeAttribute('capture');
@@ -1144,12 +1110,8 @@ function initPhotoUpload() {
     
     // File input change
     fileInput.addEventListener('change', (e) => {
-        console.log('File input changed, files:', e.target.files);
         if (e.target.files && e.target.files.length > 0) {
-            console.log('Files selected:', e.target.files.length);
             handleFileUpload(e.target.files);
-        } else {
-            console.warn('No files selected or files array is empty');
         }
         // Reset input value after processing to allow selecting same files again
         setTimeout(() => {
@@ -1160,7 +1122,6 @@ function initPhotoUpload() {
     async function handleFileUpload(files) {
         // Prevent duplicate uploads
         if (isUploading) {
-            console.warn('Upload already in progress, ignoring duplicate request');
             return;
         }
         
@@ -1172,12 +1133,6 @@ function initPhotoUpload() {
         isUploading = true;
         
         const validFiles = Array.from(files).filter(file => {
-            console.log('Validating file:', {
-                name: file.name,
-                type: file.type,
-                size: file.size
-            });
-            
             // Check MIME type (case-insensitive check)
             const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'image/bmp'];
             const fileType = file.type ? file.type.toLowerCase() : '';
@@ -1189,13 +1144,7 @@ function initPhotoUpload() {
             const hasValidExtension = validExtensions.some(ext => fileName.endsWith(ext));
             
             // If MIME type is empty or not recognized, rely on extension
-            const isValid = hasValidMimeType || (fileType === '' && hasValidExtension) || hasValidExtension;
-            
-            if (!isValid) {
-                console.warn('File rejected:', file.name, 'Type:', file.type, 'Extension check:', hasValidExtension);
-            }
-            
-            return isValid;
+            return hasValidMimeType || (fileType === '' && hasValidExtension) || hasValidExtension;
         });
         
         if (validFiles.length === 0) {
@@ -1260,7 +1209,7 @@ function initPhotoUpload() {
                     progressFill.style.width = progress + '%';
                 } else {
                     failedCount++;
-                    console.error(`Failed to upload file ${fileNumber}:`, result.error);
+                    // File upload failed
                 }
             } catch (error) {
                 failedCount++;
@@ -1377,16 +1326,12 @@ function initPhotoUpload() {
             });
             
             xhr.addEventListener('load', () => {
-                console.log('Upload response status:', xhr.status);
-                console.log('Upload response:', xhr.responseText);
-                
                 if (xhr.status === 200) {
                     try {
                         const response = JSON.parse(xhr.responseText);
                         progressFill.style.width = '100%';
                         progressText.textContent = 'Upload complete!';
                         
-                        console.log('✅ Upload successful:', response);
                         showUploadMessage(`✅ Successfully uploaded ${response.files.length} photo(s)!`, 'success');
                         
                         // Show preview of uploaded files
@@ -1415,10 +1360,8 @@ function initPhotoUpload() {
                 } else {
                     try {
                         const error = JSON.parse(xhr.responseText);
-                        console.error('Upload failed:', error);
                         showUploadMessage(`❌ Upload failed: ${error.error || 'Unknown error'}`, 'error');
                     } catch (parseError) {
-                        console.error('Upload failed with status:', xhr.status, 'Response:', xhr.responseText);
                         showUploadMessage(`❌ Upload failed: Server error (${xhr.status})`, 'error');
                     }
                     uploadProgress.style.display = 'none';
@@ -1427,14 +1370,12 @@ function initPhotoUpload() {
             });
             
             xhr.addEventListener('error', (e) => {
-                console.error('XHR error:', e);
                 showUploadMessage('❌ Network error. Please check your connection and try again.', 'error');
                 uploadProgress.style.display = 'none';
                 isUploading = false; // Reset upload flag
             });
             
             xhr.addEventListener('abort', () => {
-                console.warn('Upload aborted');
                 showUploadMessage('❌ Upload was cancelled. Please try again.', 'error');
                 uploadProgress.style.display = 'none';
                 isUploading = false; // Reset upload flag
@@ -1497,8 +1438,6 @@ async function downloadImage(imageUrl, filename) {
         // Clean up
         document.body.removeChild(link);
         window.URL.revokeObjectURL(blobUrl);
-        
-        console.log('Image downloaded successfully:', filename);
     } catch (error) {
         console.error('Error downloading image:', error);
         // Fallback: open image in new tab if download fails
