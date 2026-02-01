@@ -920,7 +920,7 @@ const translations = {
             mapNote: 'ஊடாடும் வரைபடம் - ஆராய கிளிக் செய்து இழுக்கவும்'
         },
         footer: {
-            title: 'என்றென்றும்',
+            title: 'அன்புக்கும் உண்டு அடைக்கும் தாள்',
             madeWithLove: 'அன்புடன் உருவாக்கப்பட்டது',
             developedBy: 'பிரவீன்ராஜ் மதுமிதாவால் வடிவமைக்கப்பட்டு உருவாக்கப்பட்டது'
         }
@@ -983,6 +983,24 @@ function updateLanguage(lang) {
 function initLanguage() {
     updateLanguage(currentLanguage);
 }
+
+// Function to scroll to gallery section
+function scrollToGallery() {
+    const gallerySection = document.getElementById('gallery');
+    if (gallerySection) {
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
+        const navHeight = isMobile ? 50 : 0; // Account for mobile menu height
+        const galleryPosition = gallerySection.offsetTop - navHeight;
+        
+        window.scrollTo({
+            top: galleryPosition,
+            behavior: 'smooth'
+        });
+    }
+}
+
+// Make scrollToGallery available globally
+window.scrollToGallery = scrollToGallery;
 
 document.addEventListener('DOMContentLoaded', async () => {
     // Initialize language first

@@ -58,6 +58,12 @@ body.menu-closed {
     overflow: hidden;
     margin-top: 0;
     padding-top: 80px;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+
+.header-section:hover {
+    opacity: 0.95;
 }
 
 .header-slideshow {
@@ -1845,8 +1851,13 @@ body.menu-closed {
 }
 
 .mobile-device .footer-title {
-    font-size: 2rem;
+    font-size: 1rem;
     margin-bottom: 15px;
+    white-space: nowrap;
+    padding: 0 5px;
+    letter-spacing: 0.3px;
+    line-height: 1.2;
+    word-spacing: 0;
 }
 
 .mobile-device .footer-date {
@@ -1903,6 +1914,12 @@ body.menu-closed {
 
 .mobile-device .footer-title {
     text-align: center;
+    white-space: nowrap;
+    font-size: 1rem;
+    letter-spacing: 0.3px;
+    line-height: 1.2;
+    padding: 0 5px;
+    word-spacing: 0;
 }
 
 .mobile-device .tab-container {
