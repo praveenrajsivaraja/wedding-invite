@@ -311,7 +311,10 @@ async function fetchPhotos(category, page = 1) {
             // Show pagination
             if (totalPages > 1) {
                 paginationEl.style.display = 'flex';
-                paginationInfo.textContent = `Page ${page} of ${totalPages} (${shuffledImages.length} photos)`;
+                const pageText = translations[currentLanguage]?.gallery?.page || 'Page';
+                const ofText = translations[currentLanguage]?.gallery?.of || 'of';
+                const photosText = translations[currentLanguage]?.gallery?.photos || 'photos';
+                paginationInfo.textContent = `${pageText} ${page} ${ofText} ${totalPages} (${shuffledImages.length} ${photosText})`;
                 
                 prevBtn.disabled = page === 1;
                 nextBtn.disabled = page >= totalPages;
@@ -333,7 +336,8 @@ async function fetchPhotos(category, page = 1) {
                 };
             }
         } else {
-            gridEl.innerHTML = '<div class="error" style="display: flex; align-items: center; justify-content: center; padding: 40px 20px; text-align: center; color: #8B0000; font-size: 1.2rem; min-height: 200px; width: 100%; margin: 0 auto;">No photos available to view</div>';
+            const noPhotosText = translations[currentLanguage]?.gallery?.noPhotos || 'No photos available to view';
+            gridEl.innerHTML = `<div class="error" style="display: flex; align-items: center; justify-content: center; padding: 40px 20px; text-align: center; color: #8B0000; font-size: 1.2rem; min-height: 200px; width: 100%; margin: 0 auto;">${noPhotosText}</div>`;
         }
     } catch (error) {
         loadingEl.style.display = 'none';
@@ -799,7 +803,200 @@ function detectDevice() {
 }
 
     // Initialize everything
+// Language Translations
+const translations = {
+    en: {
+        header: {
+            groom: 'Chennai Paiyan',
+            weds: 'Weds',
+            bride: 'Trichy Ponnu',
+            saveTheDate: 'SAVE THE DATE'
+        },
+        timer: {
+            days: 'DAYS',
+            hours: 'HOURS',
+            minutes: 'MINUTES',
+            seconds: 'SECONDS'
+        },
+        about: {
+            title: 'Our Story',
+            paragraph1: 'It was at the divine Thiruvanaikoil Temple where our eyes first met, and in that moment, we fell in love at first sight. What started as a traditional matchmaking turned into an extraordinary journey of discovery, filled with love, laughter, and countless emotions.',
+            paragraph2: 'From romantic dinners at Rough Top Restaurant to exploring the wonders of Birds Park, from thrilling bike rides to cozy car rides, and even trying ice skating together—every moment became a cherished memory.',
+            paragraph3: 'As we take this beautiful step forward, we invite you to be part of our celebration. Your presence and blessings make our special day even more meaningful.'
+        },
+        engagement: {
+            title: 'Engagement Story',
+            paragraph1: 'As we exchanged rings, time seemed to stand still. In that quiet yet powerful moment, promises were sealed and their journey toward forever truly began.',
+            paragraph2: 'The celebration grew sweeter with the cake cutting, followed by an unforgettable surprise. Hidden within the cake was a special gift for her an iPhone and her reaction, filled with pure happiness and delightful excitement, became one of the most cherished moments of the day.',
+            paragraph3: 'Equally touching was a gesture straight from the heart. She gifted him a silver bangle, delicately engraved with our names a timeless symbol of love, thoughtfulness, and a bond meant to last forever.',
+            paragraph4: 'Reuniting with cousins after a long time filled the celebration with warmth and laughter. Endless selfies, group photos, shared stories, and joyful moments turned the gathering into a beautiful reunion of love and togetherness.',
+            paragraph5: 'More than a celebration, the engagement marked the beginning of their forever, a day filled with memories they will cherish for a lifetime.',
+            discoverMore: 'DISCOVER MORE'
+        },
+        gallery: {
+            title: 'Our Memories',
+            subtitle: 'Gallery',
+            engagement: 'Engagement',
+            others: 'Others',
+            all: 'All',
+            teamBride: 'Team Bride',
+            teamGroom: 'Team Groom',
+            loading: 'Loading photos...',
+            noPhotos: 'No photos available to view',
+            page: 'Page',
+            of: 'of',
+            photos: 'photos'
+        },
+        upload: {
+            title: 'Upload Your Photos',
+            description: 'Share your favorite moments with us! Please select the appropriate category when uploading.',
+            button: 'Upload Photos'
+        },
+        venue: {
+            title: 'Venue Locations',
+            engagement: 'Engagement',
+            wedding: 'Wedding',
+            openMaps: '📍 Open in Google Maps',
+            mapNote: 'Interactive map - Click and drag to explore'
+        },
+        footer: {
+            title: 'Forever & Always',
+            madeWithLove: 'MADE WITH LOVE',
+            developedBy: 'Designed and Developed by Praveenraj Madhumitha'
+        }
+    },
+    ta: {
+        header: {
+            groom: 'சென்னை பையன்',
+            weds: 'திருமணம்',
+            bride: 'திருச்சி பொண்ணு',
+            saveTheDate: 'தேதியை சேமிக்கவும்'
+        },
+        timer: {
+            days: 'நாட்கள்',
+            hours: 'மணி',
+            minutes: 'நிமிடங்கள்',
+            seconds: 'வினாடிகள்'
+        },
+        about: {
+            title: 'எங்கள் கதை',
+            paragraph1: 'புனிதமான திருவணைகோயில் கோவிலில் நம் கண்கள் முதல் முறையாக சந்தித்தன, அந்த தருணத்தில், நாம் முதல் பார்வையில் காதலில் விழுந்தோம். பாரம்பரிய திருமண ஏற்பாட்டாக தொடங்கியது அன்பு, சிரிப்பு மற்றும் எண்ணற்ற உணர்ச்சிகளால் நிரப்பப்பட்ட ஒரு அசாதாரண கண்டுபிடிப்பு பயணமாக மாறியது.',
+            paragraph2: 'ரஃப் டாப் உணவகத்தில் ரொமான்டிக் இரவு உணவிலிருந்து பேர்ட்ஸ் பார்க்கின் அதிசயங்களை ஆராய்வது, உற்சாகமான பைக் சவாரிகளிலிருந்து வசதியான கார் சவாரிகள், மற்றும் ஒன்றாக ஐஸ் ஸ்கேட்டிங் முயற்சிப்பது வரை - ஒவ்வொரு தருணமும் ஒரு விலைமதிப்பற்ற நினைவாக மாறியது.',
+            paragraph3: 'நாம் இந்த அழகான படியை முன்னோக்கி எடுக்கும்போது, எங்கள் கொண்டாட்டத்தின் ஒரு பகுதியாக நீங்கள் இருக்குமாறு அழைக்கிறோம். உங்கள் வருகை மற்றும் ஆசீர்வாதங்கள் எங்கள் சிறப்பு நாளை இன்னும் அர்த்தமுள்ளதாக்குகின்றன.'
+        },
+        engagement: {
+            title: 'நிச்சயதார்த்த கதை',
+            paragraph1: 'நாங்கள் மோதிரங்களை பரிமாறிக்கொண்டபோது, நேரம் நிற்கிறது போல் தோன்றியது. அந்த அமைதியான ஆனால் சக்திவாய்ந்த தருணத்தில், வாக்குறுதிகள் முத்திரையிடப்பட்டன மற்றும் அவர்களின் என்றென்றும் நடக்கும் பயணம் உண்மையில் தொடங்கியது.',
+            paragraph2: 'கேக் வெட்டுவதுடன் கொண்டாட்டம் இனிமையாக வளர்ந்தது, அதைத் தொடர்ந்து மறக்கமுடியாத ஆச்சரியம். கேக்கிற்குள் மறைக்கப்பட்டிருந்தது அவளுக்கான ஒரு சிறப்பு பரிசு - ஒரு ஐஃபோன் மற்றும் அவளின் எதிர்வினை, தூய மகிழ்ச்சி மற்றும் மகிழ்ச்சிகரமான உற்சாகத்தால் நிரப்பப்பட்டது, அது நாளின் மிகவும் விலைமதிப்பற்ற தருணங்களில் ஒன்றாக மாறியது.',
+            paragraph3: 'சமமாக தொடர்புடையது இதயத்திலிருந்து நேரடியாக ஒரு சைகை. அவள் அவனுக்கு ஒரு வெள்ளி வளையத்தை பரிசளித்தாள், நம் பெயர்களுடன் நுட்பமாக செதுக்கப்பட்டது - அன்பு, சிந்தனை மற்றும் என்றென்றும் நீடிக்கும் பிணைப்பின் காலமற்ற சின்னம்.',
+            paragraph4: 'நீண்ட காலத்திற்குப் பிறகு உறவினர்களுடன் மீண்டும் சேர்வது கொண்டாட்டத்தை வெப்பம் மற்றும் சிரிப்பால் நிரப்பியது. முடிவில்லாத செல்ஃபிகள், குழு புகைப்படங்கள், பகிரப்பட்ட கதைகள் மற்றும் மகிழ்ச்சியான தருணங்கள் கூட்டத்தை அன்பு மற்றும் ஒற்றுமையின் அழகான மீண்டும் சேர்த்தலாக மாற்றியது.',
+            paragraph5: 'ஒரு கொண்டாட்டத்தை விட, நிச்சயதார்த்தம் அவர்களின் என்றென்றும் நடக்கும் தொடக்கத்தைக் குறித்தது, அவர்கள் வாழ்நாள் முழுவதும் வைத்திருப்பார்கள் என்ற நினைவுகளால் நிரப்பப்பட்ட ஒரு நாள்.',
+            discoverMore: 'மேலும் கண்டறிய'
+        },
+        gallery: {
+            title: 'எங்கள் நினைவுகள்',
+            subtitle: 'புகைப்பட காட்சி',
+            engagement: 'நிச்சயதார்த்தம்',
+            others: 'மற்றவை',
+            all: 'அனைத்தும்',
+            teamBride: 'மணமகள் அணி',
+            teamGroom: 'மணமகன் அணி',
+            loading: 'புகைப்படங்கள் ஏற்றப்படுகின்றன...',
+            noPhotos: 'பார்க்க புகைப்படங்கள் இல்லை',
+            page: 'பக்கம்',
+            of: 'இல்',
+            photos: 'புகைப்படங்கள்'
+        },
+        upload: {
+            title: 'உங்கள் புகைப்படங்களை பதிவேற்றவும்',
+            description: 'எங்களுடன் உங்கள் பிடித்த தருணங்களை பகிர்ந்து கொள்ளுங்கள்! பதிவேற்றும்போது பொருத்தமான வகையைத் தேர்ந்தெடுக்கவும்.',
+            button: 'புகைப்படங்களை பதிவேற்றவும்'
+        },
+        venue: {
+            title: 'இடங்கள்',
+            engagement: 'நிச்சயதார்த்தம்',
+            wedding: 'திருமணம்',
+            openMaps: '📍 கூகிள் மேப்ஸில் திறக்க',
+            mapNote: 'ஊடாடும் வரைபடம் - ஆராய கிளிக் செய்து இழுக்கவும்'
+        },
+        footer: {
+            title: 'என்றென்றும்',
+            madeWithLove: 'அன்புடன் உருவாக்கப்பட்டது',
+            developedBy: 'பிரவீன்ராஜ் மதுமிதாவால் வடிவமைக்கப்பட்டு உருவாக்கப்பட்டது'
+        }
+    }
+};
+
+// Current language
+let currentLanguage = localStorage.getItem('language') || 'en';
+
+// Function to update all text based on current language
+function updateLanguage(lang) {
+    currentLanguage = lang;
+    localStorage.setItem('language', lang);
+    document.documentElement.lang = lang;
+    
+    // Update all elements with data-i18n attribute
+    document.querySelectorAll('[data-i18n]').forEach(element => {
+        const key = element.getAttribute('data-i18n');
+        const keys = key.split('.');
+        let translation = translations[lang];
+        
+        for (const k of keys) {
+            translation = translation?.[k];
+        }
+        
+        if (translation) {
+            if (element.tagName === 'INPUT' || element.tagName === 'BUTTON') {
+                if (element.tagName === 'BUTTON' && element.querySelector('span[data-i18n]')) {
+                    // Handle button with nested span
+                    const span = element.querySelector('span[data-i18n]');
+                    if (span) {
+                        span.textContent = translation;
+                    } else {
+                        element.textContent = translation;
+                    }
+                } else {
+                    element.textContent = translation;
+                }
+            } else {
+                element.textContent = translation;
+            }
+        }
+    });
+    
+    // Update language toggle button text
+    const langBtn = document.getElementById('languageText');
+    if (langBtn) {
+        langBtn.textContent = lang === 'en' ? 'தமிழ்' : 'English';
+    }
+    
+    // Refresh gallery to update dynamic text
+    if (typeof initGallery === 'function' && document.getElementById('photoGrid')) {
+        setTimeout(() => {
+            initGallery();
+        }, 100);
+    }
+}
+
+// Initialize language on page load
+function initLanguage() {
+    updateLanguage(currentLanguage);
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
+    // Initialize language first
+    initLanguage();
+    
+    // Language toggle button
+    const languageToggleBtn = document.getElementById('languageToggleBtn');
+    if (languageToggleBtn) {
+        languageToggleBtn.addEventListener('click', () => {
+            const newLang = currentLanguage === 'en' ? 'ta' : 'en';
+            updateLanguage(newLang);
+        });
+    }
+    
     // Detect device first
     detectDevice();
     
