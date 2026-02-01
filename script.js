@@ -1151,25 +1151,20 @@ function initPhotoUpload() {
         } else {
             console.warn('No files selected or files array is empty');
         }
-        // Reset input value after processing to allow selecting same files again
-        setTimeout(() => {
-            e.target.value = '';
-        }, 100);
     });
     
+    // Also handle input event for better mobile support
+    fileInput.addEventListener('input', (e) => {
+        console.log('File input event triggered, files:', e.target.files);
+        if (e.target.files && e.target.files.length > 0) {
+            console.log('Files selected via input event:', e.target.files.length);
+            handleFileUpload(e.target.files);
+    
     async function handleFileUpload(files) {
-        // Prevent duplicate uploads
-        if (isUploading) {
-            console.warn('Upload already in progress, ignoring duplicate request');
-            return;
-        }
-        
         if (!files || files.length === 0) {
             showUploadMessage('No files selected. Please try again.', 'error');
             return;
         }
-        
-        isUploading = true;
         
         const validFiles = Array.from(files).filter(file => {
             console.log('Validating file:', {
@@ -1437,14 +1432,12 @@ function initPhotoUpload() {
                 console.warn('Upload aborted');
                 showUploadMessage('❌ Upload was cancelled. Please try again.', 'error');
                 uploadProgress.style.display = 'none';
-                isUploading = false; // Reset upload flag
             });
             
             xhr.addEventListener('timeout', () => {
                 console.error('Upload timeout');
                 showUploadMessage('❌ Upload timed out. Please try again with smaller files or better connection.', 'error');
                 uploadProgress.style.display = 'none';
-                isUploading = false; // Reset upload flag
             });
             
             // Set timeout for mobile (longer timeout for slower connections)
