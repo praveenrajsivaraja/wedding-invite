@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" id="htmlLang">
 
 <head>
     <meta charset="UTF-8">
@@ -14,6 +14,11 @@
 </head>
 
 <body>
+    <!-- Language Toggle Button -->
+    <button class="language-toggle-btn" id="languageToggleBtn" aria-label="Toggle language" title="Change Language">
+        <span class="language-text" id="languageText">தமிழ்</span>
+    </button>
+
     <!-- Menu Toggle Button -->
     <button class="menu-toggle-btn" id="menuToggleBtn" aria-label="Toggle menu">
         <span class="hamburger-line"></span>
@@ -64,36 +69,36 @@
     </nav>
 
     <!-- Header Section -->
-    <section id="home" class="header-section">
+    <section id="home" class="header-section" onclick="scrollToGallery()" style="cursor: pointer;">
         <div class="header-slideshow" id="headerSlideshow">
             <!-- Images will be loaded dynamically -->
         </div>
         <div class="header-overlay"></div>
         <div class="container header-content">
-            <h2 class="were-getting">Chennai Paiyan </h2>
-            <h1 class="were-getting gold-text">Weds</h1>
+            <h2 class="were-getting" >Chennai Paiyan </h2>
+            <h1 class="were-getting gold-text" >Weds</h1>
             <h2 class="were-getting">Trichy Ponnu </h2>            
             <!-- <h2 class="were-getting">Praveenraj </h2>
             <h2 class="were-getting"> & Madhumitha</h2> -->
 
             <p class="event-date" id="eventDate">18th January 2026</p>
-            <p class="save-the-date">SAVE THE DATE</p>
+            <p class="save-the-date" >SAVE THE DATE</p>
             <div class="timer" id="timer">
                 <div class="time-unit">
                     <div class="time-value" id="days">00</div>
-                    <div class="time-label">DAYS</div>
+                    <div class="time-label" data-i18n="timer.days">DAYS</div>
                 </div>
                 <div class="time-unit">
                     <div class="time-value" id="hours">00</div>
-                    <div class="time-label">HOURS</div>
+                    <div class="time-label" data-i18n="timer.hours">HOURS</div>
                 </div>
                 <div class="time-unit">
                     <div class="time-value" id="minutes">00</div>
-                    <div class="time-label">MINUTES</div>
+                    <div class="time-label" data-i18n="timer.minutes">MINUTES</div>
                 </div>
                 <div class="time-unit">
                     <div class="time-value" id="seconds">00</div>
-                    <div class="time-label">SECONDS</div>
+                    <div class="time-label" data-i18n="timer.seconds">SECONDS</div>
                 </div>
             </div>
 
@@ -104,7 +109,7 @@
     <section id="about" class="about-section">
         <div class="container">
             <h2 class="section-title">
-                <span class="gold-text"> Our Story </span>        
+                <span class="gold-text" data-i18n="about.title"> Our Story </span>        
             </h2>
             <div class="about-people">
                 <div class="person-card person-left">
@@ -114,9 +119,9 @@
                         </div>
                     </div>
                    
-                        <p>It was at the divine Srirangam Temple where our eyes first met, and in that moment, we fell in love at first sight. What started as a traditional matchmaking turned into an extraordinary journey of discovery, filled with love, laughter, and countless emotions.</p>
-                        <p>From romantic dinners at Rough Top Restaurant to exploring the wonders of Birds Park, from thrilling bike rides to cozy car rides, and even trying ice skating together—every moment became a cherished memory. </p>
-                        <p>As we take this beautiful step forward, we invite you to be part of our celebration. Your presence and blessings make our special day even more meaningful.</p>
+                        <p data-i18n="about.paragraph1">It was at the divine Thiruvanaikoil Temple where our eyes first met, and in that moment, we fell in love at first sight. What started as a traditional matchmaking turned into an extraordinary journey of discovery, filled with love, laughter, and countless emotions.</p>
+                        <p data-i18n="about.paragraph2">From romantic dinners at Rough Top Restaurant to exploring the wonders of Birds Park, from thrilling bike rides to cozy car rides, and even trying ice skating together—every moment became a cherished memory. </p>
+                        <p data-i18n="about.paragraph3">As we take this beautiful step forward, we invite you to be part of our celebration. Your presence and blessings make our special day even more meaningful.</p>
                     
                 </div>
             </div>
@@ -128,35 +133,35 @@
     <section id="gallery-preview" class="gallery-preview-section">
         <div class="container">
             <h2 class="section-title">
-                <span class="gold-text"> Engagement Story </span>
+                <span class="gold-text" data-i18n="engagement.title"> Engagement Story </span>
             </h2>
             <div class="gallery-preview-content">
                 <div class="gallery-preview-text">
-                    <p>As we exchanged rings, time seemed to stand still. In that quiet yet powerful moment, promises were sealed and their journey toward forever truly began.</p>
-                    <p>The celebration grew sweeter with the cake cutting, followed by an unforgettable surprise. Hidden within the cake was a special gift for her an iPhone and her reaction, filled with pure happiness and delightful excitement, became one of the most cherished moments of the day.</p>
-                    <p>Equally touching was a gesture straight from the heart. She gifted him a silver bangle, delicately engraved with our  names a timeless symbol of love, thoughtfulness, and a bond meant to last forever.</p>
-                    <p>Reuniting with cousins after a long time filled the celebration with warmth and laughter. Endless selfies, group photos, shared stories, and joyful moments turned the gathering into a beautiful reunion of love and togetherness.</p>
-                    <p>More than a celebration, the engagement marked the beginning of their forever, a day filled with memories they will cherish for a lifetime.</p>
-                    <button class="discover-more-btn" onclick="document.getElementById('gallery').scrollIntoView({behavior: 'smooth'})">DISCOVER MORE</button>
+                    <p data-i18n="engagement.paragraph1">As we exchanged rings, time seemed to stand still. In that quiet yet powerful moment, promises were sealed and their journey toward forever truly began.</p>
+                    <p data-i18n="engagement.paragraph2">The celebration grew sweeter with the cake cutting, followed by an unforgettable surprise. Hidden within the cake was a special gift for her an iPhone and her reaction, filled with pure happiness and delightful excitement, became one of the most cherished moments of the day.</p>
+                    <p data-i18n="engagement.paragraph3">Equally touching was a gesture straight from the heart. She gifted him a silver bangle, delicately engraved with our  names a timeless symbol of love, thoughtfulness, and a bond meant to last forever.</p>
+                    <p data-i18n="engagement.paragraph4">Reuniting with cousins after a long time filled the celebration with warmth and laughter. Endless selfies, group photos, shared stories, and joyful moments turned the gathering into a beautiful reunion of love and togetherness.</p>
+                    <p data-i18n="engagement.paragraph5">More than a celebration, the engagement marked the beginning of their forever, a day filled with memories they will cherish for a lifetime.</p>
+                    <button class="discover-more-btn" onclick="document.getElementById('gallery').scrollIntoView({behavior: 'smooth'})" data-i18n="engagement.discoverMore">DISCOVER MORE</button>
                 </div>
                 <div class="gallery-preview-grid" id="galleryPreviewGrid">
                     <!-- Static engagement photos -->
-                    <div class="gallery-preview-item" onclick="window.open('photos/engagement/WIN_5084.JPG', '_blank')">
+                    <div class="gallery-preview-item" onclick="window.open('photos/engagement/WIN_4488.JPG', '_blank')">
                         <img src="photos/engagement/WIN_4488.JPG" alt="Engagement Photo 1" loading="lazy">
                     </div>
-                    <div class="gallery-preview-item" onclick="window.open('photos/engagement/WIN_5080.JPG', '_blank')">
+                    <div class="gallery-preview-item" onclick="window.open('photos/engagement/WIN_4269.JPG', '_blank')">
                         <img src="photos/engagement/WIN_4269.JPG" alt="Engagement Photo 2" loading="lazy">
                     </div>
-                    <div class="gallery-preview-item" onclick="window.open('photos/engagement/WIN_5066.JPG', '_blank')">
+                    <div class="gallery-preview-item" onclick="window.open('photos/engagement/WIN_4401.JPG', '_blank')">
                         <img src="photos/engagement/WIN_4401.JPG" alt="Engagement Photo 3" loading="lazy">
                     </div>
-                    <div class="gallery-preview-item" onclick="window.open('photos/engagement/WIN_5063.JPG', '_blank')">
+                    <div class="gallery-preview-item" onclick="window.open('photos/engagement/WIN_4415.JPG', '_blank')">
                         <img src="photos/engagement/WIN_4415.JPG" alt="Engagement Photo 4" loading="lazy">
                     </div>
-                    <div class="gallery-preview-item" onclick="window.open('photos/engagement/WIN_5040.JPG', '_blank')">
+                    <div class="gallery-preview-item" onclick="window.open('photos/engagement/WIN_4698.JPG', '_blank')">
                         <img src="photos/engagement/WIN_4698.JPG" alt="Engagement Photo 5" loading="lazy">
                     </div>
-                    <div class="gallery-preview-item" onclick="window.open('photos/engagement/WIN_5038.JPG', '_blank')">
+                    <div class="gallery-preview-item" onclick="window.open('photos/engagement/WIN_5084.JPG', '_blank')">
                         <img src="photos/engagement/WIN_5084.JPG" alt="Engagement Photo 6" loading="lazy">
                     </div>
                 </div>
@@ -168,21 +173,20 @@
     <section id="gallery" class="gallery-section">
         <div class="container">
             <h2 class="section-title">
-                <span class="gold-text"> Our Memories </span><br>
-                <span class="header-style-text">Gallery</span>
+                <span class="gold-text" data-i18n="gallery.title"> Our Memories </span><br>
+                <span class="header-style-text" data-i18n="gallery.subtitle">Gallery</span>
             </h2>
             <div class="tab-container">
-                <button class="tab-btn" data-category="engagement">Engagement</button>
-                <button class="tab-btn" data-category="wedding">Wedding</button>
-                <button class="tab-btn active" data-category="others">Others</button>
+                <button class="tab-btn" data-category="engagement" data-i18n="gallery.engagement">Engagement</button>
+                <button class="tab-btn active" data-category="others" data-i18n="gallery.others">Others</button>
             </div>
             <div class="sub-tab-container" id="subTabContainer" style="display: none;">
-                <button class="sub-tab-btn active" data-subcategory="all">All</button>
-                <button class="sub-tab-btn" data-subcategory="team-bride">Team Bride</button>
-                <button class="sub-tab-btn" data-subcategory="team-groom">Team Groom</button>
+                <button class="sub-tab-btn active" data-subcategory="all" data-i18n="gallery.all">All</button>
+                <button class="sub-tab-btn" data-subcategory="team-bride" data-i18n="gallery.teamBride">Team Bride</button>
+                <button class="sub-tab-btn" data-subcategory="team-groom" data-i18n="gallery.teamGroom">Team Groom</button>
             </div>
             <div class="gallery-content">
-                <div class="loading" id="galleryLoading" style="display: none;">Loading photos...</div>
+                <div class="loading" id="galleryLoading" style="display: none;" data-i18n="gallery.loading">Loading photos...</div>
                 <div class="error" id="galleryError" style="display: none;"></div>
                 <div class="photo-grid" id="photoGrid"></div>
                 <div class="pagination" id="pagination" style="display: none;">
@@ -197,8 +201,8 @@
     <!-- Photo Upload Section -->
     <section class="upload-section">
         <div class="container">
-            <h2 class="section-title">Upload Your Photos</h2>
-            <p class="upload-description">Share your favorite moments with us! Please select the appropriate category when uploading.</p>
+            <h2 class="section-title" data-i18n="upload.title">Upload Your Photos</h2>
+            <p class="upload-description" data-i18n="upload.description">Share your favorite moments with us! Please select the appropriate category when uploading.</p>
             <div class="upload-controls">
                 <button class="upload-btn-small" id="uploadBtn">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -206,7 +210,7 @@
                         <polyline points="17 8 12 3 7 8"></polyline>
                         <line x1="12" y1="3" x2="12" y2="15"></line>
                     </svg>
-                    Upload Photos
+                    <span data-i18n="upload.button">Upload Photos</span>
                 </button>
                 <input type="file" id="photoUpload" accept="image/jpeg,image/jpg,image/png,image/gif,image/webp" multiple style="display: none;">
             </div>
@@ -224,23 +228,23 @@
     <!-- Location Map Section -->
     <section id="venue" class="map-section">
         <div class="container">
-            <h2 class="section-title">Venue Locations</h2>
+            <h2 class="section-title" data-i18n="venue.title">Venue Locations</h2>
             <div class="location-tabs">
-                <button class="location-tab-btn" data-location="engagement">Engagement</button>
-                <button class="location-tab-btn active" data-location="marriage">Wedding</button>
+                <button class="location-tab-btn" data-location="engagement" data-i18n="venue.engagement">Engagement</button>
+                <button class="location-tab-btn active" data-location="marriage" data-i18n="venue.wedding">Wedding</button>
             </div>
             <div class="map-info">
                 <p class="venue-name" id="mapVenueName">Hotel Padmavathi</p>
                 <p class="venue-date" id="mapVenueDate"></p>
                 <p class="venue-address" id="mapVenueAddress"></p>
-                <a href="#" id="mapLink" target="_blank" class="map-link">📍 Open in Google Maps</a>
+                <a href="#" id="mapLink" target="_blank" class="map-link" data-i18n="venue.openMaps">📍 Open in Google Maps</a>
             </div>
             <div id="map" class="map">
                 <iframe id="mapFrame" src="" width="100%" height="100%" style="border:0; border-radius: 20px;"
                     allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
             </div>
             <div class="map-note">
-                <p>Interactive map - Click and drag to explore</p>
+                <p data-i18n="venue.mapNote">Interactive map - Click and drag to explore</p>
             </div>
         </div>
     </section>
@@ -248,15 +252,15 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <h2 class="footer-title">Forever & Always</h2>
+            <h2 class="footer-title" data-i18n="footer.title">Forever & Always</h2>
             <p class="footer-date" id="footerDate"></p>
             <div class="footer-heart-divider">
                 <div class="heart-line"></div>
                 <div class="heart-icon">❤️</div>
                 <div class="heart-line"></div>
             </div>
-            <p class="footer-love">MADE WITH LOVE</p>
-            <p class="footer-rights">Designed and Developed by Praveenraj Madhumitha</p>
+            <p class="footer-love" data-i18n="footer.madeWithLove">MADE WITH LOVE</p>
+            <p class="footer-rights" data-i18n="footer.developedBy">Designed and Developed by Praveenraj Madhumitha</p>
         </div>
     </footer>
 
