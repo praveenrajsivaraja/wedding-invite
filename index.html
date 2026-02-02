@@ -151,22 +151,22 @@
                 </div>
                 <div class="gallery-preview-grid" id="galleryPreviewGrid">
                     <!-- Static engagement photos -->
-                    <div class="gallery-preview-item" onclick="window.open('photos/engagement/WIN_4488.JPG', '_blank')">
+                    <div class="gallery-preview-item" onclick="openImageModal('photos/engagement/WIN_4488.JPG', window.staticEngagementImages || [], 0)" style="cursor: pointer;">
                         <img src="photos/engagement/WIN_4488.JPG" alt="Engagement Photo 1" loading="lazy" decoding="async">
                     </div>
-                    <div class="gallery-preview-item" onclick="window.open('photos/engagement/WIN_4269.JPG', '_blank')">
+                    <div class="gallery-preview-item" onclick="openImageModal('photos/engagement/WIN_4269.JPG', window.staticEngagementImages || [], 1)" style="cursor: pointer;">
                         <img src="photos/engagement/WIN_4269.JPG" alt="Engagement Photo 2" loading="lazy" decoding="async">
                     </div>
-                    <div class="gallery-preview-item" onclick="window.open('photos/engagement/WIN_4401.JPG', '_blank')">
+                    <div class="gallery-preview-item" onclick="openImageModal('photos/engagement/WIN_4401.JPG', window.staticEngagementImages || [], 2)" style="cursor: pointer;">
                         <img src="photos/engagement/WIN_4401.JPG" alt="Engagement Photo 3" loading="lazy" decoding="async">
                     </div>
-                    <div class="gallery-preview-item" onclick="window.open('photos/engagement/WIN_4415.JPG', '_blank')">
+                    <div class="gallery-preview-item" onclick="openImageModal('photos/engagement/WIN_4415.JPG', window.staticEngagementImages || [], 3)" style="cursor: pointer;">
                         <img src="photos/engagement/WIN_4415.JPG" alt="Engagement Photo 4" loading="lazy" decoding="async">
                     </div>
-                    <div class="gallery-preview-item" onclick="window.open('photos/engagement/WIN_4698.JPG', '_blank')">
+                    <div class="gallery-preview-item" onclick="openImageModal('photos/engagement/WIN_4698.JPG', window.staticEngagementImages || [], 4)" style="cursor: pointer;">
                         <img src="photos/engagement/WIN_4698.JPG" alt="Engagement Photo 5" loading="lazy" decoding="async">
                     </div>
-                    <div class="gallery-preview-item" onclick="window.open('photos/engagement/WIN_5084.JPG', '_blank')">
+                    <div class="gallery-preview-item" onclick="openImageModal('photos/engagement/WIN_5084.JPG', window.staticEngagementImages || [], 5)" style="cursor: pointer;">
                         <img src="photos/engagement/WIN_5084.JPG" alt="Engagement Photo 6" loading="lazy" decoding="async">
                     </div>
                 </div>
@@ -293,6 +293,14 @@
             <p class="footer-rights" >Designed and Developed by Praveenraj Madhumitha</p>
         </div>
     </footer>
+
+    <!-- Image Modal Popup -->
+    <div class="image-modal" id="imageModal">
+        <span class="modal-close" id="modalClose">&times;</span>
+        <img class="modal-image" id="modalImage" src="" alt="Full size image">
+        <button class="modal-prev" id="modalPrev" aria-label="Previous image">&#10094;</button>
+        <button class="modal-next" id="modalNext" aria-label="Next image">&#10095;</button>
+    </div>
 
     <script src="script.js"></script>
 </body>

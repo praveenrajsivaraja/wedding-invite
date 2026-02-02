@@ -275,6 +275,12 @@ async function fetchPhotos(category, page = 1) {
             const endIndex = startIndex + IMAGES_PER_PAGE;
             const photos = shuffledImages.slice(startIndex, endIndex);
 
+            // Build full image list URLs for modal navigation and store globally
+            globalImageList = shuffledImages.map(img => {
+                const imgData = typeof img === 'string' ? { filename: img, url: null } : img;
+                return imgData.url || `photos/${category}/${imgData.filename}`;
+            });
+            
             // Display photos for current page
             gridEl.innerHTML = photos.map((photo) => {
                 // Handle both string (filename) and object (filename + url) formats
@@ -287,9 +293,12 @@ async function fetchPhotos(category, page = 1) {
                 const safeUrl = photoUrl.replace(/'/g, "\\'");
                 const safeFilename = photoFilename.replace(/'/g, "\\'");
                 
+                // Find index in full shuffled list
+                const globalIndex = globalImageList.indexOf(photoUrl);
+                
                 return `
                     <div class="photo-item">
-                        <img src="${photoUrl}" alt="${photoAlt}" loading="lazy" decoding="async" onclick="window.open('${safeUrl}', '_blank')" style="image-rendering: -webkit-optimize-contrast; image-rendering: crisp-edges; image-rendering: high-quality;">
+                        <img src="${photoUrl}" alt="${photoAlt}" loading="lazy" decoding="async" onclick="openImageModal('${safeUrl}', globalImageList, ${globalIndex})" style="image-rendering: -webkit-optimize-contrast; image-rendering: crisp-edges; image-rendering: high-quality; cursor: pointer;">
                         <button class="download-btn" onclick="event.stopPropagation(); event.preventDefault(); downloadImage('${safeUrl}', '${safeFilename}'); return false;" title="Download image" type="button">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -618,8 +627,12 @@ async function loadGalleryPreview() {
             return;
         }
 
-        previewGrid.innerHTML = selected.map(photo => `
-            <div class="gallery-preview-item" onclick="window.open('${photo.url}', '_blank')">
+        const selectedUrls = selected.map(p => p.url);
+        // Store in global variable for modal navigation
+        window.engagementPreviewImages = selectedUrls;
+        
+        previewGrid.innerHTML = selected.map((photo, index) => `
+            <div class="gallery-preview-item" onclick="openImageModal('${photo.url}', window.engagementPreviewImages || [], ${index})" style="cursor: pointer;">
                 <img src="${photo.url}" alt="${photo.filename}" loading="lazy" decoding="async">
             </div>
         `).join('');
@@ -862,7 +875,7 @@ const translations = {
             paragraph1: 'நாங்கள் மோதிரங்களை பரிமாறிக்கொண்டபோது, நேரம் நிற்கிறது போல் தோன்றியது. அந்த அமைதியான ஆனால் சக்திவாய்ந்த கணத்தில், வாக்குறுதிகள் முத்திரையிடப்பட்டன. எங்களின் என்றென்றும் நடக்கும் பயணம் அன்றே தொடங்கியது.',
             paragraph2: 'கேக் வெட்டுவதுடன் கொண்டாட்டம் இனிமையாக வளர்ந்தது. அதைத் தொடர்ந்து மறக்கமுடியாத ஆச்சரியம்! கேக்கிற்குள் மறைக்கப்பட்டிருந்தது அவளுக்கான சிறப்பு பரிசு - ஒரு ஐஃபோன். அவளின் எதிர்வினை, தூய மகிழ்ச்சியும் உற்சாகமும் நிறைந்தது. அது நாளின் மிகவும் அன்பான தருணங்களில் ஒன்றாக மாறியது.',
             paragraph3: 'இதயத்திலிருந்து வந்த ஒரு அன்பான சைகை. அவள் அவனுக்கு ஒரு வெள்ளி வளையம் பரிசளித்தாள், நம் பெயர்களுடன் நுட்பமாக செதுக்கப்பட்டது. அது அன்பு, சிந்தனை, என்றென்றும் நீடிக்கும் பிணைப்பின் காலமற்ற சின்னம்.',
-            paragraph4: 'நீண்ட காலத்திற்குப் பிறகு உறவினர்களுடன் மீண்டும் சேர்வது கொண்டாட்டத்தை வெப்பமும் சிரிப்பும் நிறைத்தது. முடிவில்லாத செல்ஃபிகள், குழு புகைப்படங்கள், பகிரப்பட்ட கதைகள், மகிழ்ச்சியான தருணங்கள் - கூட்டம் அன்பும் ஒற்றுமையும் நிறைந்த அழகான மறுசந்திப்பாக மாறியது.',
+            paragraph4: 'நீண்ட காலத்திற்குப் பிறகு உறவினர்களுடன் மீண்டும் சேர்வது கொண்டாட்டத்தை உற்சாகமும் சிரிப்பும் நிறைத்தது. முடிவில்லாத செல்ஃபிகள், குழு புகைப்படங்கள், பகிரப்பட்ட கதைகள், மகிழ்ச்சியான தருணங்கள் - கூட்டம் அன்பும் ஒற்றுமையும் நிறைந்த அழகான மறுசந்திப்பாக மாறியது.',
             paragraph5: 'ஒரு கொண்டாட்டத்தை விட, நிச்சயதார்த்தம் எங்களின் என்றென்றும் நடக்கும் பயணத்தின் தொடக்கம். நாங்கள் வாழ்நாள் முழுவதும் வைத்திருப்போம் என்ற நினைவுகளால் நிறைந்த ஒரு நாள்.',
             discoverMore: 'மேலும் பார்க்க'
         },
@@ -1033,6 +1046,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     // Initialize live stream
     initLiveStream();
+    
+    // Initialize image modal
+    initImageModal();
+    
+    // Set static engagement images for modal navigation
+    window.staticEngagementImages = [
+        'photos/engagement/WIN_4488.JPG',
+        'photos/engagement/WIN_4269.JPG',
+        'photos/engagement/WIN_4401.JPG',
+        'photos/engagement/WIN_4415.JPG',
+        'photos/engagement/WIN_4698.JPG',
+        'photos/engagement/WIN_5084.JPG'
+    ];
     
     // Re-detect on resize (but don't change class if already set)
     let resizeTimer;
@@ -1456,6 +1482,161 @@ async function downloadImage(imageUrl, filename) {
 
 // Make downloadImage available globally
 window.downloadImage = downloadImage;
+
+// Image Modal Popup
+let currentImageIndex = -1;
+let currentImageList = [];
+let globalImageList = []; // Store current gallery image list for modal navigation
+
+function openImageModal(imageUrl, imageList = null, currentIndex = -1) {
+    const modal = document.getElementById('imageModal');
+    const modalImage = document.getElementById('modalImage');
+    
+    if (!modal || !modalImage) return;
+    
+    // Set the image source
+    modalImage.src = imageUrl;
+    
+    // Store image list and current index for navigation
+    if (imageList && imageList.length > 0) {
+        currentImageList = imageList;
+        currentImageIndex = currentIndex >= 0 ? currentIndex : imageList.findIndex(img => {
+            const imgUrl = typeof img === 'string' ? img : (img.url || img.src);
+            return imgUrl === imageUrl;
+        });
+    } else {
+        currentImageList = [imageUrl];
+        currentImageIndex = 0;
+    }
+    
+    // Show modal
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden'; // Prevent background scrolling
+    
+    // Update navigation buttons visibility
+    updateModalNavigation();
+}
+
+function closeImageModal() {
+    const modal = document.getElementById('imageModal');
+    if (!modal) return;
+    
+    modal.classList.remove('active');
+    document.body.style.overflow = ''; // Restore scrolling
+    currentImageList = [];
+    currentImageIndex = -1;
+}
+
+function showNextImage() {
+    if (currentImageList.length === 0 || currentImageIndex < 0) return;
+    
+    currentImageIndex = (currentImageIndex + 1) % currentImageList.length;
+    const nextImage = currentImageList[currentImageIndex];
+    const imageUrl = typeof nextImage === 'string' ? nextImage : (nextImage.url || nextImage.src);
+    
+    const modalImage = document.getElementById('modalImage');
+    if (modalImage) {
+        modalImage.src = imageUrl;
+        updateModalNavigation();
+    }
+}
+
+function showPrevImage() {
+    if (currentImageList.length === 0 || currentImageIndex < 0) return;
+    
+    currentImageIndex = currentImageIndex === 0 ? currentImageList.length - 1 : currentImageIndex - 1;
+    const prevImage = currentImageList[currentImageIndex];
+    const imageUrl = typeof prevImage === 'string' ? prevImage : (prevImage.url || prevImage.src);
+    
+    const modalImage = document.getElementById('modalImage');
+    if (modalImage) {
+        modalImage.src = imageUrl;
+        updateModalNavigation();
+    }
+}
+
+function updateModalNavigation() {
+    const prevBtn = document.getElementById('modalPrev');
+    const nextBtn = document.getElementById('modalNext');
+    
+    // Show navigation buttons only if there are multiple images
+    if (currentImageList.length > 1) {
+        if (prevBtn) prevBtn.style.display = 'flex';
+        if (nextBtn) nextBtn.style.display = 'flex';
+    } else {
+        if (prevBtn) prevBtn.style.display = 'none';
+        if (nextBtn) nextBtn.style.display = 'none';
+    }
+}
+
+// Initialize modal event listeners
+function initImageModal() {
+    const modal = document.getElementById('imageModal');
+    const modalClose = document.getElementById('modalClose');
+    const modalPrev = document.getElementById('modalPrev');
+    const modalNext = document.getElementById('modalNext');
+    const modalImage = document.getElementById('modalImage');
+    
+    if (!modal) return;
+    
+    // Close modal on close button click
+    if (modalClose) {
+        modalClose.addEventListener('click', closeImageModal);
+    }
+    
+    // Close modal on background click
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            closeImageModal();
+        }
+    });
+    
+    // Close modal on Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeImageModal();
+        }
+    });
+    
+    // Navigation buttons
+    if (modalPrev) {
+        modalPrev.addEventListener('click', (e) => {
+            e.stopPropagation();
+            showPrevImage();
+        });
+    }
+    
+    if (modalNext) {
+        modalNext.addEventListener('click', (e) => {
+            e.stopPropagation();
+            showNextImage();
+        });
+    }
+    
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+        if (!modal.classList.contains('active')) return;
+        
+        if (e.key === 'ArrowLeft') {
+            e.preventDefault();
+            showPrevImage();
+        } else if (e.key === 'ArrowRight') {
+            e.preventDefault();
+            showNextImage();
+        }
+    });
+    
+    // Prevent modal image click from closing modal
+    if (modalImage) {
+        modalImage.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+    }
+}
+
+// Make functions available globally
+window.openImageModal = openImageModal;
+window.closeImageModal = closeImageModal;
 
 // Initialize Live Stream
 function initLiveStream() {
