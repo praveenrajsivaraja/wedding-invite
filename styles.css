@@ -59,6 +59,13 @@ body.menu-closed {
     box-sizing: border-box;
 }
 
+/* Allow sticky positioning in gallery section container */
+.mobile-device .gallery-section .container {
+    overflow-x: hidden;
+    overflow-y: visible;
+    position: relative;
+}
+
 /* Old timer section removed - timer is now in header */
 
 /* Header Section */
@@ -1610,6 +1617,14 @@ body.menu-closed {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
+.person-card p {
+    text-align: center;
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: #555;
+    margin-bottom: 15px;
+}
+
 .person-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
@@ -1743,6 +1758,7 @@ body.menu-closed {
     line-height: 1.8;
     color: #555;
     margin-bottom: 20px;
+    text-align: left;
 }
 
 .discover-more-btn {
@@ -2173,6 +2189,8 @@ body.menu-closed {
     width: 100%;
     box-sizing: border-box;
     overflow-x: hidden;
+    overflow-y: visible;
+    position: relative;
 }
 
 .mobile-device .gallery-preview-section {
@@ -2388,13 +2406,16 @@ body.menu-closed {
     -webkit-overflow-scrolling: touch;
     justify-content: center;
     padding-bottom: 5px;
-    top: 50px;
-    position: -webkit-sticky;
-    position: sticky;
-    z-index: 50;
-    background: #ffffff;
-    padding: 10px 0;
+    top: 50px !important;
+    position: -webkit-sticky !important;
+    position: sticky !important;
+    z-index: 100 !important;
+    background: #ffffff !important;
+    padding: 10px 0 !important;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    width: 100% !important;
+    left: 0 !important;
+    right: 0 !important;
 }
 
 .mobile-device .tab-btn {
@@ -2409,17 +2430,20 @@ body.menu-closed {
     gap: 8px;
     margin-bottom: 15px;
     margin-top: 0;
-    top: 110px;
-    padding: 8px 0;
+    top: 110px !important;
+    padding: 8px 0 !important;
     justify-content: center;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     padding-bottom: 5px;
-    position: -webkit-sticky;
-    position: sticky;
-    z-index: 49;
-    background: #ffffff;
+    position: -webkit-sticky !important;
+    position: sticky !important;
+    z-index: 99 !important;
+    background: #ffffff !important;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    width: 100% !important;
+    left: 0 !important;
+    right: 0 !important;
 }
 
 .mobile-device .sub-tab-btn {
@@ -2600,7 +2624,7 @@ body.menu-closed {
 }
 
 .mobile-device .gallery-preview-text p {
-    text-align: center;
+    text-align: left;
     margin: 15px 0;
     padding: 0;
 }
@@ -2645,6 +2669,13 @@ body.menu-closed {
     margin-right: 0 !important;
     padding-left: 0 !important;
     padding-right: 0 !important;
+}
+
+/* Exception for gallery section to allow sticky positioning */
+.mobile-device section.gallery-section {
+    overflow-x: hidden !important;
+    overflow-y: visible !important;
+    position: relative;
 }
 
 .mobile-device .gallery-content {
@@ -2705,6 +2736,155 @@ body.menu-closed {
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
+}
+
+/* Image Modal Popup */
+.image-modal {
+    display: none;
+    position: fixed;
+    z-index: 10000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.95);
+    overflow: auto;
+    animation: fadeIn 0.3s ease;
+}
+
+.image-modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.modal-image {
+    max-width: 90%;
+    max-height: 90vh;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    animation: zoomIn 0.3s ease;
+}
+
+@keyframes zoomIn {
+    from {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.modal-close {
+    position: absolute;
+    top: 20px;
+    right: 35px;
+    color: #fff;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 10001;
+    transition: color 0.3s ease;
+    line-height: 1;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-close:hover,
+.modal-close:focus {
+    color: #D4AF37;
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.modal-prev,
+.modal-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #fff;
+    font-size: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 16px;
+    background-color: rgba(0, 0, 0, 0.5);
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 10001;
+    user-select: none;
+}
+
+.modal-prev {
+    left: 20px;
+}
+
+.modal-next {
+    right: 20px;
+}
+
+.modal-prev:hover,
+.modal-next:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #D4AF37;
+}
+
+.modal-prev:active,
+.modal-next:active {
+    transform: translateY(-50%) scale(0.95);
+}
+
+/* Mobile styles for modal */
+@media (max-width: 768px) {
+    .modal-image {
+        max-width: 95%;
+        max-height: 85vh;
+    }
+
+    .modal-close {
+        top: 10px;
+        right: 15px;
+        font-size: 35px;
+        width: 35px;
+        height: 35px;
+    }
+
+    .modal-prev,
+    .modal-next {
+        width: 40px;
+        height: 40px;
+        font-size: 24px;
+        padding: 12px;
+    }
+
+    .modal-prev {
+        left: 10px;
+    }
+
+    .modal-next {
+        right: 10px;
+    }
 }
 
 /* Desktop view remains unchanged - all default styles apply */
