@@ -289,7 +289,7 @@ async function fetchPhotos(category, page = 1) {
                 
                 return `
                     <div class="photo-item">
-                        <img src="${photoUrl}" alt="${photoAlt}" loading="lazy" onclick="window.open('${safeUrl}', '_blank')">
+                        <img src="${photoUrl}" alt="${photoAlt}" loading="lazy" decoding="async" onclick="window.open('${safeUrl}', '_blank')" style="image-rendering: -webkit-optimize-contrast; image-rendering: crisp-edges; image-rendering: high-quality;">
                         <button class="download-btn" onclick="event.stopPropagation(); event.preventDefault(); downloadImage('${safeUrl}', '${safeFilename}'); return false;" title="Download image" type="button">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -620,7 +620,7 @@ async function loadGalleryPreview() {
 
         previewGrid.innerHTML = selected.map(photo => `
             <div class="gallery-preview-item" onclick="window.open('${photo.url}', '_blank')">
-                <img src="${photo.url}" alt="${photo.filename}" loading="lazy">
+                <img src="${photo.url}" alt="${photo.filename}" loading="lazy" decoding="async">
             </div>
         `).join('');
     } catch (error) {
@@ -804,8 +804,7 @@ const translations = {
             discoverMore: 'DISCOVER MORE'
         },
         gallery: {
-            title: 'Our Memories',
-            subtitle: 'Gallery',
+            title: 'Photo Wall',
             engagement: 'Engagement',
             others: 'Others',
             all: 'All',
@@ -829,6 +828,10 @@ const translations = {
             openMaps: '📍 Open in Google Maps',
             mapNote: 'Interactive map - Click and drag to explore'
         },
+        liveStream: {
+            title: 'Live Streaming',
+            placeholder: 'Live stream will appear here on the day of the wedding'
+        },
         footer: {
             title: 'Forever & Always',
             madeWithLove: 'MADE WITH LOVE',
@@ -850,22 +853,21 @@ const translations = {
         },
         about: {
             title: 'எங்கள் கதை',
-            paragraph1: 'புனிதமான திருவணைகோயில் கோவிலில் நம் கண்கள் முதல் முறையாக சந்தித்தன. அந்த தருணத்தில், நாம் முதல் பார்வையிலேயே காதலில் விழுந்தோம். பாரம்பரிய திருமண ஏற்பாட்டாகத் தொடங்கியது, அன்பு, சிரிப்பு மற்றும் எண்ணற்ற உணர்ச்சிகளால் நிரப்பப்பட்ட ஒரு அசாதாரண கண்டுபிடிப்பு பயணமாக மாறியது.',
-            paragraph2: 'ரெஸ்டாரண்டில் ரொமான்டிக் இரவு உணவிலிருந்து பேர்ட்ஸ் பார்க்கின் அதிசயங்களை ஆராய்வது, உற்சாகமான பைக் சவாரிகளிலிருந்து வசதியான கார் சவாரிகள், மற்றும் ஒன்றாக ஐஸ் ஸ்கேட்டிங் முயற்சிப்பது வரை - ஒவ்வொரு தருணமும் ஒரு விலைமதிப்பற்ற நினைவாக மாறியது.',
-            paragraph3: 'நாம் இந்த அழகான படியை முன்னோக்கி எடுக்கும்போது, எங்கள் கொண்டாட்டத்தின் ஒரு பகுதியாக நீங்கள் இருக்குமாறு அழைக்கிறோம். உங்கள் வருகை மற்றும் ஆசீர்வாதங்கள் எங்கள் சிறப்பு நாளை இன்னும் அர்த்தமுள்ளதாக்குகின்றன.'
+            paragraph1: 'புனிதமான திருவணைகோயில் கோவிலில் நம் கண்கள் முதல் முறையாக சந்தித்தன. அந்த கணத்திலேயே, நாம் முதல் பார்வையிலேயே காதலில் விழுந்தோம். பாரம்பரிய திருமண ஏற்பாட்டாகத் தொடங்கியது, அன்பு, சிரிப்பு, உணர்ச்சிகள் நிறைந்த ஒரு அற்புதமான பயணமாக மாறியது.',
+            paragraph2: 'ரெஸ்டாரண்டில் ரொமான்டிக் இரவு உணவிலிருந்து பேர்ட்ஸ் பார்க்கின் அழகுகளை பார்த்தது, உற்சாகமான பைக் சவாரிகள், வசதியான கார் சவாரிகள், ஒன்றாக ஐஸ் ஸ்கேட்டிங் முயற்சித்தது - ஒவ்வொரு கணமும் ஒரு அன்பான நினைவாக மாறியது.',
+            paragraph3: 'இந்த அழகான பயணத்தை நாம் தொடர்ந்து செல்லும்போது, எங்கள் கொண்டாட்டத்தில் நீங்களும் பங்கேற்குமாறு அழைக்கிறோம். உங்கள் வருகையும் ஆசீர்வாதமும் எங்கள் சிறப்பு நாளை இன்னும் அர்த்தமுள்ளதாக்கும்.'
         },
         engagement: {
             title: 'நிச்சயதார்த்த கதை',
-            paragraph1: 'நாங்கள் மோதிரங்களை பரிமாறிக்கொண்டபோது, நேரம் நிற்கிறது போல் தோன்றியது. அந்த அமைதியான ஆனால் சக்திவாய்ந்த தருணத்தில், வாக்குறுதிகள் முத்திரையிடப்பட்டன மற்றும் எங்களின் என்றென்றும் நடக்கும் பயணம் உண்மையில் தொடங்கியது.',
-            paragraph2: 'கேக் வெட்டுவதுடன் கொண்டாட்டம் இனிமையாக வளர்ந்தது, அதைத் தொடர்ந்து மறக்கமுடியாத ஆச்சரியம். கேக்கிற்குள் மறைக்கப்பட்டிருந்தது அவளுக்கான ஒரு சிறப்பு பரிசு - ஒரு ஐஃபோன். அவளின் எதிர்வினை, தூய மகிழ்ச்சி மற்றும் மகிழ்ச்சிகரமான உற்சாகத்தால் நிரப்பப்பட்டது, அது நாளின் மிகவும் விலைமதிப்பற்ற தருணங்களில் ஒன்றாக மாறியது.',
-            paragraph3: 'சமமாக இதயத்திலிருந்து வந்த ஒரு அன்பான சைகை. அவள் அவனுக்கு ஒரு வெள்ளி வளையம் பரிசளித்தாள், நம் பெயர்களுடன் நுட்பமாக செதுக்கப்பட்டது - அன்பு, சிந்தனை மற்றும் என்றென்றும் நீடிக்கும் பிணைப்பின் காலமற்ற சின்னம்.',
-            paragraph4: 'நீண்ட காலத்திற்குப் பிறகு உறவினர்களுடன் மீண்டும் சேர்வது கொண்டாட்டத்தை வெப்பம் மற்றும் சிரிப்பால் நிரப்பியது. முடிவில்லாத செல்ஃபிகள், குழு புகைப்படங்கள், பகிரப்பட்ட கதைகள் மற்றும் மகிழ்ச்சியான தருணங்கள் கூட்டத்தை அன்பு மற்றும் ஒற்றுமையின் அழகான மறுசந்திப்பாக மாற்றியது.',
-            paragraph5: 'ஒரு கொண்டாட்டத்தை விட, நிச்சயதார்த்தம் எங்களின் என்றென்றும் நடக்கும் பயணத்தின் தொடக்கத்தைக் குறித்தது, நாங்கள் வாழ்நாள் முழுவதும் வைத்திருப்போம் என்ற நினைவுகளால் நிரப்பப்பட்ட ஒரு நாள்.',
-            discoverMore: 'மேலும் கண்டறிய'
+            paragraph1: 'நாங்கள் மோதிரங்களை பரிமாறிக்கொண்டபோது, நேரம் நிற்கிறது போல் தோன்றியது. அந்த அமைதியான ஆனால் சக்திவாய்ந்த கணத்தில், வாக்குறுதிகள் முத்திரையிடப்பட்டன. எங்களின் என்றென்றும் நடக்கும் பயணம் அன்றே தொடங்கியது.',
+            paragraph2: 'கேக் வெட்டுவதுடன் கொண்டாட்டம் இனிமையாக வளர்ந்தது. அதைத் தொடர்ந்து மறக்கமுடியாத ஆச்சரியம்! கேக்கிற்குள் மறைக்கப்பட்டிருந்தது அவளுக்கான சிறப்பு பரிசு - ஒரு ஐஃபோன். அவளின் எதிர்வினை, தூய மகிழ்ச்சியும் உற்சாகமும் நிறைந்தது. அது நாளின் மிகவும் அன்பான தருணங்களில் ஒன்றாக மாறியது.',
+            paragraph3: 'இதயத்திலிருந்து வந்த ஒரு அன்பான சைகை. அவள் அவனுக்கு ஒரு வெள்ளி வளையம் பரிசளித்தாள், நம் பெயர்களுடன் நுட்பமாக செதுக்கப்பட்டது. அது அன்பு, சிந்தனை, என்றென்றும் நீடிக்கும் பிணைப்பின் காலமற்ற சின்னம்.',
+            paragraph4: 'நீண்ட காலத்திற்குப் பிறகு உறவினர்களுடன் மீண்டும் சேர்வது கொண்டாட்டத்தை வெப்பமும் சிரிப்பும் நிறைத்தது. முடிவில்லாத செல்ஃபிகள், குழு புகைப்படங்கள், பகிரப்பட்ட கதைகள், மகிழ்ச்சியான தருணங்கள் - கூட்டம் அன்பும் ஒற்றுமையும் நிறைந்த அழகான மறுசந்திப்பாக மாறியது.',
+            paragraph5: 'ஒரு கொண்டாட்டத்தை விட, நிச்சயதார்த்தம் எங்களின் என்றென்றும் நடக்கும் பயணத்தின் தொடக்கம். நாங்கள் வாழ்நாள் முழுவதும் வைத்திருப்போம் என்ற நினைவுகளால் நிறைந்த ஒரு நாள்.',
+            discoverMore: 'மேலும் பார்க்க'
         },
         gallery: {
-            title: 'எங்கள் நினைவுகள்',
-            subtitle: 'புகைப்பட காட்சி',
+            title: 'புகைப்பட சுவர்',
             engagement: 'நிச்சயதார்த்தம்',
             others: 'மற்றவை',
             all: 'அனைத்தும்',
@@ -878,8 +880,8 @@ const translations = {
             photos: 'புகைப்படங்கள்'
         },
         upload: {
-            title: 'உங்கள் புகைப்படங்களை பதிவேற்றவும்',
-            description: 'எங்களுடன் உங்கள் பிடித்த தருணங்களை பகிர்ந்து கொள்ளுங்கள்! பதிவேற்றும்போது பொருத்தமான வகையைத் தேர்ந்தெடுக்கவும்.',
+            title: 'உங்கள் புகைப்படங்களை பகிரவும்',
+            description: 'எங்களுடன் உங்கள் அன்பான தருணங்களை பகிர்ந்து கொள்ளுங்கள்! பதிவேற்றும்போது பொருத்தமான வகையைத் தேர்ந்தெடுக்கவும்.',
             button: 'புகைப்படங்களை பதிவேற்றவும்'
         },
         venue: {
@@ -889,8 +891,12 @@ const translations = {
             openMaps: '📍 கூகிள் மேப்ஸில் திறக்க',
             mapNote: 'ஊடாடும் வரைபடம் - ஆராய கிளிக் செய்து இழுக்கவும்'
         },
+        liveStream: {
+            title: 'நேரடி ஒளிபரப்பு',
+            placeholder: 'நேரடி ஒளிபரப்பு இங்கே தோன்றும்'
+        },
         footer: {
-            title: 'என்றென்றும் அன்புடன்',
+            title: 'அன்புக்கும் உண்டு அடைக்கும் தாள்',
             madeWithLove: 'அன்புடன் உருவாக்கப்பட்டது',
             developedBy: 'பிரவீன்ராஜ் மதுமிதாவால் வடிவமைக்கப்பட்டு உருவாக்கப்பட்டது'
         }
@@ -1024,6 +1030,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     // Initialize photo upload
     initPhotoUpload();
+    
+    // Initialize live stream
+    initLiveStream();
     
     // Re-detect on resize (but don't change class if already set)
     let resizeTimer;
@@ -1447,6 +1456,142 @@ async function downloadImage(imageUrl, filename) {
 
 // Make downloadImage available globally
 window.downloadImage = downloadImage;
+
+// Initialize Live Stream
+function initLiveStream() {
+    // YouTube Live Stream Configuration
+    // Option 1: YouTube Video ID (for live streams or regular videos)
+    const youtubeVideoId = ''; // Example: 'dQw4w9WgXcQ' (from URL: https://www.youtube.com/watch?v=dQw4w9WgXcQ)
+    
+    // Option 2: YouTube Live Stream ID (for live broadcasts)
+    const youtubeLiveId = ''; // Example: 'jfKfPfyJRdk' (from URL: https://www.youtube.com/live/jfKfPfyJRdk)
+    
+    // Option 3: Full YouTube embed URL (if you have a custom embed URL)
+    const youtubeEmbedUrl = ''; // Example: 'https://www.youtube.com/embed/VIDEO_ID'
+    
+    const videoContainer = document.getElementById('videoStreamContainer');
+    const videoWrapper = document.getElementById('videoWrapper');
+    const videoFrame = document.getElementById('videoStreamFrame');
+    const placeholder = document.getElementById('videoPlaceholder');
+    const pipToggleBtn = document.getElementById('pipToggleBtn');
+    
+    let embedUrl = '';
+    let isPipMode = false;
+    let isDragging = false;
+    let dragOffset = { x: 0, y: 0 };
+    
+    // Build YouTube embed URL based on provided configuration
+    if (youtubeLiveId) {
+        // Use YouTube live stream embed
+        embedUrl = `https://www.youtube.com/embed/${youtubeLiveId}?autoplay=1&mute=0`;
+    } else if (youtubeVideoId) {
+        // Use regular YouTube video embed (works for live streams too)
+        embedUrl = `https://www.youtube.com/embed/${youtubeVideoId}?autoplay=1&mute=0`;
+    } else if (youtubeEmbedUrl) {
+        // Use provided embed URL
+        embedUrl = youtubeEmbedUrl;
+    }
+    
+    // Load YouTube embed if URL is available
+    if (embedUrl && videoContainer && videoFrame && videoWrapper) {
+        if (placeholder) placeholder.style.display = 'none';
+        videoWrapper.style.display = 'block';
+        videoFrame.src = embedUrl;
+        
+        // Automatically enable PiP mode when video loads
+        setTimeout(() => {
+            enablePipMode();
+        }, 2000); // Wait 2 seconds for video to start loading
+        
+        // Toggle PiP mode button
+        if (pipToggleBtn) {
+            pipToggleBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                togglePipMode();
+            });
+        }
+        
+        // Make PiP window draggable
+        if (videoContainer) {
+            videoContainer.addEventListener('mousedown', startDrag);
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('mouseup', stopDrag);
+            
+            // Touch events for mobile
+            videoContainer.addEventListener('touchstart', startDrag);
+            document.addEventListener('touchmove', drag);
+            document.addEventListener('touchend', stopDrag);
+        }
+    } else {
+        // Keep placeholder visible if no URL is configured
+        if (placeholder) placeholder.style.display = 'flex';
+        if (videoWrapper) videoWrapper.style.display = 'none';
+    }
+    
+    // Enable PiP mode
+    function enablePipMode() {
+        if (videoContainer && !isPipMode) {
+            isPipMode = true;
+            videoContainer.classList.add('pip-mode');
+        }
+    }
+    
+    // Disable PiP mode
+    function disablePipMode() {
+        if (videoContainer && isPipMode) {
+            isPipMode = false;
+            videoContainer.classList.remove('pip-mode');
+        }
+    }
+    
+    // Toggle PiP mode
+    function togglePipMode() {
+        if (isPipMode) {
+            disablePipMode();
+        } else {
+            enablePipMode();
+        }
+    }
+    
+    // Drag functionality
+    function startDrag(e) {
+        if (!isPipMode) return;
+        isDragging = true;
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        const rect = videoContainer.getBoundingClientRect();
+        dragOffset.x = clientX - rect.left;
+        dragOffset.y = clientY - rect.top;
+        e.preventDefault();
+    }
+    
+    function drag(e) {
+        if (!isDragging || !isPipMode) return;
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        
+        const newX = clientX - dragOffset.x;
+        const newY = clientY - dragOffset.y;
+        
+        // Keep within viewport bounds
+        const maxX = window.innerWidth - videoContainer.offsetWidth;
+        const maxY = window.innerHeight - videoContainer.offsetHeight;
+        
+        const constrainedX = Math.max(0, Math.min(newX, maxX));
+        const constrainedY = Math.max(0, Math.min(newY, maxY));
+        
+        videoContainer.style.left = constrainedX + 'px';
+        videoContainer.style.top = constrainedY + 'px';
+        videoContainer.style.right = 'auto';
+        videoContainer.style.bottom = 'auto';
+        
+        e.preventDefault();
+    }
+    
+    function stopDrag() {
+        isDragging = false;
+    }
+}
 
 // Cleanup on page unload
 window.addEventListener('beforeunload', () => {

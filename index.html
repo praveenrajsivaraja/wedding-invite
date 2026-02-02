@@ -63,6 +63,13 @@
                     </svg>
                 </a>
             </li>
+            <li>
+                <a href="#live-stream" class="nav-link" title="Live Stream">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                    </svg>
+                </a>
+            </li>
         </ul>
           
         </div>
@@ -113,7 +120,7 @@
                 <div class="person-card person-left">
                     <div class="person-image">
                         <div class="about-image-frame">
-                            <img src="photos/header/WIN_4969.JPG" alt="Praveenraj" id="praveenrajImage" onerror="this.style.display='none'">
+                            <img src="photos/header/WIN_4969.JPG" alt="Praveenraj" id="praveenrajImage" onerror="this.style.display='none'" decoding="async">
                         </div>
                     </div>
                    
@@ -145,22 +152,22 @@
                 <div class="gallery-preview-grid" id="galleryPreviewGrid">
                     <!-- Static engagement photos -->
                     <div class="gallery-preview-item" onclick="window.open('photos/engagement/WIN_4488.JPG', '_blank')">
-                        <img src="photos/engagement/WIN_4488.JPG" alt="Engagement Photo 1" loading="lazy">
+                        <img src="photos/engagement/WIN_4488.JPG" alt="Engagement Photo 1" loading="lazy" decoding="async">
                     </div>
                     <div class="gallery-preview-item" onclick="window.open('photos/engagement/WIN_4269.JPG', '_blank')">
-                        <img src="photos/engagement/WIN_4269.JPG" alt="Engagement Photo 2" loading="lazy">
+                        <img src="photos/engagement/WIN_4269.JPG" alt="Engagement Photo 2" loading="lazy" decoding="async">
                     </div>
                     <div class="gallery-preview-item" onclick="window.open('photos/engagement/WIN_4401.JPG', '_blank')">
-                        <img src="photos/engagement/WIN_4401.JPG" alt="Engagement Photo 3" loading="lazy">
+                        <img src="photos/engagement/WIN_4401.JPG" alt="Engagement Photo 3" loading="lazy" decoding="async">
                     </div>
                     <div class="gallery-preview-item" onclick="window.open('photos/engagement/WIN_4415.JPG', '_blank')">
-                        <img src="photos/engagement/WIN_4415.JPG" alt="Engagement Photo 4" loading="lazy">
+                        <img src="photos/engagement/WIN_4415.JPG" alt="Engagement Photo 4" loading="lazy" decoding="async">
                     </div>
                     <div class="gallery-preview-item" onclick="window.open('photos/engagement/WIN_4698.JPG', '_blank')">
-                        <img src="photos/engagement/WIN_4698.JPG" alt="Engagement Photo 5" loading="lazy">
+                        <img src="photos/engagement/WIN_4698.JPG" alt="Engagement Photo 5" loading="lazy" decoding="async">
                     </div>
                     <div class="gallery-preview-item" onclick="window.open('photos/engagement/WIN_5084.JPG', '_blank')">
-                        <img src="photos/engagement/WIN_5084.JPG" alt="Engagement Photo 6" loading="lazy">
+                        <img src="photos/engagement/WIN_5084.JPG" alt="Engagement Photo 6" loading="lazy" decoding="async">
                     </div>
                 </div>
             </div>
@@ -171,8 +178,7 @@
     <section id="gallery" class="gallery-section">
         <div class="container">
             <h2 class="section-title">
-                <span class="gold-text" data-i18n="gallery.title"> Our Memories </span><br>
-                <span class="header-style-text" data-i18n="gallery.subtitle">Gallery</span>
+                <span class="gold-text" data-i18n="gallery.title"> Photo Wall </span><br>
             </h2>
             <div class="tab-container">
                 <button class="tab-btn" data-category="engagement" data-i18n="gallery.engagement">Engagement</button>
@@ -243,6 +249,32 @@
             </div>
             <div class="map-note">
                 <p data-i18n="venue.mapNote">Interactive map - Click and drag to explore</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Live Streaming Section -->
+    <section id="live-stream" class="live-stream-section">
+        <div class="container">
+            <h2 class="section-title" data-i18n="liveStream.title">Live Streaming</h2>
+            <div class="video-stream-container" id="videoStreamContainer">
+                <div class="video-placeholder" id="videoPlaceholder">
+                    <div class="video-icon">📹</div>
+                    <p data-i18n="liveStream.placeholder">Live stream will appear here on the day of the wedding</p>
+                </div>
+                <div class="video-wrapper" id="videoWrapper" style="display: none;">
+                    <iframe id="videoStreamFrame" class="video-stream-frame" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                        allowfullscreen>
+                    </iframe>
+                    <button class="pip-toggle-btn" id="pipToggleBtn" title="Toggle Picture-in-Picture">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="2" y="2" width="20" height="20" rx="2" ry="2"></rect>
+                            <path d="M8 2v20M16 2v20M2 8h20M2 16h20"></path>
+                        </svg>
+                    </button>
+                </div>
             </div>
         </div>
     </section>
