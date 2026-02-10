@@ -52,7 +52,9 @@ app.get('/api/photos', (req, res) => {
 
 app.get('/api/header-images', (req, res) => {
     const folderPath = path.join(__dirname, 'photos', 'header');
-    if (!fs.existsSync(folderPath)) return res.json({ images: [], folder: 'none' });
+    if (!fs.existsSync(folderPath)) {
+        return res.json({ images: [], folder: 'none' });
+    }
     const files = fs.readdirSync(folderPath).filter(f => /\.(jpg|jpeg|png|webp)$/i.test(f));
     res.json({ images: files, folder: 'header' });
 });

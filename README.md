@@ -15,11 +15,11 @@ This project uses only **3 files**:
    ```bash
    node server.js
    ```
-   The server will run on `http://localhost:3001`
+   The server will run on `http://localhost:2801`
 
 2. **Open your browser**:
    ```
-   http://localhost:3001
+   http://localhost:2801
    ```
 
 **Important**: The server must be running for images to load. The server reads all image files directly from the folders.
@@ -53,6 +53,15 @@ This project uses only **3 files**:
 ## Deployment
 
 See [DEPLOYMENT.md](./DEPLOYMENT.md) for free hosting options (Render, Railway, Fly.io, etc.)
+
+### Vercel Deployment with File Uploads
+
+For file uploads to work on Vercel, you need to set up Vercel Blob Storage.
+
+**Quick setup:**
+1. Create a Blob store in your Vercel project (Storage tab)
+2. Deploy - the `BLOB_READ_WRITE_TOKEN` is automatically available
+3. Uploads will be stored in Vercel Blob Storage
 
 ## Local Development
 
