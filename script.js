@@ -246,7 +246,7 @@ async function getImagesList(category, subCategory = 'all') {
     return [];
 }
 
-async function fetchPhotos(category, page = 1) {
+async function fetchPhotos(category, page = 1, onRendered) {
     const loadingEl = document.getElementById('galleryLoading');
     const errorEl = document.getElementById('galleryError');
     const gridEl = document.getElementById('photoGrid');
@@ -320,22 +320,33 @@ async function fetchPhotos(category, page = 1) {
                 
                 prevBtn.disabled = page === 1;
                 nextBtn.disabled = page >= totalPages;
+
+                const scrollToPhotoWall = () => {
+                    const gallerySection = document.getElementById('gallery');
+                    if (gallerySection) {
+                        const isMobile = document.body.classList.contains('mobile-device');
+                        const navHeight = isMobile ? (document.querySelector('.main-nav')?.offsetHeight || 0) : 0;
+                        const top = gallerySection.offsetTop - navHeight;
+                        window.scrollTo({ top, behavior: 'smooth' });
+                    }
+                };
                 
                 prevBtn.onclick = () => {
                     if (page > 1) {
                         currentPage = page - 1;
-                        fetchPhotos(category, currentPage);
-                        window.scrollTo({ top: gridEl.offsetTop - 100, behavior: 'smooth' });
+                        fetchPhotos(category, currentPage, scrollToPhotoWall);
                     }
                 };
                 
                 nextBtn.onclick = () => {
                     if (page < totalPages) {
                         currentPage = page + 1;
-                        fetchPhotos(category, currentPage);
-                        window.scrollTo({ top: gridEl.offsetTop - 100, behavior: 'smooth' });
+                        fetchPhotos(category, currentPage, scrollToPhotoWall);
                     }
                 };
+            }
+            if (typeof onRendered === 'function') {
+                onRendered();
             }
         } else {
             const noPhotosText = translations[currentLanguage]?.gallery?.noPhotos || 'No photos available to view';
