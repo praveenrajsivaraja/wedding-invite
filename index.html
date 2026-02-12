@@ -18,14 +18,6 @@
     <button class="language-toggle-btn" id="languageToggleBtn" aria-label="Toggle language" title="Change Language">
         <span class="language-text" id="languageText">தமிழ்</span>
     </button>
-
-    <!-- Menu Toggle Button -->
-    <button class="menu-toggle-btn" id="menuToggleBtn" aria-label="Toggle menu">
-        <span class="hamburger-line"></span>
-        <span class="hamburger-line"></span>
-        <span class="hamburger-line"></span>
-    </button>
-
     <!-- Navigation Bar -->
     <nav class="main-nav" id="mainNav">
         <div class="nav-top-bar"></div>
@@ -35,6 +27,14 @@
                     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                         <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                    </svg>
+                </a>
+            </li>
+            <li>
+                <a href="#venue" class="nav-link" title="Venue">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                        <circle cx="12" cy="10" r="3"></circle>
                     </svg>
                 </a>
             </li>
@@ -55,26 +55,18 @@
                     </svg>
                 </a>
             </li>
-            <li>
-                <a href="#venue" class="nav-link" title="Venue">
-                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                        <circle cx="12" cy="10" r="3"></circle>
-                    </svg>
-                </a>
-            </li>
+
             <li>
                 <a href="#live-stream" class="nav-link" title="Live Stream">
                     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                        <path
+                            d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z">
+                        </path>
                     </svg>
                 </a>
             </li>
         </ul>
-          
-        </div>
     </nav>
-
     <!-- Header Section -->
     <section id="home" class="header-section" onclick="scrollToGallery()" style="cursor: pointer;">
         <div class="header-slideshow" id="headerSlideshow">
@@ -82,12 +74,12 @@
         </div>
         <div class="header-overlay"></div>
         <div class="container header-content">
-            <h2 class="were-getting" >Chennai Paiyan </h2>
-            <h1 class="were-getting gold-text" >Weds</h1>
+            <h2 class="were-getting">Chennai Paiyan </h2>
+            <h1 class="were-getting gold-text">Weds</h1>
             <h2 class="were-getting">Trichy Ponnu </h2>
 
             <p class="event-date" id="eventDate">18th January 2026</p>
-            <p class="save-the-date" >SAVE THE DATE</p>
+            <p class="save-the-date">SAVE THE DATE</p>
             <div class="timer" id="timer">
                 <div class="time-unit">
                     <div class="time-value" id="days">00</div>
@@ -110,24 +102,51 @@
         </div>
     </section>
 
+    <!-- Location Map Section -->
+    <section id="venue" class="map-section">
+        <div class="container">
+            <h2 class="section-title" data-i18n="venue.title">Venue Locations</h2>
+            <div class="location-tabs">
+                <button class="location-tab-btn" data-location="engagement"
+                    data-i18n="venue.engagement">Engagement</button>
+                <button class="location-tab-btn active" data-location="marriage"
+                    data-i18n="venue.wedding">Wedding</button>
+            </div>
+            <div class="map-info">
+                <p class="venue-name" id="mapVenueName">Hotel Padmavathi</p>
+                <p class="venue-date" id="mapVenueDate"></p>
+                <p class="venue-address" id="mapVenueAddress"></p>
+                <a href="#" id="mapLink" target="_blank" class="map-link" data-i18n="venue.openMaps">📍 Open in Google
+                    Maps</a>
+            </div>
+            <div id="map" class="map">
+                <iframe id="mapFrame" src="" width="100%" height="100%" style="border:0; border-radius: 20px;"
+                    allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+            <div class="map-note">
+                <p data-i18n="venue.mapNote">Interactive map - Click and drag to explore</p>
+            </div>
+        </div>
+    </section>
     <!-- Our Story Section -->
     <section id="about" class="about-section">
         <div class="container">
             <h2 class="section-title">
-                <span class="gold-text" data-i18n="about.title"> Our Story </span>        
+                <span class="gold-text" data-i18n="about.title"> Our Story </span>
             </h2>
             <div class="about-people">
                 <div class="person-card person-left">
                     <div class="person-image">
                         <div class="about-image-frame">
-                            <img src="photos/header/WIN_4969.JPG" alt="Praveenraj" id="praveenrajImage" onerror="this.style.display='none'" decoding="async">
+                            <img src="photos/header/WIN_4969.JPG" alt="Praveenraj" id="praveenrajImage"
+                                onerror="this.style.display='none'" decoding="async">
                         </div>
                     </div>
-                   
-                        <p data-i18n="about.paragraph1"></p>
-                        <p data-i18n="about.paragraph2"></p>
-                        <p data-i18n="about.paragraph3"></p>
-                    
+
+                    <p data-i18n="about.paragraph1"></p>
+                    <p data-i18n="about.paragraph2"></p>
+                    <p data-i18n="about.paragraph3"></p>
+
                 </div>
             </div>
 
@@ -142,32 +161,62 @@
             </h2>
             <div class="gallery-preview-content">
                 <div class="gallery-preview-text">
-                    <p data-i18n="engagement.paragraph1">As we exchanged rings, time seemed to stand still. In that quiet yet powerful moment, promises were sealed and their journey toward forever truly began.</p>
-                    <p data-i18n="engagement.paragraph2">The celebration grew sweeter with the cake cutting, followed by an unforgettable surprise. Hidden within the cake was a special gift for her an iPhone and her reaction, filled with pure happiness and delightful excitement, became one of the most cherished moments of the day.</p>
-                    <p data-i18n="engagement.paragraph3">Equally touching was a gesture straight from the heart. She gifted him a silver bracelet, delicately engraved with our  names a timeless symbol of love, thoughtfulness, and a bond meant to last forever.</p>
-                    <p data-i18n="engagement.paragraph4">Reuniting with cousins after a long time filled the celebration with warmth and laughter. Endless selfies, group photos, shared stories, and joyful moments turned the gathering into a beautiful reunion of love and togetherness.</p>
-                    <p data-i18n="engagement.paragraph5">More than a celebration, the engagement marked the beginning of their forever, a day filled with memories they will cherish for a lifetime.</p>
-                    <button class="discover-more-btn" onclick="document.getElementById('gallery').scrollIntoView({behavior: 'smooth'})" data-i18n="engagement.discoverMore">DISCOVER MORE</button>
+                    <p data-i18n="engagement.paragraph1">As we exchanged rings, time seemed to stand still. In that
+                        quiet yet powerful moment, promises were sealed and their journey toward forever truly began.
+                    </p>
+                    <p data-i18n="engagement.paragraph2">The celebration grew sweeter with the cake cutting, followed by
+                        an unforgettable surprise. Hidden within the cake was a special gift for her an iPhone and her
+                        reaction, filled with pure happiness and delightful excitement, became one of the most cherished
+                        moments of the day.</p>
+                    <p data-i18n="engagement.paragraph3">Equally touching was a gesture straight from the heart. She
+                        gifted him a silver bracelet, delicately engraved with our names a timeless symbol of love,
+                        thoughtfulness, and a bond meant to last forever.</p>
+                    <p data-i18n="engagement.paragraph4">Reuniting with cousins after a long time filled the celebration
+                        with warmth and laughter. Endless selfies, group photos, shared stories, and joyful moments
+                        turned the gathering into a beautiful reunion of love and togetherness.</p>
+                    <p data-i18n="engagement.paragraph5">More than a celebration, the engagement marked the beginning of
+                        their forever, a day filled with memories they will cherish for a lifetime.</p>
+                    <button class="discover-more-btn"
+                        onclick="document.getElementById('gallery').scrollIntoView({behavior: 'smooth'})"
+                        data-i18n="engagement.discoverMore">DISCOVER MORE</button>
                 </div>
                 <div class="gallery-preview-grid" id="galleryPreviewGrid">
                     <!-- Static engagement photos -->
-                    <div class="gallery-preview-item" onclick="openImageModal('photos/engagement/WIN_4488.JPG', window.staticEngagementImages || [], 0)" style="cursor: pointer;">
-                        <img src="photos/engagement/WIN_4488.JPG" alt="Engagement Photo 1" loading="lazy" decoding="async">
+                    <div class="gallery-preview-item"
+                        onclick="openImageModal('photos/engagement/WIN_4488.JPG', window.staticEngagementImages || [], 0)"
+                        style="cursor: pointer;">
+                        <img src="photos/engagement/WIN_4488.JPG" alt="Engagement Photo 1" loading="lazy"
+                            decoding="async">
                     </div>
-                    <div class="gallery-preview-item" onclick="openImageModal('photos/engagement/WIN_4269.JPG', window.staticEngagementImages || [], 1)" style="cursor: pointer;">
-                        <img src="photos/engagement/WIN_4269.JPG" alt="Engagement Photo 2" loading="lazy" decoding="async">
+                    <div class="gallery-preview-item"
+                        onclick="openImageModal('photos/engagement/WIN_4269.JPG', window.staticEngagementImages || [], 1)"
+                        style="cursor: pointer;">
+                        <img src="photos/engagement/WIN_4269.JPG" alt="Engagement Photo 2" loading="lazy"
+                            decoding="async">
                     </div>
-                    <div class="gallery-preview-item" onclick="openImageModal('photos/engagement/WIN_4401.JPG', window.staticEngagementImages || [], 2)" style="cursor: pointer;">
-                        <img src="photos/engagement/WIN_4401.JPG" alt="Engagement Photo 3" loading="lazy" decoding="async">
+                    <div class="gallery-preview-item"
+                        onclick="openImageModal('photos/engagement/WIN_4401.JPG', window.staticEngagementImages || [], 2)"
+                        style="cursor: pointer;">
+                        <img src="photos/engagement/WIN_4401.JPG" alt="Engagement Photo 3" loading="lazy"
+                            decoding="async">
                     </div>
-                    <div class="gallery-preview-item" onclick="openImageModal('photos/engagement/WIN_4415.JPG', window.staticEngagementImages || [], 3)" style="cursor: pointer;">
-                        <img src="photos/engagement/WIN_4415.JPG" alt="Engagement Photo 4" loading="lazy" decoding="async">
+                    <div class="gallery-preview-item"
+                        onclick="openImageModal('photos/engagement/WIN_4415.JPG', window.staticEngagementImages || [], 3)"
+                        style="cursor: pointer;">
+                        <img src="photos/engagement/WIN_4415.JPG" alt="Engagement Photo 4" loading="lazy"
+                            decoding="async">
                     </div>
-                    <div class="gallery-preview-item" onclick="openImageModal('photos/engagement/WIN_4698.JPG', window.staticEngagementImages || [], 4)" style="cursor: pointer;">
-                        <img src="photos/engagement/WIN_4698.JPG" alt="Engagement Photo 5" loading="lazy" decoding="async">
+                    <div class="gallery-preview-item"
+                        onclick="openImageModal('photos/engagement/WIN_4698.JPG', window.staticEngagementImages || [], 4)"
+                        style="cursor: pointer;">
+                        <img src="photos/engagement/WIN_4698.JPG" alt="Engagement Photo 5" loading="lazy"
+                            decoding="async">
                     </div>
-                    <div class="gallery-preview-item" onclick="openImageModal('photos/engagement/WIN_5084.JPG', window.staticEngagementImages || [], 5)" style="cursor: pointer;">
-                        <img src="photos/engagement/WIN_5084.JPG" alt="Engagement Photo 6" loading="lazy" decoding="async">
+                    <div class="gallery-preview-item"
+                        onclick="openImageModal('photos/engagement/WIN_5084.JPG', window.staticEngagementImages || [], 5)"
+                        style="cursor: pointer;">
+                        <img src="photos/engagement/WIN_5084.JPG" alt="Engagement Photo 6" loading="lazy"
+                            decoding="async">
                     </div>
                 </div>
             </div>
@@ -186,11 +235,14 @@
             </div>
             <div class="sub-tab-container" id="subTabContainer" style="display: none;">
                 <button class="sub-tab-btn active" data-subcategory="all" data-i18n="gallery.all">All</button>
-                <button class="sub-tab-btn" data-subcategory="team-bride" data-i18n="gallery.teamBride">Team Bride</button>
-                <button class="sub-tab-btn" data-subcategory="team-groom" data-i18n="gallery.teamGroom">Team Groom</button>
+                <button class="sub-tab-btn" data-subcategory="team-bride" data-i18n="gallery.teamBride">Team
+                    Bride</button>
+                <button class="sub-tab-btn" data-subcategory="team-groom" data-i18n="gallery.teamGroom">Team
+                    Groom</button>
             </div>
             <div class="gallery-content">
-                <div class="loading" id="galleryLoading" style="display: none;" data-i18n="gallery.loading">Loading photos...</div>
+                <div class="loading" id="galleryLoading" style="display: none;" data-i18n="gallery.loading">Loading
+                    photos...</div>
                 <div class="error" id="galleryError" style="display: none;"></div>
                 <div class="photo-grid" id="photoGrid"></div>
                 <div class="pagination" id="pagination" style="display: none;">
@@ -206,7 +258,8 @@
     <section class="upload-section">
         <div class="container">
             <h2 class="section-title" data-i18n="upload.title">Upload Your Photos</h2>
-            <p class="upload-description" data-i18n="upload.description">Share your favorite moments with us! Please select the appropriate category when uploading.</p>
+            <p class="upload-description" data-i18n="upload.description">Share your favorite moments with us! Please
+                select the appropriate category when uploading.</p>
             <div class="upload-controls">
                 <button class="upload-btn-small" id="uploadBtn">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -216,7 +269,8 @@
                     </svg>
                     <span data-i18n="upload.button">Upload Photos</span>
                 </button>
-                <input type="file" id="photoUpload" accept="image/jpeg,image/jpg,image/png,image/gif,image/webp" multiple style="display: none;">
+                <input type="file" id="photoUpload" accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
+                    multiple style="display: none;">
             </div>
             <div class="upload-progress" id="uploadProgress" style="display: none;">
                 <div class="progress-bar">
@@ -226,30 +280,6 @@
             </div>
             <div class="upload-message" id="uploadMessage" style="display: none;"></div>
             <div class="uploaded-preview" id="uploadedPreview"></div>
-        </div>
-    </section>
-
-    <!-- Location Map Section -->
-    <section id="venue" class="map-section">
-        <div class="container">
-            <h2 class="section-title" data-i18n="venue.title">Venue Locations</h2>
-            <div class="location-tabs">
-                <button class="location-tab-btn" data-location="engagement" data-i18n="venue.engagement">Engagement</button>
-                <button class="location-tab-btn active" data-location="marriage" data-i18n="venue.wedding">Wedding</button>
-            </div>
-            <div class="map-info">
-                <p class="venue-name" id="mapVenueName">Hotel Padmavathi</p>
-                <p class="venue-date" id="mapVenueDate"></p>
-                <p class="venue-address" id="mapVenueAddress"></p>
-                <a href="#" id="mapLink" target="_blank" class="map-link" data-i18n="venue.openMaps">📍 Open in Google Maps</a>
-            </div>
-            <div id="map" class="map">
-                <iframe id="mapFrame" src="" width="100%" height="100%" style="border:0; border-radius: 20px;"
-                    allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-            </div>
-            <div class="map-note">
-                <p data-i18n="venue.mapNote">Interactive map - Click and drag to explore</p>
-            </div>
         </div>
     </section>
 
@@ -263,13 +293,13 @@
                     <p data-i18n="liveStream.placeholder">Live stream will appear here on the day of the wedding</p>
                 </div>
                 <div class="video-wrapper" id="videoWrapper" style="display: none;">
-                    <iframe id="videoStreamFrame" class="video-stream-frame" 
-                        frameborder="0" 
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                    <iframe id="videoStreamFrame" class="video-stream-frame" frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                         allowfullscreen>
                     </iframe>
                     <button class="pip-toggle-btn" id="pipToggleBtn" title="Toggle Picture-in-Picture">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
                             <rect x="2" y="2" width="20" height="20" rx="2" ry="2"></rect>
                             <path d="M8 2v20M16 2v20M2 8h20M2 16h20"></path>
                         </svg>
@@ -290,7 +320,7 @@
                 <div class="heart-line"></div>
             </div>
             <p class="footer-love">MADE WITH LOVE</p>
-            <p class="footer-rights" >Designed and Developed by Praveenraj Madhumitha</p>
+            <p class="footer-rights">Designed and Developed by Praveenraj Madhumitha</p>
         </div>
     </footer>
 

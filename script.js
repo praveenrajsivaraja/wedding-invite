@@ -246,7 +246,7 @@ async function getImagesList(category, subCategory = 'all') {
     return [];
 }
 
-async function fetchPhotos(category, page = 1) {
+async function fetchPhotos(category, page = 1, onRendered) {
     const loadingEl = document.getElementById('galleryLoading');
     const errorEl = document.getElementById('galleryError');
     const gridEl = document.getElementById('photoGrid');
@@ -320,22 +320,33 @@ async function fetchPhotos(category, page = 1) {
                 
                 prevBtn.disabled = page === 1;
                 nextBtn.disabled = page >= totalPages;
+
+                const scrollToPhotoWall = () => {
+                    const gallerySection = document.getElementById('gallery');
+                    if (gallerySection) {
+                        const isMobile = document.body.classList.contains('mobile-device');
+                        const navHeight = isMobile ? (document.querySelector('.main-nav')?.offsetHeight || 0) : 0;
+                        const top = gallerySection.offsetTop - navHeight;
+                        window.scrollTo({ top, behavior: 'smooth' });
+                    }
+                };
                 
                 prevBtn.onclick = () => {
                     if (page > 1) {
                         currentPage = page - 1;
-                        fetchPhotos(category, currentPage);
-                        window.scrollTo({ top: gridEl.offsetTop - 100, behavior: 'smooth' });
+                        fetchPhotos(category, currentPage, scrollToPhotoWall);
                     }
                 };
                 
                 nextBtn.onclick = () => {
                     if (page < totalPages) {
                         currentPage = page + 1;
-                        fetchPhotos(category, currentPage);
-                        window.scrollTo({ top: gridEl.offsetTop - 100, behavior: 'smooth' });
+                        fetchPhotos(category, currentPage, scrollToPhotoWall);
                     }
                 };
+            }
+            if (typeof onRendered === 'function') {
+                onRendered();
             }
         } else {
             const noPhotosText = translations[currentLanguage]?.gallery?.noPhotos || 'No photos available to view';
@@ -678,66 +689,18 @@ function initNavigation() {
         });
     });
     
-    // Also hide menu when clicking on logo (home link)
     const logoLink = document.querySelector('.nav-logo-text');
     if (logoLink) {
         logoLink.addEventListener('click', (e) => {
             e.preventDefault();
             const targetElement = document.getElementById('home');
-            
             if (targetElement) {
                 window.scrollTo({
                     top: 0,
                     behavior: 'smooth'
                 });
-                
-                // Don't hide menu on mobile - keep it always visible
             }
         });
-    }
-    
-    // Keep menu always visible on mobile - no auto-hide on scroll
-    
-    // Menu toggle button functionality
-    const menuToggleBtn = document.getElementById('menuToggleBtn');
-    if (menuToggleBtn && mainNav) {
-        menuToggleBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            const isClosed = mainNav.classList.contains('menu-closed');
-            
-            if (isClosed) {
-                mainNav.classList.remove('menu-closed');
-                if (!document.body.classList.contains('mobile-device')) {
-                    document.body.classList.remove('menu-closed');
-                }
-                menuToggleBtn.classList.add('active');
-            } else {
-                mainNav.classList.add('menu-closed');
-                if (!document.body.classList.contains('mobile-device')) {
-                    document.body.classList.add('menu-closed');
-                }
-                menuToggleBtn.classList.remove('active');
-            }
-        });
-        
-        // Close menu when clicking outside on desktop
-        if (window.innerWidth >= 768 && !document.body.classList.contains('mobile-device')) {
-            document.addEventListener('click', (e) => {
-                if (mainNav && !mainNav.contains(e.target) && 
-                    menuToggleBtn && !menuToggleBtn.contains(e.target) &&
-                    !mainNav.classList.contains('menu-closed')) {
-                    mainNav.classList.add('menu-closed');
-                    if (document.body.classList.contains('mobile-device')) {
-                        document.body.classList.add('menu-closed');
-                    } else {
-                        document.body.classList.add('menu-closed');
-                    }
-                    menuToggleBtn.classList.remove('active');
-                }
-            });
-        }
     }
 
     // Update active nav link on scroll
@@ -909,7 +872,7 @@ const translations = {
             placeholder: 'நேரடி ஒளிபரப்பு இங்கே தோன்றும்'
         },
         footer: {
-            title: 'அன்புக்கும் உண்டு அடைக்கும் தாள்',
+            title: 'அன்பிற்கும் உண்டோ அடைக்கும் தாழ்',
             madeWithLove: 'அன்புடன் உருவாக்கப்பட்டது',
             developedBy: 'பிரவீன்ராஜ் மதுமிதாவால் வடிவமைக்கப்பட்டு உருவாக்கப்பட்டது'
         }
@@ -1007,26 +970,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Detect device first
     detectDevice();
     
-    // Initialize menu - start closed on desktop, open on mobile
+    // Menu is always visible - never apply menu-closed
     const mainNav = document.getElementById('mainNav');
-    const menuToggleBtn = document.getElementById('menuToggleBtn');
-    if (mainNav && menuToggleBtn) {
-        if (window.innerWidth >= 768 && !document.body.classList.contains('mobile-device')) {
-            // Desktop: start closed
-            mainNav.classList.add('menu-closed');
-            document.body.classList.add('menu-closed');
-        } else {
-            // Mobile: always visible, never closed
-            mainNav.classList.remove('menu-closed');
-            document.body.classList.remove('menu-closed');
-            menuToggleBtn.classList.add('active');
-            // Force menu to stay visible on mobile
-            mainNav.style.transform = 'translateY(0)';
-            mainNav.style.opacity = '1';
-            mainNav.style.pointerEvents = 'auto';
-        }
+    if (mainNav) {
+        mainNav.classList.remove('menu-closed');
+        document.body.classList.remove('menu-closed');
     }
-    
+
     await initHeaderSlideshow();
     startCountdown();
     await initGallery();
