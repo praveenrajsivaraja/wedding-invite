@@ -257,6 +257,11 @@ async function fetchPhotos(category, page = 1, onRendered) {
 
     loadingEl.style.display = 'block';
     errorEl.style.display = 'none';
+    // Preserve grid height to prevent page jump when clearing (especially on mobile)
+    const savedMinHeight = gridEl.offsetHeight;
+    if (savedMinHeight > 0) {
+        gridEl.style.minHeight = savedMinHeight + 'px';
+    }
     gridEl.innerHTML = '';
     paginationEl.style.display = 'none';
 
@@ -309,6 +314,7 @@ async function fetchPhotos(category, page = 1, onRendered) {
                     </div>
                 `;
             }).join('');
+            gridEl.style.minHeight = '';
 
             // Show pagination
             if (totalPages > 1) {
@@ -321,27 +327,29 @@ async function fetchPhotos(category, page = 1, onRendered) {
                 prevBtn.disabled = page === 1;
                 nextBtn.disabled = page >= totalPages;
 
-                const scrollToPhotoWall = () => {
+                const scrollToGalleryTop = () => {
                     const gallerySection = document.getElementById('gallery');
                     if (gallerySection) {
                         const isMobile = document.body.classList.contains('mobile-device');
                         const navHeight = isMobile ? (document.querySelector('.main-nav')?.offsetHeight || 0) : 0;
                         const top = gallerySection.offsetTop - navHeight;
-                        window.scrollTo({ top, behavior: 'smooth' });
+                        window.scrollTo({ top, behavior: 'auto' });
                     }
                 };
-                
+
                 prevBtn.onclick = () => {
                     if (page > 1) {
                         currentPage = page - 1;
-                        fetchPhotos(category, currentPage, scrollToPhotoWall);
+                        scrollToGalleryTop();
+                        fetchPhotos(category, currentPage);
                     }
                 };
-                
+
                 nextBtn.onclick = () => {
                     if (page < totalPages) {
                         currentPage = page + 1;
-                        fetchPhotos(category, currentPage, scrollToPhotoWall);
+                        scrollToGalleryTop();
+                        fetchPhotos(category, currentPage);
                     }
                 };
             }
@@ -349,10 +357,12 @@ async function fetchPhotos(category, page = 1, onRendered) {
                 onRendered();
             }
         } else {
+            gridEl.style.minHeight = '';
             const noPhotosText = translations[currentLanguage]?.gallery?.noPhotos || 'No photos available to view';
             gridEl.innerHTML = `<div class="error" style="display: flex; align-items: center; justify-content: center; padding: 40px 20px; text-align: center; color: #8B0000; font-size: 1.2rem; min-height: 200px; width: 100%; margin: 0 auto;">${noPhotosText}</div>`;
         }
     } catch (error) {
+        gridEl.style.minHeight = '';
         loadingEl.style.display = 'none';
         errorEl.textContent = 'Error loading photos. Make sure the server is running.';
         errorEl.style.display = 'block';
