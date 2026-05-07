@@ -3,7 +3,17 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description"
+        content="Wedding celebrations for Praveenraj and Madhumitha — engagement and wedding in Tamil Nadu. Venues, photos, and live stream.">
+    <meta property="og:title" content="Praveenraj & Madhumitha — Wedding">
+    <meta property="og:description"
+        content="Save the date and celebrate with us. Venue details, photos, and live stream.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Praveenraj & Madhumitha — Wedding">
+    <meta name="twitter:description" content="Save the date and celebrate with us.">
+    <meta name="theme-color" content="#8B0000">
     <title>Praveenraj & Madhumitha - Wedding</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -39,6 +49,13 @@
                 </a>
             </li>
             <li>
+                <a href="#guest-info" class="nav-link" title="Details" data-i18n-title="nav.details">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"></path>
+                    </svg>
+                </a>
+            </li>
+            <li>
                 <a href="#about" class="nav-link" title="Our Story">
                     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -68,18 +85,22 @@
         </ul>
     </nav>
     <!-- Header Section -->
-    <section id="home" class="header-section" onclick="scrollToGallery()" style="cursor: pointer;">
+    <section id="home" class="header-section">
         <div class="header-slideshow" id="headerSlideshow">
             <!-- Images will be loaded dynamically -->
         </div>
         <div class="header-overlay"></div>
         <div class="container header-content">
-            <h2 class="were-getting">Chennai Paiyan </h2>
-            <h1 class="were-getting gold-text">Weds</h1>
-            <h2 class="were-getting">Trichy Ponnu </h2>
+            <p class="couple-names" data-i18n="header.coupleNames">Praveenraj &amp; Madhumitha</p>
+            <h2 class="were-getting" data-i18n="header.groom">Chennai Paiyan</h2>
+            <h1 class="were-getting gold-text" data-i18n="header.weds">Weds</h1>
+            <h2 class="were-getting" data-i18n="header.bride">Trichy Ponnu</h2>
 
-            <p class="event-date" id="eventDate">18th January 2026</p>
-            <p class="save-the-date">SAVE THE DATE</p>
+            <p class="event-date" id="eventDate" aria-live="polite"></p>
+            <p class="countdown-label" id="countdownLabel" data-i18n="header.countdownEngagement"></p>
+            <p class="save-the-date" data-i18n="header.saveTheDate">SAVE THE DATE</p>
+            <button type="button" class="hero-photos-btn" id="heroPhotosBtn" data-i18n="header.viewPhotos">View
+                photos</button>
             <div class="timer" id="timer">
                 <div class="time-unit">
                     <div class="time-value" id="days">00</div>
@@ -128,6 +149,56 @@
             </div>
         </div>
     </section>
+
+    <section id="guest-info" class="guest-info-section">
+        <div class="container">
+            <h2 class="section-title">
+                <span class="gold-text" data-i18n="guestInfo.title">Celebration details</span>
+            </h2>
+            <div class="guest-info-grid">
+                <article class="info-card">
+                    <h3 class="info-card-title" data-i18n="schedule.title">Schedule</h3>
+                    <ul class="info-list">
+                        <li><span data-i18n="schedule.engagementHeading">Engagement</span> — <span
+                                data-i18n="schedule.engagementWhen">28 January 2026 · Hotel Padmavathi, Palpannai,
+                                Trichy</span></li>
+                        <li data-i18n="schedule.engagementNote">Update this line with muhurtham and reception timings for
+                            guests.</li>
+                        <li><span data-i18n="schedule.weddingHeading">Wedding</span> — <span
+                                data-i18n="schedule.weddingWhen">18 June 2026 · Sri Naraiyana Mahal, Trichy</span></li>
+                        <li data-i18n="schedule.weddingNote">Update with your ceremony and reception schedule.</li>
+                    </ul>
+                </article>
+                <article class="info-card">
+                    <h3 class="info-card-title" data-i18n="guestInfo.practicalTitle">For our guests</h3>
+                    <dl class="info-dl">
+                        <dt data-i18n="guestInfo.dressCodeTitle">Dress code</dt>
+                        <dd data-i18n="guestInfo.dressCode">Traditional Indian festive wear — please wear your joyous
+                            best.</dd>
+                        <dt data-i18n="guestInfo.parkingTitle">Parking</dt>
+                        <dd data-i18n="guestInfo.parking">Parking is available at both venues; follow signage and
+                            volunteer directions.</dd>
+                        <dt data-i18n="guestInfo.landmarkTitle">Landmark</dt>
+                        <dd data-i18n="guestInfo.landmark">Use the map links above for directions; add a well-known
+                            nearby place here if it helps elders.</dd>
+                        <dt data-i18n="guestInfo.contactTitle">Contact</dt>
+                        <dd data-i18n="guestInfo.contact">For day-of questions, please contact the families (add phone
+                            numbers or WhatsApp).</dd>
+                    </dl>
+                </article>
+            </div>
+            <div class="calendar-actions" id="calendarActions">
+                <a class="calendar-link calendar-link-primary" id="calendarGoogleEngagement" href="#" target="_blank"
+                    rel="noopener noreferrer" data-i18n="calendar.addGoogleEngagement">Add engagement to Google
+                    Calendar</a>
+                <a class="calendar-link calendar-link-primary" id="calendarGoogleWedding" href="#" target="_blank"
+                    rel="noopener noreferrer" data-i18n="calendar.addGoogleWedding">Add wedding to Google Calendar</a>
+                <button type="button" class="calendar-link calendar-link-secondary" id="calendarDownloadIcs"
+                    data-i18n="calendar.downloadIcs">Download calendar (.ics)</button>
+            </div>
+        </div>
+    </section>
+
     <!-- Our Story Section -->
     <section id="about" class="about-section">
         <div class="container">
@@ -147,6 +218,17 @@
                     <p data-i18n="about.paragraph2"></p>
                     <p data-i18n="about.paragraph3"></p>
 
+                </div>
+                <div class="person-card person-right">
+                    <div class="person-image">
+                        <div class="about-image-frame">
+                            <img src="photos/engagement/WIN_4488.JPG" alt="Madhumitha" id="madhumithaImage"
+                                onerror="this.style.display='none'" decoding="async" loading="lazy">
+                        </div>
+                    </div>
+                    <h3 class="person-name" data-i18n="about.brideName">Madhumitha</h3>
+                    <p data-i18n="about.brideIntro">With grace and joy, she fills every chapter of our story. We cannot
+                        wait to celebrate surrounded by everyone we love.</p>
                 </div>
             </div>
 
@@ -332,6 +414,7 @@
         <button class="modal-next" id="modalNext" aria-label="Next image">&#10095;</button>
     </div>
 
+    <script src="calendar-utils.js"></script>
     <script src="script.js"></script>
 </body>
 
