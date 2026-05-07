@@ -80,11 +80,7 @@ function updateCountdown() {
                 footerDateEl.textContent = formatFooterDate(new Date(CONFIG.MARRIAGE_DATE));
             }
             // Update status to "Married" after marriage date
-            const statusTextEl = document.getElementById('statusText');
-            if (statusTextEl) {
-                statusTextEl.textContent = 'Married';
-            }
-            updateVenueDisplay('marriage');
+            setCountdownPhaseLabel('complete');
             return;
         }
 
@@ -104,18 +100,7 @@ function updateCountdown() {
             footerDateEl.textContent = formatFooterDate(new Date(targetDate));
         }
 
-        // Update venue display based on current event
-        updateVenueDisplay(isEngagement ? 'engagement' : 'marriage');
-
-        // Update header status text
-        const statusTextEl = document.getElementById('statusText');
-        if (statusTextEl) {
-            if (now < CONFIG.ENGAGEMENT_DATE) {
-                statusTextEl.textContent = 'Engaged';
-            } else {
-                statusTextEl.textContent = 'Married';
-            }
-        }
+        setCountdownPhaseLabel(isEngagement ? 'engagement' : 'wedding');
 
         const difference = targetDate - now;
 
@@ -140,22 +125,24 @@ function updateCountdown() {
     }
 }
 
-function updateVenueDisplay(locationType) {
-    const location = CONFIG.LOCATIONS[locationType];
-    if (!location) return;
-
-    const venueLabel = document.getElementById('venueLabel');
-    const venueName = document.getElementById('venueName');
-    const venueAddress = document.getElementById('venueAddress');
-    
-    if (venueLabel) {
-        venueLabel.textContent = locationType === 'engagement' ? 'Engagement Venue' : 'Wedding Venue';
+/**
+ * @param {'engagement' | 'wedding' | 'complete'} phase
+ */
+function setCountdownPhaseLabel(phase) {
+    const el = document.getElementById('countdownLabel');
+    if (!el) {
+        return;
     }
-    if (venueName) {
-        venueName.textContent = location.name;
+    const header = translations[currentLanguage]?.header;
+    if (!header) {
+        return;
     }
-    if (venueAddress) {
-        venueAddress.textContent = location.address;
+    if (phase === 'engagement') {
+        el.textContent = header.countdownEngagement || '';
+    } else if (phase === 'wedding') {
+        el.textContent = header.countdownWedding || '';
+    } else {
+        el.textContent = header.countdownComplete || '';
     }
 }
 
@@ -762,11 +749,49 @@ function detectDevice() {
 // Language Translations
 const translations = {
     en: {
+        nav: {
+            details: 'Schedule & details'
+        },
         header: {
+            coupleNames: 'Praveenraj & Madhumitha',
             groom: 'Chennai Paiyan',
             weds: 'Weds',
             bride: 'Trichy Ponnu',
-            saveTheDate: 'SAVE THE DATE'
+            saveTheDate: 'SAVE THE DATE',
+            countdownEngagement: 'Counting down to our engagement',
+            countdownWedding: 'Counting down to our wedding',
+            countdownComplete: 'Thank you for being part of our journey',
+            viewPhotos: 'View photos'
+        },
+        schedule: {
+            title: 'Schedule',
+            engagementHeading: 'Engagement',
+            engagementWhen: '28 January 2026 · Hotel Padmavathi, Palpannai, Trichy',
+            engagementNote: 'Update this line with muhurtham and reception timings for guests.',
+            weddingHeading: 'Wedding',
+            weddingWhen: '18 June 2026 · Sri Naraiyana Mahal, Trichy',
+            weddingNote: 'Update with your ceremony and reception schedule.'
+        },
+        guestInfo: {
+            title: 'Celebration details',
+            practicalTitle: 'For our guests',
+            dressCodeTitle: 'Dress code',
+            dressCode: 'Traditional Indian festive wear — please wear your joyous best.',
+            parkingTitle: 'Parking',
+            parking: 'Parking is available at both venues; follow signage and volunteer directions.',
+            landmarkTitle: 'Landmark',
+            landmark: 'Use the map links above for directions; add a well-known nearby place here if it helps elders.',
+            contactTitle: 'Contact',
+            contact: 'For day-of questions, please contact the families (add phone numbers or WhatsApp).'
+        },
+        calendar: {
+            addGoogleEngagement: 'Add engagement to Google Calendar',
+            addGoogleWedding: 'Add wedding to Google Calendar',
+            downloadIcs: 'Download calendar (.ics)',
+            eventEngagementPrefix: 'Engagement',
+            eventWeddingPrefix: 'Wedding',
+            engagementDetails: 'Engagement celebration — Praveenraj & Madhumitha',
+            weddingDetails: 'Wedding celebration — Praveenraj & Madhumitha'
         },
         timer: {
             days: 'DAYS',
@@ -778,7 +803,9 @@ const translations = {
             title: 'Our Story',
             paragraph1: 'It was at the divine Thiruvanaikoil Temple where our eyes first met, and in that moment, we fell in love at first sight. What started as a traditional matchmaking turned into an extraordinary journey of discovery, filled with love, laughter, and countless emotions.',
             paragraph2: 'From romantic dinners at Roof Top Restaurant to exploring the wonders of Birds Park, from thrilling bike rides to cozy car rides, and even trying ice skating together—every moment became a cherished memory.',
-            paragraph3: 'As we take this beautiful step forward, we invite you to be part of our celebration. Your presence and blessings make our special day even more meaningful.'
+            paragraph3: 'As we take this beautiful step forward, we invite you to be part of our celebration. Your presence and blessings make our special day even more meaningful.',
+            brideName: 'Madhumitha',
+            brideIntro: 'With grace and joy, she fills every chapter of our story. We cannot wait to celebrate surrounded by everyone we love.'
         },
         engagement: {
             title: 'Engagement Story',
@@ -825,11 +852,49 @@ const translations = {
         }
     },
     ta: {
+        nav: {
+            details: 'நிகழ்ச்சி விவரங்கள்'
+        },
         header: {
+            coupleNames: 'பிரவீன்ராஜ் & மதுமிதா',
             groom: 'சென்னை பையன்',
             weds: 'திருமணம்',
             bride: 'திருச்சி பொண்ணு',
-            saveTheDate: 'தேதியை நினைவில் கொள்ளுங்கள்'
+            saveTheDate: 'தேதியை நினைவில் கொள்ளுங்கள்',
+            countdownEngagement: 'நிச்சயதார்த்தத்திற்கான எண்ணிக்கை',
+            countdownWedding: 'திருமணத்திற்கான எண்ணிக்கை',
+            countdownComplete: 'எங்கள் பயணத்தில் பங்கேற்ற அனைவருக்கும் நன்றி',
+            viewPhotos: 'புகைப்படங்கள்'
+        },
+        schedule: {
+            title: 'நிகழ்ச்சி அட்டவணை',
+            engagementHeading: 'நிச்சயதார்த்தம்',
+            engagementWhen: '28 ஜனவரி 2026 · ஹோட்டல் பத்மாவதி, பல்பன்னை, திருச்சி',
+            engagementNote: 'முகூர்த்தம் மற்றும் வரவேற்பு நேரங்களை இங்கே புதுப்பிக்கவும்.',
+            weddingHeading: 'திருமணம்',
+            weddingWhen: '18 ஜூன் 2026 · ஸ்ரீ நாராயண மஹால், திருச்சி',
+            weddingNote: 'சடங்கு மற்றும் வரவேற்பு அட்டவணையை இங்கே சேர்க்கவும்.'
+        },
+        guestInfo: {
+            title: 'கொண்டாட்ட விவரங்கள்',
+            practicalTitle: 'விருந்தினர்களுக்கு',
+            dressCodeTitle: 'உடை',
+            dressCode: 'பாரம்பரிய இந்திய கொண்டாட்ட உடை — உங்கள் மகிழ்ச்சியான சிறந்த உடை அணியவும்.',
+            parkingTitle: 'பார்க்கிங்',
+            parking: 'இரண்டு இடங்களிலும் பார்க்கிங் உள்ளது; அறிவுறுத்தல்களையும் தன்னார்வலர்களையும் பின்பற்றவும்.',
+            landmarkTitle: 'அடையாள இடம்',
+            landmark: 'திசைகளுக்கு மேலே உள்ள வரைபட இணைப்புகளைப் பயன்படுத்தவும்; மூத்தவர்களுக்கு அருகிலுள்ள அறியப்பட்ட இடத்தை இங்கே சேர்க்கலாம்.',
+            contactTitle: 'தொடர்பு',
+            contact: 'நாள் தொடர்பான கேள்விகளுக்கு குடும்பத்தினரைத் தொடர்பு கொள்ளவும் (தொலைபேசி அல்லது வாட்ஸ்அப் சேர்க்கவும்).'
+        },
+        calendar: {
+            addGoogleEngagement: 'நிச்சயதார்த்தத்தை கூகிள் காலண்டரில் சேர்',
+            addGoogleWedding: 'திருமணத்தை கூகிள் காலண்டரில் சேர்',
+            downloadIcs: 'காலண்டர் பதிவிறக்கம் (.ics)',
+            eventEngagementPrefix: 'நிச்சயதார்த்தம்',
+            eventWeddingPrefix: 'திருமணம்',
+            engagementDetails: 'நிச்சயதார்த்த கொண்டாட்டம் — பிரவீன்ராஜ் & மதுமிதா',
+            weddingDetails: 'திருமண கொண்டாட்டம் — பிரவீன்ராஜ் & மதுமிதா'
         },
         timer: {
             days: 'நாட்கள்',
@@ -841,7 +906,9 @@ const translations = {
             title: 'எங்கள் கதை',
             paragraph1: 'புனிதமான திருவணைகோயில் கோவிலில் நம் கண்கள் முதல் முறையாக சந்தித்தன. அந்த கணத்திலேயே, நாம் முதல் பார்வையிலேயே காதலில் விழுந்தோம். பாரம்பரிய திருமண ஏற்பாட்டாகத் தொடங்கியது, அன்பு, சிரிப்பு, உணர்ச்சிகள் நிறைந்த ஒரு அற்புதமான பயணமாக மாறியது.',
             paragraph2: 'ரெஸ்டாரண்டில் ரொமான்டிக் இரவு உணவிலிருந்து பேர்ட்ஸ் பார்க்கின் அழகுகளை பார்த்தது, உற்சாகமான பைக் சவாரிகள், வசதியான கார் சவாரிகள், ஒன்றாக ஐஸ் ஸ்கேட்டிங் முயற்சித்தது - ஒவ்வொரு கணமும் ஒரு அன்பான நினைவாக மாறியது.',
-            paragraph3: 'இந்த அழகான பயணத்தை நாம் தொடர்ந்து செல்லும்போது, எங்கள் கொண்டாட்டத்தில் நீங்களும் பங்கேற்குமாறு அழைக்கிறோம். உங்கள் வருகையும் ஆசீர்வாதமும் எங்கள் சிறப்பு நாளை இன்னும் அர்த்தமுள்ளதாக்கும்.'
+            paragraph3: 'இந்த அழகான பயணத்தை நாம் தொடர்ந்து செல்லும்போது, எங்கள் கொண்டாட்டத்தில் நீங்களும் பங்கேற்குமாறு அழைக்கிறோம். உங்கள் வருகையும் ஆசீர்வாதமும் எங்கள் சிறப்பு நாளை இன்னும் அர்த்தமுள்ளதாக்கும்.',
+            brideName: 'மதுமிதா',
+            brideIntro: 'கருணையும் மகிழ்ச்சியும் நிறைந்தவள் — எங்கள் கதையின் ஒவ்வொரு பக்கத்தையும் அழகாக்குகிறாள். நாங்கள் நேசிக்கும் அனைவருடனும் கொண்டாட காத்திருக்கிறோம்.'
         },
         engagement: {
             title: 'நிச்சயதார்த்த கதை',
@@ -889,6 +956,107 @@ const translations = {
     }
 };
 
+function refreshCalendarLinks() {
+    const utils = globalThis.WeddingCalendarUtils;
+    if (!utils) {
+        return;
+    }
+    const eng = CONFIG.LOCATIONS.engagement;
+    const wed = CONFIG.LOCATIONS.marriage;
+    const engagementStart = new Date(CONFIG.ENGAGEMENT_DATE);
+    const engagementEnd = new Date(engagementStart);
+    engagementEnd.setDate(engagementEnd.getDate() + 1);
+    const marriageStart = new Date(CONFIG.MARRIAGE_DATE);
+    const marriageEnd = new Date(marriageStart);
+    marriageEnd.setDate(marriageEnd.getDate() + 1);
+
+    const couple = translations[currentLanguage]?.header?.coupleNames || 'Praveenraj & Madhumitha';
+    const cal = translations[currentLanguage]?.calendar || {};
+    const engTitle = `${cal.eventEngagementPrefix || 'Engagement'} — ${couple}`;
+    const wedTitle = `${cal.eventWeddingPrefix || 'Wedding'} — ${couple}`;
+
+    const gEng = document.getElementById('calendarGoogleEngagement');
+    const gWed = document.getElementById('calendarGoogleWedding');
+    if (gEng) {
+        gEng.href = utils.buildGoogleCalendarUrl({
+            title: engTitle,
+            startDate: engagementStart,
+            endDateExclusive: engagementEnd,
+            details: cal.engagementDetails || '',
+            location: `${eng.name}, ${eng.address}`
+        });
+    }
+    if (gWed) {
+        gWed.href = utils.buildGoogleCalendarUrl({
+            title: wedTitle,
+            startDate: marriageStart,
+            endDateExclusive: marriageEnd,
+            details: cal.weddingDetails || '',
+            location: `${wed.name}, ${wed.address}`
+        });
+    }
+}
+
+function downloadCelebrationIcs() {
+    const utils = globalThis.WeddingCalendarUtils;
+    if (!utils) {
+        return;
+    }
+    const eng = CONFIG.LOCATIONS.engagement;
+    const wed = CONFIG.LOCATIONS.marriage;
+    const engagementStart = new Date(CONFIG.ENGAGEMENT_DATE);
+    const engagementEnd = new Date(engagementStart);
+    engagementEnd.setDate(engagementEnd.getDate() + 1);
+    const marriageStart = new Date(CONFIG.MARRIAGE_DATE);
+    const marriageEnd = new Date(marriageStart);
+    marriageEnd.setDate(marriageEnd.getDate() + 1);
+
+    const couple = translations[currentLanguage]?.header?.coupleNames || 'Praveenraj & Madhumitha';
+    const cal = translations[currentLanguage]?.calendar || {};
+    const engTitle = `${cal.eventEngagementPrefix || 'Engagement'} — ${couple}`;
+    const wedTitle = `${cal.eventWeddingPrefix || 'Wedding'} — ${couple}`;
+
+    const ics = utils.buildIcsCalendar({
+        events: [
+            {
+                title: engTitle,
+                startDate: engagementStart,
+                endDateExclusive: engagementEnd,
+                location: `${eng.name}, ${eng.address}`,
+                description: cal.engagementDetails || ''
+            },
+            {
+                title: wedTitle,
+                startDate: marriageStart,
+                endDateExclusive: marriageEnd,
+                location: `${wed.name}, ${wed.address}`,
+                description: cal.weddingDetails || ''
+            }
+        ]
+    });
+    const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = 'praveenraj-madhumitha-celebrations.ics';
+    anchor.rel = 'noopener';
+    document.body.appendChild(anchor);
+    anchor.click();
+    document.body.removeChild(anchor);
+    URL.revokeObjectURL(url);
+}
+
+function bindCalendarDownloadOnce() {
+    const icsBtn = document.getElementById('calendarDownloadIcs');
+    if (!icsBtn || icsBtn.dataset.bound === '1') {
+        return;
+    }
+    icsBtn.dataset.bound = '1';
+    icsBtn.addEventListener('click', () => {
+        downloadCelebrationIcs();
+    });
+}
+
 // Current language
 let currentLanguage = localStorage.getItem('language') || 'en';
 
@@ -926,12 +1094,27 @@ function updateLanguage(lang) {
             }
         }
     });
+
+    document.querySelectorAll('[data-i18n-title]').forEach((element) => {
+        const key = element.getAttribute('data-i18n-title');
+        const keys = key.split('.');
+        let translation = translations[lang];
+        for (const k of keys) {
+            translation = translation?.[k];
+        }
+        if (typeof translation === 'string') {
+            element.setAttribute('title', translation);
+        }
+    });
     
     // Update language toggle button text
     const langBtn = document.getElementById('languageText');
     if (langBtn) {
         langBtn.textContent = lang === 'en' ? 'தமிழ்' : 'English';
     }
+
+    refreshCalendarLinks();
+    updateCountdown();
     
     // Refresh gallery to update dynamic text
     if (typeof initGallery === 'function' && document.getElementById('photoGrid')) {
@@ -974,6 +1157,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         languageToggleBtn.addEventListener('click', () => {
             const newLang = currentLanguage === 'en' ? 'ta' : 'en';
             updateLanguage(newLang);
+        });
+    }
+
+    bindCalendarDownloadOnce();
+
+    const heroPhotosBtn = document.getElementById('heroPhotosBtn');
+    if (heroPhotosBtn) {
+        heroPhotosBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            scrollToGallery();
         });
     }
     
