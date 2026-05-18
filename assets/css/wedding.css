@@ -1,3 +1,159 @@
+/**
+ * Wedding invite styles — extends Nova Bootstrap template (assets/css/main.css).
+ */
+
+.page-wedding {
+    --color-primary: #8B0000;
+    --color-secondary: #D4AF37;
+}
+
+.page-wedding #header {
+    background: rgba(255, 255, 255, 0.97);
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+}
+
+.page-wedding #header .logo h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #8B0000;
+    margin: 0;
+}
+
+.page-wedding .navbar .nav-link {
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    color: #555;
+}
+
+.page-wedding .navbar .nav-link:hover,
+.page-wedding .navbar .nav-link.active {
+    color: #8B0000;
+}
+
+.page-wedding .navbar .nav-link.active {
+    font-weight: 600;
+}
+
+.page-wedding .mobile-nav-toggle {
+    color: #8B0000;
+}
+
+.page-wedding .scroll-top {
+    background: #8B0000;
+}
+
+.page-wedding .scroll-top:hover {
+    background: #a52a2a;
+}
+
+.page-wedding section.header-section.hero-wedding {
+    padding: 72px 20px 80px;
+}
+
+.page-wedding .section-header h2 {
+    font-family: 'Playfair Display', serif;
+    color: #8B0000;
+}
+
+.page-wedding .section-header h2:after {
+    background: #D4AF37;
+}
+
+.page-wedding .hero-photos-btn.btn-get-started {
+    background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+    border: none;
+    color: #8B0000;
+    font-weight: 600;
+    padding: 12px 28px;
+    border-radius: 50px;
+}
+
+.page-wedding .hero-photos-btn.btn-get-started:hover {
+    color: #5c0000;
+    transform: translateY(-2px);
+}
+
+.page-wedding .sub-portfolio-flters {
+    margin-top: -10px;
+}
+
+.page-wedding .location-flters li,
+.page-wedding #galleryFilters li,
+.page-wedding #subTabContainer li {
+    cursor: pointer;
+}
+
+.page-wedding .wedding-site-footer {
+    background: #8B0000;
+    color: #fff;
+}
+
+.page-wedding .wedding-site-footer .footer-info .logo span {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+    color: #fff;
+}
+
+.page-wedding .wedding-footer-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    color: #fff;
+    margin: 0.5rem 0;
+}
+
+.page-wedding .wedding-site-footer .footer-date,
+.page-wedding .wedding-site-footer .footer-love {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.page-wedding .wedding-site-footer .footer-legal {
+    background: rgba(0, 0, 0, 0.2);
+    border-top: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.page-wedding .wedding-site-footer .copyright {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.9rem;
+}
+
+.page-wedding .calendar-actions .cta-btn,
+.page-wedding .calendar-actions .btn-get-started {
+    font-size: 0.85rem;
+    padding: 10px 18px;
+}
+
+.page-wedding .call-to-action .upload-description {
+    color: rgba(255, 255, 255, 0.9);
+    text-align: center;
+    max-width: 640px;
+    margin: 0 auto 1.5rem;
+}
+
+.page-wedding #upload.call-to-action {
+    background: linear-gradient(135deg, #8B0000 0%, #5c0000 100%);
+}
+
+.page-wedding #upload .section-header h2 {
+    color: #fff;
+}
+
+.page-wedding #upload .section-header h2:after {
+    background: #D4AF37;
+}
+
+.page-wedding .services-list .info-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.page-wedding .services-list .info-list li {
+    margin-bottom: 0.75rem;
+    color: #555;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -19,14 +175,13 @@
     --cream-tint: #fdf8f4;
 }
 
-body {
-    padding-left: 70px;
-    font-family: 'Poppins', sans-serif;
+body.page-wedding {
+    padding-left: 0;
+    font-family: 'Poppins', var(--font-default), sans-serif;
     background: #ffffff;
     color: #8B0000;
     line-height: 1.6;
     overflow-x: hidden;
-    transition: padding-left 0.3s ease-in-out;
     width: 100%;
     box-sizing: border-box;
 }
@@ -1187,183 +1342,6 @@ body {
     margin-top: 40px;
 }
 
-/* RSVP modal */
-.rsvp-modal {
-    display: none;
-    position: fixed;
-    inset: 0;
-    z-index: 10001;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-}
-
-.rsvp-modal.active {
-    display: flex;
-}
-
-.rsvp-modal-backdrop {
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.55);
-    backdrop-filter: blur(4px);
-}
-
-.rsvp-modal-content {
-    position: relative;
-    z-index: 1;
-    width: 100%;
-    max-width: 440px;
-    max-height: 90vh;
-    overflow-y: auto;
-    background: #fff;
-    border-radius: 20px;
-    padding: 32px 28px 28px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
-    animation: zoomIn 0.3s ease;
-}
-
-.rsvp-modal-close {
-    position: absolute;
-    top: 12px;
-    right: 14px;
-    width: 36px;
-    height: 36px;
-    border: none;
-    background: transparent;
-    color: #8B0000;
-    font-size: 2rem;
-    line-height: 1;
-    cursor: pointer;
-    border-radius: 50%;
-    transition: background 0.2s ease, color 0.2s ease;
-}
-
-.rsvp-modal-close:hover,
-.rsvp-modal-close:focus {
-    background: rgba(139, 0, 0, 0.08);
-    color: #a52a2a;
-    outline: none;
-}
-
-.rsvp-modal-title {
-    text-align: center;
-    margin: 0 0 8px;
-    font-family: 'Playfair Display', serif;
-    font-size: 2rem;
-    font-weight: 600;
-}
-
-.rsvp-description {
-    text-align: center;
-    color: #555;
-    margin: 0 0 24px;
-    font-size: 1rem;
-    line-height: 1.5;
-}
-
-.rsvp-form {
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-}
-
-.rsvp-field label,
-.rsvp-attending legend {
-    display: block;
-    font-family: 'Poppins', sans-serif;
-    font-weight: 500;
-    color: #8B0000;
-    margin-bottom: 6px;
-    font-size: 0.95rem;
-}
-
-.rsvp-attending {
-    border: none;
-    padding: 0;
-    margin: 0;
-}
-
-.rsvp-attending legend {
-    margin-bottom: 10px;
-}
-
-.rsvp-field input,
-.rsvp-field textarea {
-    width: 100%;
-    padding: 12px 14px;
-    border: 1px solid rgba(139, 0, 0, 0.25);
-    border-radius: 10px;
-    font-family: 'Poppins', sans-serif;
-    font-size: 1rem;
-    color: #333;
-    background: #fff;
-    box-sizing: border-box;
-}
-
-.rsvp-field input:focus,
-.rsvp-field textarea:focus {
-    outline: none;
-    border-color: #D4AF37;
-    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.25);
-}
-
-.rsvp-radio {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 8px;
-    cursor: pointer;
-    color: #444;
-}
-
-.rsvp-radio input {
-    width: auto;
-    accent-color: #8B0000;
-}
-
-.rsvp-submit-btn {
-    margin-top: 8px;
-    padding: 14px 28px;
-    background: linear-gradient(135deg, #8B0000 0%, #a52a2a 100%);
-    color: #fff;
-    border: none;
-    border-radius: 50px;
-    font-family: 'Poppins', sans-serif;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.rsvp-submit-btn:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(139, 0, 0, 0.25);
-}
-
-.rsvp-submit-btn:disabled {
-    opacity: 0.65;
-    cursor: not-allowed;
-}
-
-.rsvp-message {
-    text-align: center;
-    font-size: 0.95rem;
-    min-height: 1.25rem;
-}
-
-.rsvp-message.success {
-    color: #1b6b2e;
-}
-
-.rsvp-message.error {
-    color: #8B0000;
-}
-
-body.rsvp-modal-open {
-    overflow: hidden;
-}
-
 .calendar-link {
     display: inline-flex;
     align-items: center;
@@ -1405,7 +1383,7 @@ body.rsvp-modal-open {
 }
 
 /* Footer */
-.footer {
+.wedding-footer {
     padding: 60px 20px;
     text-align: center;
     background: #8B0000;
@@ -1560,7 +1538,7 @@ body.rsvp-modal-open {
         column-gap: 8px;
     }
     
-    .footer {
+    .wedding-footer {
         padding: 60px 20px;
     }
     
@@ -2542,7 +2520,7 @@ body.rsvp-modal-open {
     font-size: 1rem;
 }
 
-.mobile-device .footer {
+.mobile-device .wedding-footer {
     padding: 40px 10px;
     margin-top: 30px;
     display: block;
@@ -2550,7 +2528,7 @@ body.rsvp-modal-open {
     opacity: 1;
 }
 
-.mobile-device .footer .container {
+.mobile-device .wedding-footer .container {
     max-width: 100%;
     padding: 0 5px;
     overflow-x: visible;
@@ -3166,481 +3144,6 @@ body.rsvp-modal-open {
     .modal-next {
         right: 10px;
     }
-}
-
-/* Wedding Journey */
-.wedding-journey-section {
-    padding: 80px 20px;
-    margin: 20px 0;
-    background: linear-gradient(180deg, #ffffff 0%, var(--cream-tint) 45%, #ffffff 100%);
-    position: relative;
-    overflow: hidden;
-}
-
-.journey-decor {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    z-index: 0;
-}
-
-.journey-petal {
-    position: absolute;
-    font-size: 1.5rem;
-    color: rgba(212, 175, 55, 0.35);
-    animation: journeyFloat 8s ease-in-out infinite;
-}
-
-.journey-petal-1 { top: 8%; left: 6%; animation-delay: 0s; }
-.journey-petal-2 { top: 22%; right: 8%; animation-delay: 2s; font-size: 1.8rem; }
-.journey-petal-3 { bottom: 12%; left: 12%; animation-delay: 4s; }
-
-.journey-glow {
-    position: absolute;
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(212, 175, 55, 0.2) 0%, transparent 70%);
-    animation: journeyPulse 6s ease-in-out infinite;
-}
-
-.journey-glow-1 { top: 15%; right: 15%; }
-.journey-glow-2 { bottom: 25%; right: 20%; animation-delay: 2s; width: 80px; height: 80px; }
-.journey-glow-3 { top: 45%; left: 5%; animation-delay: 3s; width: 100px; height: 100px; }
-
-@keyframes journeyFloat {
-    0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.5; }
-    50% { transform: translateY(-18px) rotate(8deg); opacity: 0.9; }
-}
-
-@keyframes journeyPulse {
-    0%, 100% { transform: scale(1); opacity: 0.4; }
-    50% { transform: scale(1.15); opacity: 0.75; }
-}
-
-.wedding-journey-section .container {
-    position: relative;
-    z-index: 1;
-}
-
-.journey-subtitle {
-    text-align: center;
-    max-width: 680px;
-    margin: -10px auto 50px;
-    font-size: 1.05rem;
-    line-height: 1.7;
-    color: #555;
-}
-
-.journey-timeline {
-    position: relative;
-    max-width: 1050px;
-    margin: 0 auto 70px;
-    padding: 10px 0;
-}
-
-.journey-timeline::before {
-    content: '';
-    position: absolute;
-    left: 50%;
-    top: 0;
-    bottom: 0;
-    width: 2px;
-    transform: translateX(-50%);
-    background: linear-gradient(180deg, transparent, rgba(212, 175, 55, 0.6), rgba(139, 0, 0, 0.5), rgba(212, 175, 55, 0.6), transparent);
-}
-
-.journey-event {
-    display: flex;
-    align-items: center;
-    gap: 48px;
-    margin-bottom: 70px;
-    opacity: 0;
-    transform: translateY(36px);
-    transition: opacity 0.85s ease, transform 0.85s ease;
-}
-
-.journey-event.is-visible {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.journey-event-reverse {
-    flex-direction: row-reverse;
-}
-
-.journey-event-visual {
-    flex: 1;
-    position: relative;
-    min-width: 0;
-}
-
-.journey-image {
-    border-radius: 16px;
-    overflow: hidden;
-    border: 3px solid rgba(212, 175, 55, 0.45);
-    box-shadow: 0 12px 40px rgba(139, 0, 0, 0.12);
-    background: #f9f9f9;
-}
-
-.journey-image img {
-    width: 100%;
-    aspect-ratio: 4 / 3;
-    object-fit: cover;
-    display: block;
-    transition: transform 0.5s ease, filter 0.5s ease;
-}
-
-.journey-image img:hover {
-    transform: scale(1.04);
-    filter: brightness(1.05);
-}
-
-.journey-event-badge {
-    position: absolute;
-    top: -14px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: linear-gradient(135deg, #8B0000 0%, #a52a2a 100%);
-    color: #fff;
-    font-family: 'Playfair Display', serif;
-    font-size: 0.95rem;
-    font-weight: 600;
-    padding: 6px 16px;
-    border-radius: 50px;
-    box-shadow: 0 4px 16px rgba(139, 0, 0, 0.25);
-    letter-spacing: 0.05em;
-}
-
-.journey-event-body {
-    flex: 1;
-    min-width: 0;
-    padding: 28px 32px;
-    background: #ffffff;
-    border-radius: 16px;
-    border: 1px solid rgba(212, 175, 55, 0.3);
-    box-shadow: 0 8px 32px rgba(139, 0, 0, 0.08);
-    transition: transform 0.35s ease, box-shadow 0.35s ease;
-}
-
-.journey-event.is-visible .journey-event-body:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 14px 40px rgba(139, 0, 0, 0.12);
-}
-
-.journey-event-date {
-    font-family: 'Poppins', sans-serif;
-    font-size: 0.85rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: #D4AF37;
-    margin-bottom: 10px;
-}
-
-.journey-event-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.85rem;
-    font-weight: 600;
-    color: #8B0000;
-    margin-bottom: 14px;
-    line-height: 1.3;
-}
-
-.journey-event-desc {
-    font-size: 1.02rem;
-    line-height: 1.75;
-    color: #555;
-}
-
-.journey-route {
-    margin-top: 20px;
-    padding-top: 50px;
-    border-top: 1px solid rgba(139, 0, 0, 0.1);
-}
-
-.journey-route-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 2.4rem;
-    text-align: center;
-    margin-bottom: 16px;
-    font-weight: 600;
-    color: #8B0000;
-}
-
-.journey-route-greeting {
-    max-width: 720px;
-    margin: 0 auto 36px;
-    text-align: center;
-    font-size: 1.05rem;
-    line-height: 1.7;
-    color: #555;
-}
-
-.journey-route-stops {
-    list-style: none;
-    margin: 0 auto;
-    padding: 0;
-    max-width: 980px;
-    display: flex;
-    align-items: stretch;
-    gap: 0;
-}
-
-.journey-route-stop {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    opacity: 0;
-    transform: translateY(24px);
-    transition: opacity 0.7s ease, transform 0.7s ease;
-}
-
-.journey-route-stop.is-visible {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.journey-route-marker {
-    margin-bottom: 14px;
-    position: relative;
-    z-index: 1;
-}
-
-.journey-route-dot {
-    display: block;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    border: 3px solid #fff;
-    box-shadow: 0 2px 10px rgba(139, 0, 0, 0.2);
-}
-
-.journey-route-dot-start {
-    background: linear-gradient(135deg, #D4AF37, #f0d878);
-}
-
-.journey-route-dot-travel {
-    background: linear-gradient(135deg, #8B0000, #c44);
-}
-
-.journey-route-dot-dest {
-    background: linear-gradient(135deg, #2e7d32, #66bb6a);
-    width: 22px;
-    height: 22px;
-}
-
-.journey-route-connector {
-    flex: 0 0 72px;
-    display: flex;
-    align-items: center;
-    padding-top: 8px;
-    list-style: none;
-}
-
-.journey-route-connector span {
-    display: block;
-    width: 100%;
-    height: 0;
-    border-top: 3px dashed rgba(212, 175, 55, 0.75);
-    position: relative;
-}
-
-.journey-route-connector span::after {
-    content: '›';
-    position: absolute;
-    right: -6px;
-    top: -14px;
-    font-size: 1.4rem;
-    color: #D4AF37;
-    font-weight: 700;
-}
-
-.journey-route-card {
-    background: #ffffff;
-    border-radius: 16px;
-    padding: 24px 20px;
-    width: 100%;
-    border: 1px solid rgba(212, 175, 55, 0.28);
-    box-shadow: 0 6px 28px rgba(139, 0, 0, 0.07);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.journey-route-stop.is-visible .journey-route-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 36px rgba(139, 0, 0, 0.12);
-}
-
-.journey-route-card-dest {
-    border-color: rgba(46, 125, 50, 0.35);
-    background: linear-gradient(180deg, #ffffff 0%, #f6fbf6 100%);
-}
-
-.journey-route-step {
-    display: block;
-    font-size: 0.78rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: #D4AF37;
-    margin-bottom: 8px;
-}
-
-.journey-route-city {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.35rem;
-    font-weight: 600;
-    color: #8B0000;
-    margin: 0 0 10px;
-    line-height: 1.3;
-}
-
-.journey-route-city-travel {
-    color: #a52a2a;
-}
-
-.journey-route-note {
-    font-size: 0.95rem;
-    line-height: 1.65;
-    color: #555;
-    margin: 0;
-}
-
-.journey-route-maps-link {
-    display: inline-block;
-    margin: 36px auto 0;
-    padding: 12px 28px;
-    border-radius: 50px;
-    background: linear-gradient(135deg, #8B0000 0%, #a52a2a 100%);
-    color: #fff;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 0.95rem;
-    letter-spacing: 0.03em;
-    box-shadow: 0 6px 20px rgba(139, 0, 0, 0.25);
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
-}
-
-.journey-route-maps-link:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 28px rgba(139, 0, 0, 0.32);
-    color: #fff;
-}
-
-.journey-route {
-    text-align: center;
-}
-
-.journey-closing {
-    max-width: 760px;
-    margin: 50px auto 0;
-    text-align: center;
-    font-family: 'Playfair Display', serif;
-    font-size: 1.25rem;
-    line-height: 1.8;
-    color: #8B0000;
-    font-style: italic;
-    padding: 28px 24px;
-    background: rgba(253, 248, 244, 0.9);
-    border-radius: 16px;
-    border: 1px solid rgba(212, 175, 55, 0.35);
-    box-shadow: 0 6px 24px rgba(139, 0, 0, 0.06);
-}
-
-@media (max-width: 900px) {
-    .journey-timeline::before {
-        left: 20px;
-        transform: none;
-    }
-
-    .journey-event,
-    .journey-event-reverse {
-        flex-direction: column;
-        gap: 24px;
-        padding-left: 44px;
-        margin-bottom: 50px;
-    }
-
-    .journey-event-badge {
-        left: 20px;
-        transform: none;
-        top: -12px;
-    }
-
-    .journey-route-stops {
-        flex-direction: column;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .journey-route-connector {
-        flex: 0 0 auto;
-        width: 3px;
-        height: 36px;
-        padding: 0;
-    }
-
-    .journey-route-connector span {
-        width: 0;
-        height: 100%;
-        border-top: none;
-        border-left: 3px dashed rgba(212, 175, 55, 0.75);
-    }
-
-    .journey-route-connector span::after {
-        content: '⌄';
-        right: -9px;
-        top: auto;
-        bottom: -12px;
-    }
-
-    .journey-route-stop {
-        max-width: 420px;
-        width: 100%;
-    }
-}
-
-@media (max-width: 600px) {
-    .wedding-journey-section {
-        padding: 60px 16px;
-    }
-
-    .journey-subtitle {
-        font-size: 0.98rem;
-        margin-bottom: 36px;
-    }
-
-    .journey-event-title {
-        font-size: 1.5rem;
-    }
-
-    .journey-event-body {
-        padding: 22px 20px;
-    }
-
-    .journey-route-title {
-        font-size: 1.9rem;
-    }
-
-    .journey-closing {
-        font-size: 1.08rem;
-        padding: 22px 18px;
-    }
-}
-
-.mobile-device .wedding-journey-section {
-    padding: 50px 14px;
-}
-
-.mobile-device .journey-event,
-.mobile-device .journey-event-reverse {
-    padding-left: 0;
-}
-
-.mobile-device .journey-timeline::before {
-    display: none;
 }
 
 /* Desktop view remains unchanged - all default styles apply */

@@ -49,9 +49,18 @@
                 </a>
             </li>
             <li>
-                <a href="#guest-info" class="nav-link" title="Details" data-i18n-title="nav.details">
+                <a href="#wedding-journey" class="nav-link" title="Wedding Journey" data-i18n-title="nav.journey">
                     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"></path>
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="nav-link" id="rsvpNavLink" title="RSVP" data-i18n-title="nav.rsvp">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                        <polyline points="22,6 12,13 2,6"></polyline>
                     </svg>
                 </a>
             </li>
@@ -150,52 +159,123 @@
         </div>
     </section>
 
-    <section id="guest-info" class="guest-info-section">
+    <!-- Wedding Journey Section -->
+    <section id="wedding-journey" class="wedding-journey-section">
+        <div class="journey-decor" aria-hidden="true">
+            <span class="journey-petal journey-petal-1">✿</span>
+            <span class="journey-petal journey-petal-2">❀</span>
+            <span class="journey-petal journey-petal-3">✿</span>
+            <span class="journey-glow journey-glow-1"></span>
+            <span class="journey-glow journey-glow-2"></span>
+            <span class="journey-glow journey-glow-3"></span>
+        </div>
         <div class="container">
             <h2 class="section-title">
-                <span class="gold-text" data-i18n="guestInfo.title">Celebration details</span>
+                <span class="gold-text" data-i18n="journey.title">Our Wedding Journey</span>
             </h2>
-            <div class="guest-info-grid">
-                <article class="info-card">
-                    <h3 class="info-card-title" data-i18n="schedule.title">Schedule</h3>
-                    <ul class="info-list">
-                        <li><span data-i18n="schedule.engagementHeading">Engagement</span> — <span
-                                data-i18n="schedule.engagementWhen">28 January 2026 · Hotel Padmavathi, Palpannai,
-                                Trichy</span></li>
-                        <li data-i18n="schedule.engagementNote">Update this line with muhurtham and reception timings for
-                            guests.</li>
-                        <li><span data-i18n="schedule.weddingHeading">Wedding</span> — <span
-                                data-i18n="schedule.weddingWhen">18 June 2026 · Sri Naraiyana Mahal, Trichy</span></li>
-                        <li data-i18n="schedule.weddingNote">Update with your ceremony and reception schedule.</li>
-                    </ul>
+            <p class="journey-subtitle" data-i18n="journey.subtitle">Four beautiful days of love, tradition, and celebration await you.</p>
+
+            <div class="journey-timeline">
+                <article class="journey-event" data-journey-animate>
+                    <div class="journey-event-visual">
+                        <div class="journey-image">
+                            <img src="photos/Day 1.png" alt="Sangeeth Night" loading="lazy" decoding="async">
+                        </div>
+                        <span class="journey-event-badge">01</span>
+                    </div>
+                    <div class="journey-event-body">
+                        <p class="journey-event-date" data-i18n="journey.events.haldi.date">15 June 2026</p>
+                        <h3 class="journey-event-title" data-i18n="journey.events.sangeeth.title">Sangeeth Night</h3>
+                        <p class="journey-event-desc" data-i18n="journey.events.sangeeth.description">A night of dance, music, celebration, performances, and unforgettable memories as both families come together in happiness.</p>
+                    </div>
                 </article>
-                <article class="info-card">
-                    <h3 class="info-card-title" data-i18n="guestInfo.practicalTitle">For our guests</h3>
-                    <dl class="info-dl">
-                        <dt data-i18n="guestInfo.dressCodeTitle">Dress code</dt>
-                        <dd data-i18n="guestInfo.dressCode">Traditional Indian festive wear — please wear your joyous
-                            best.</dd>
-                        <dt data-i18n="guestInfo.parkingTitle">Parking</dt>
-                        <dd data-i18n="guestInfo.parking">Parking is available at both venues; follow signage and
-                            volunteer directions.</dd>
-                        <dt data-i18n="guestInfo.landmarkTitle">Landmark</dt>
-                        <dd data-i18n="guestInfo.landmark">Use the map links above for directions; add a well-known
-                            nearby place here if it helps elders.</dd>
-                        <dt data-i18n="guestInfo.contactTitle">Contact</dt>
-                        <dd data-i18n="guestInfo.contact">For day-of questions, please contact the families (add phone
-                            numbers or WhatsApp).</dd>
-                    </dl>
+
+                <article class="journey-event journey-event-reverse" data-journey-animate>
+                    <div class="journey-event-visual">
+                        <div class="journey-image">
+                            <img src="photos/Day 2.png" alt="Haldi and Mehendi" loading="lazy" decoding="async">
+                        </div>
+                        <span class="journey-event-badge">02</span>
+                    </div>
+                    <div class="journey-event-body">
+                        <p class="journey-event-date" data-i18n="journey.events.sangeeth.date">16 June 2026</p>
+                        <h3 class="journey-event-title" data-i18n="journey.events.haldi.title">Haldi &amp; Mehendi</h3>
+                        <p class="journey-event-desc" data-i18n="journey.events.haldi.description">An evening filled with colors, laughter, music, turmeric blessings, henna artistry, and joyful moments shared with family and friends.</p>
+                    </div>
+                </article>
+
+                <article class="journey-event" data-journey-animate>
+                    <div class="journey-event-visual">
+                        <div class="journey-image">
+                            <img src="photos/Day 3.png" alt="Reception" loading="lazy" decoding="async">
+                        </div>
+                        <span class="journey-event-badge">03</span>
+                    </div>
+                    <div class="journey-event-body">
+                        <p class="journey-event-date" data-i18n="journey.events.reception.date">17 June 2026</p>
+                        <h3 class="journey-event-title" data-i18n="journey.events.reception.title">Reception</h3>
+                        <p class="journey-event-desc" data-i18n="journey.events.reception.description">Join us for an elegant evening reception filled with love, blessings, heartfelt conversations, delicious dinner, and grand celebrations.</p>
+                    </div>
+                </article>
+
+                <article class="journey-event journey-event-reverse" data-journey-animate>
+                    <div class="journey-event-visual">
+                        <div class="journey-image">
+                            <img src="photos/Day 4.png" alt="Wedding Ceremony" loading="lazy" decoding="async">
+                        </div>
+                        <span class="journey-event-badge">04</span>
+                    </div>
+                    <div class="journey-event-body">
+                        <p class="journey-event-date" data-i18n="journey.events.wedding.date">18 June 2026</p>
+                        <h3 class="journey-event-title" data-i18n="journey.events.wedding.title">Wedding Ceremony</h3>
+                        <p class="journey-event-desc" data-i18n="journey.events.wedding.description">The sacred union of two souls, celebrated with traditions, blessings, rituals, and the beginning of a beautiful forever together.</p>
+                    </div>
                 </article>
             </div>
-            <div class="calendar-actions" id="calendarActions">
-                <a class="calendar-link calendar-link-primary" id="calendarGoogleEngagement" href="#" target="_blank"
-                    rel="noopener noreferrer" data-i18n="calendar.addGoogleEngagement">Add engagement to Google
-                    Calendar</a>
-                <a class="calendar-link calendar-link-primary" id="calendarGoogleWedding" href="#" target="_blank"
-                    rel="noopener noreferrer" data-i18n="calendar.addGoogleWedding">Add wedding to Google Calendar</a>
-                <button type="button" class="calendar-link calendar-link-secondary" id="calendarDownloadIcs"
-                    data-i18n="calendar.downloadIcs">Download calendar (.ics)</button>
-            </div>
+
+            <!-- <div class="journey-route" id="journeyRoute" aria-labelledby="journeyRouteTitle">
+                <h2 class="journey-route-title">
+                    <span class="gold-text" id="journeyRouteTitle">Your Route to Celebrate With Us</span>
+                </h2>
+                <p class="journey-route-greeting" id="journeyRouteGreeting"></p>
+                <ol class="journey-route-stops">
+                    <li class="journey-route-stop" data-journey-animate>
+                        <div class="journey-route-marker" aria-hidden="true">
+                            <span class="journey-route-dot journey-route-dot-start"></span>
+                        </div>
+                        <div class="journey-route-card">
+                            <span class="journey-route-step" id="journeyRouteStartLabel">You are here</span>
+                            <h3 class="journey-route-city" id="journeyRouteFromCity">Your city</h3>
+                            <p class="journey-route-note" id="journeyRouteFromNote"></p>
+                        </div>
+                    </li>
+                    <li class="journey-route-connector" aria-hidden="true"><span></span></li>
+                    <li class="journey-route-stop" data-journey-animate>
+                        <div class="journey-route-marker" aria-hidden="true">
+                            <span class="journey-route-dot journey-route-dot-travel"></span>
+                        </div>
+                        <div class="journey-route-card">
+                            <span class="journey-route-step" id="journeyRouteTravelLabel">On the way</span>
+                            <h3 class="journey-route-city journey-route-city-travel">→ Trichy</h3>
+                            <p class="journey-route-note" id="journeyRouteTravelNote"></p>
+                        </div>
+                    </li>
+                    <li class="journey-route-connector" aria-hidden="true"><span></span></li>
+                    <li class="journey-route-stop journey-route-stop-dest" data-journey-animate>
+                        <div class="journey-route-marker" aria-hidden="true">
+                            <span class="journey-route-dot journey-route-dot-dest"></span>
+                        </div>
+                        <div class="journey-route-card journey-route-card-dest">
+                            <span class="journey-route-step" id="journeyRouteDestLabel">Celebrate with us</span>
+                            <h3 class="journey-route-city" id="journeyRouteDestVenue">Shree Narayana Mahall · Trichy</h3>
+                            <p class="journey-route-note" id="journeyRouteDestNote"></p>
+                        </div>
+                    </li>
+                </ol>
+                <a class="journey-route-maps-link" id="journeyRouteMapsLink" href="#" target="_blank" rel="noopener noreferrer">Open your route in Google Maps</a>
+            </div> -->
+
+            <p class="journey-closing" data-i18n="journey.closing">Your presence will make our celebration more special, memorable, and complete. We cannot wait to celebrate this beautiful journey with you.</p>
         </div>
     </section>
 
@@ -219,20 +299,6 @@
                     <p data-i18n="about.paragraph3"></p>
 
                 </div>
-                <div class="person-card person-right">
-                    <div class="person-image">
-                        <div class="about-image-frame">
-                            <img src="photos/engagement/WIN_4488.JPG" alt="Madhumitha" id="madhumithaImage"
-                                onerror="this.style.display='none'" decoding="async" loading="lazy">
-                        </div>
-                    </div>
-                    <h3 class="person-name" data-i18n="about.brideName">Madhumitha</h3>
-                    <p data-i18n="about.brideIntro">With grace and joy, she fills every chapter of our story. We cannot
-                        wait to celebrate surrounded by everyone we love.</p>
-                </div>
-            </div>
-
-        </div>
     </section>
 
     <!-- Wedding Gallery Preview Section -->
@@ -336,35 +402,6 @@
         </div>
     </section>
 
-    <!-- Photo Upload Section -->
-    <section class="upload-section">
-        <div class="container">
-            <h2 class="section-title" data-i18n="upload.title">Upload Your Photos</h2>
-            <p class="upload-description" data-i18n="upload.description">Share your favorite moments with us! Please
-                select the appropriate category when uploading.</p>
-            <div class="upload-controls">
-                <button class="upload-btn-small" id="uploadBtn">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                        <polyline points="17 8 12 3 7 8"></polyline>
-                        <line x1="12" y1="3" x2="12" y2="15"></line>
-                    </svg>
-                    <span data-i18n="upload.button">Upload Photos</span>
-                </button>
-                <input type="file" id="photoUpload" accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
-                    multiple style="display: none;">
-            </div>
-            <div class="upload-progress" id="uploadProgress" style="display: none;">
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressFill"></div>
-                </div>
-                <p class="progress-text" id="progressText">Uploading...</p>
-            </div>
-            <div class="upload-message" id="uploadMessage" style="display: none;"></div>
-            <div class="uploaded-preview" id="uploadedPreview"></div>
-        </div>
-    </section>
-
     <!-- Live Streaming Section -->
     <section id="live-stream" class="live-stream-section">
         <div class="container">
@@ -406,6 +443,41 @@
         </div>
     </footer>
 
+
+    <!-- RSVP Modal Popup -->
+    <div class="rsvp-modal" id="rsvpModal" role="dialog" aria-modal="true" aria-labelledby="rsvpModalTitle">
+        <div class="rsvp-modal-backdrop" id="rsvpModalBackdrop"></div>
+        <div class="rsvp-modal-content">
+            <button type="button" class="rsvp-modal-close" id="rsvpModalClose" aria-label="Close">&times;</button>
+            <h2 class="rsvp-modal-title" id="rsvpModalTitle">
+                <span class="gold-text" data-i18n="rsvp.title">RSVP</span>
+            </h2>
+            <p class="rsvp-description" data-i18n="rsvp.description">Please let us know if you can celebrate with us.</p>
+            <form id="rsvpForm" class="rsvp-form" novalidate>
+                <div class="rsvp-field">
+                    <label for="rsvpName" data-i18n="rsvp.nameLabel">Name</label>
+                    <input type="text" id="rsvpName" name="name" required maxlength="120" autocomplete="name">
+                </div>
+                <div class="rsvp-field">
+                    <label for="rsvpPhone" data-i18n="rsvp.phoneLabel">Phone number</label>
+                    <input type="tel" id="rsvpPhone" name="phone" required maxlength="30" autocomplete="tel">
+                </div>
+                <fieldset class="rsvp-field rsvp-attending">
+                    <legend data-i18n="rsvp.attendingLabel">Will you attend?</legend>
+                    <label class="rsvp-radio">
+                        <input type="radio" name="attending" value="yes" required>
+                        <span data-i18n="rsvp.attendingYes">Yes, I will attend</span>
+                    </label>
+                    <label class="rsvp-radio">
+                        <input type="radio" name="attending" value="no" required>
+                        <span data-i18n="rsvp.attendingNo">Sorry, I cannot attend</span>
+                    </label>
+                </fieldset>
+                <button type="submit" class="rsvp-submit-btn" id="rsvpSubmitBtn" data-i18n="rsvp.submit">Send RSVP</button>
+                <p class="rsvp-message" id="rsvpStatus" role="status" aria-live="polite"></p>
+            </form>
+        </div>
+    </div>
     <!-- Image Modal Popup -->
     <div class="image-modal" id="imageModal">
         <span class="modal-close" id="modalClose">&times;</span>
@@ -414,8 +486,9 @@
         <button class="modal-next" id="modalNext" aria-label="Next image">&#10095;</button>
     </div>
 
-    <script src="calendar-utils.js"></script>
+    <script src="lib/friend-route.js"></script>
     <script src="script.js"></script>
 </body>
 
 </html>
+
