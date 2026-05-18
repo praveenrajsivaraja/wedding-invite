@@ -1,7 +1,7 @@
 // Configuration
 const CONFIG = {
     ENGAGEMENT_DATE: new Date('2026-01-28T00:00:00').getTime(),
-    MARRIAGE_DATE: new Date('2026-06-18T00:00:00').getTime(),
+    MARRIAGE_DATE: new Date(2026, 5, 18, 9, 30, 0).getTime(),
     GOOGLE_MAPS_API_KEY: 'YOUR_GOOGLE_MAPS_API_KEY', // Replace with your key in index.html script tag
     LOCATIONS: {
         engagement: {
@@ -12,7 +12,7 @@ const CONFIG = {
             mapLink: 'https://maps.app.goo.gl/7YjUhTCX7Niii8My6'
         },
         marriage: {
-            name: 'Sri Naraiyana Mahal',
+            name: 'Shree Narayana Mahall',
             address: 'Trichy, Tamil Nadu',
             lat: 10.8732209,
             lng: 78.7062234,
@@ -658,6 +658,9 @@ function initNavigation() {
     
     navLinks.forEach(link => {
         link.addEventListener('click', (e) => {
+            if (link.id === 'rsvpNavLink') {
+                return;
+            }
             e.preventDefault();
             const targetId = link.getAttribute('href').substring(1);
             const targetElement = document.getElementById(targetId);
@@ -750,7 +753,9 @@ function detectDevice() {
 const translations = {
     en: {
         nav: {
-            details: 'Schedule & details'
+            details: 'Schedule & details',
+            journey: 'Wedding Journey',
+            rsvp: 'RSVP'
         },
         header: {
             coupleNames: 'Praveenraj & Madhumitha',
@@ -769,7 +774,7 @@ const translations = {
             engagementWhen: '28 January 2026 · Hotel Padmavathi, Palpannai, Trichy',
             engagementNote: 'Update this line with muhurtham and reception timings for guests.',
             weddingHeading: 'Wedding',
-            weddingWhen: '18 June 2026 · Sri Naraiyana Mahal, Trichy',
+            weddingWhen: '18 June 2026 · Shree Narayana Mahall, Trichy',
             weddingNote: 'Update with your ceremony and reception schedule.'
         },
         guestInfo: {
@@ -783,15 +788,6 @@ const translations = {
             landmark: 'Use the map links above for directions; add a well-known nearby place here if it helps elders.',
             contactTitle: 'Contact',
             contact: 'For day-of questions, please contact the families (add phone numbers or WhatsApp).'
-        },
-        calendar: {
-            addGoogleEngagement: 'Add engagement to Google Calendar',
-            addGoogleWedding: 'Add wedding to Google Calendar',
-            downloadIcs: 'Download calendar (.ics)',
-            eventEngagementPrefix: 'Engagement',
-            eventWeddingPrefix: 'Wedding',
-            engagementDetails: 'Engagement celebration — Praveenraj & Madhumitha',
-            weddingDetails: 'Wedding celebration — Praveenraj & Madhumitha'
         },
         timer: {
             days: 'DAYS',
@@ -841,6 +837,57 @@ const translations = {
             openMaps: '📍 Open in Google Maps',
             mapNote: 'Interactive map - Click and drag to explore'
         },
+        rsvp: {
+            title: 'RSVP',
+            description: 'Please let us know if you can celebrate with us.',
+            nameLabel: 'Name',
+            phoneLabel: 'Phone number',
+            attendingLabel: 'Will you attend?',
+            attendingYes: 'Yes, I will attend',
+            attendingNo: 'Sorry, I cannot attend',
+            submit: 'Send RSVP',
+            submitting: 'Sending…',
+            success: 'Thank you! Your RSVP has been saved.',
+            errorGeneric: 'Could not save your RSVP. Please try again.',
+            close: 'Close'
+        },
+        journey: {
+            title: 'Our Wedding Journey',
+            subtitle: 'Four beautiful days of love, tradition, and celebration await you.',
+            routeTitle: 'Your Route to Celebrate With Us',
+            routeTitleNamed: '{name}, Your Route to Us',
+            routeGreeting: 'We mapped the way from your city to our four-day celebration in Trichy.',
+            routeGreetingNamed: 'Hey {name}! Here is your path from {from} to our wedding week.',
+            routeStart: 'You are here',
+            routeTravel: 'On the way',
+            routeDestination: 'Celebrate with us',
+            routeDestVenue: 'Shree Narayana Mahall · Trichy',
+            routeDestNote: 'Four days of love, music, and moments — 15–18 June 2026',
+            routeOpenMaps: 'Open your route in Google Maps',
+            closing: 'Your presence will make our celebration more special, memorable, and complete. We cannot wait to celebrate this beautiful journey with you.',
+            events: {
+                haldi: {
+                    title: 'Haldi & Mehendi',
+                    date: '15 June 2026',
+                    description: 'An evening filled with colors, laughter, music, turmeric blessings, henna artistry, and joyful moments shared with family and friends.'
+                },
+                sangeeth: {
+                    title: 'Sangeeth Night',
+                    date: '16 June 2026',
+                    description: 'A night of dance, music, celebration, performances, and unforgettable memories as both families come together in happiness.'
+                },
+                reception: {
+                    title: 'Reception',
+                    date: '17 June 2026',
+                    description: 'Join us for an elegant evening reception filled with love, blessings, heartfelt conversations, delicious dinner, and grand celebrations.'
+                },
+                wedding: {
+                    title: 'Wedding Ceremony',
+                    date: '18 June 2026',
+                    description: 'The sacred union of two souls, celebrated with traditions, blessings, rituals, and the beginning of a beautiful forever together.'
+                }
+            },
+        },
         liveStream: {
             title: 'Live Streaming',
             placeholder: 'Live stream will appear here on the day of the wedding'
@@ -853,7 +900,9 @@ const translations = {
     },
     ta: {
         nav: {
-            details: 'நிகழ்ச்சி விவரங்கள்'
+            details: 'நிகழ்ச்சி விவரங்கள்',
+            journey: 'திருமண பயணம்',
+            rsvp: 'உறுதிப்படுத்தல்'
         },
         header: {
             coupleNames: 'பிரவீன்ராஜ் & மதுமிதா',
@@ -886,15 +935,6 @@ const translations = {
             landmark: 'திசைகளுக்கு மேலே உள்ள வரைபட இணைப்புகளைப் பயன்படுத்தவும்; மூத்தவர்களுக்கு அருகிலுள்ள அறியப்பட்ட இடத்தை இங்கே சேர்க்கலாம்.',
             contactTitle: 'தொடர்பு',
             contact: 'நாள் தொடர்பான கேள்விகளுக்கு குடும்பத்தினரைத் தொடர்பு கொள்ளவும் (தொலைபேசி அல்லது வாட்ஸ்அப் சேர்க்கவும்).'
-        },
-        calendar: {
-            addGoogleEngagement: 'நிச்சயதார்த்தத்தை கூகிள் காலண்டரில் சேர்',
-            addGoogleWedding: 'திருமணத்தை கூகிள் காலண்டரில் சேர்',
-            downloadIcs: 'காலண்டர் பதிவிறக்கம் (.ics)',
-            eventEngagementPrefix: 'நிச்சயதார்த்தம்',
-            eventWeddingPrefix: 'திருமணம்',
-            engagementDetails: 'நிச்சயதார்த்த கொண்டாட்டம் — பிரவீன்ராஜ் & மதுமிதா',
-            weddingDetails: 'திருமண கொண்டாட்டம் — பிரவீன்ராஜ் & மதுமிதா'
         },
         timer: {
             days: 'நாட்கள்',
@@ -944,6 +984,57 @@ const translations = {
             openMaps: '📍 கூகிள் மேப்ஸில் திறக்க',
             mapNote: 'ஊடாடும் வரைபடம் - ஆராய கிளிக் செய்து இழுக்கவும்'
         },
+        rsvp: {
+            title: 'உறுதிப்படுத்தல்',
+            description: 'எங்களுடன் கொண்டாட முடியுமா என்று தெரிவிக்கவும்.',
+            nameLabel: 'பெயர்',
+            phoneLabel: 'தொலைபேசி எண்',
+            attendingLabel: 'நீங்கள் வருவீர்களா?',
+            attendingYes: 'ஆம், வருவேன்',
+            attendingNo: 'மன்னிக்கவும், வர முடியாது',
+            submit: 'உறுதிப்படுத்தல் அனுப்பு',
+            submitting: 'அனுப்புகிறது…',
+            success: 'நன்றி! உங்கள் உறுதிப்படுத்தல் சேமிக்கப்பட்டது.',
+            errorGeneric: 'உறுதிப்படுத்தலை சேமிக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்.',
+            close: 'மூடு'
+        },
+        journey: {
+            title: 'எங்கள் திருமண பயணம்',
+            subtitle: 'அன்பு, பாரம்பரியம், கொண்டாட்டம் நிறைந்த நான்கு அழகான நாட்கள் உங்களுக்காக காத்திருக்கின்றன.',
+            routeTitle: 'எங்களிடம் வரும் உங்கள் பாதை',
+            routeTitleNamed: '{name}, எங்களிடம் வரும் பாதை',
+            routeGreeting: 'உங்கள் நகரத்திலிருந்து திருச்சியில் நான்கு நாள் கொண்டாட்டத்திற்கான வழியை வரைபடமாகக் காட்டியுள்ளோம்.',
+            routeGreetingNamed: 'ஹேய் {name}! {from} இலிருந்து எங்கள் திருமண வாரத்திற்கான உங்கள் பாதை இதோ.',
+            routeStart: 'நீங்கள் இங்கே',
+            routeTravel: 'வழியில்',
+            routeDestination: 'எங்களுடன் கொண்டாடுங்கள்',
+            routeDestVenue: 'ஸ்ரீ நாராயண மஹால் · திருச்சி',
+            routeDestNote: 'அன்பு, இசை, தருணங்கள் நிறைந்த நான்கு நாட்கள் — 15–18 ஜூன் 2026',
+            routeOpenMaps: 'Google Maps இல் உங்கள் பாதையைத் திறக்கவும்',
+            closing: 'உங்கள் வருகை எங்கள் கொண்டாட்டத்தை இன்னும் சிறப்பாகவும், நினைவில் நிற்கக்கூடியதாகவும், முழுமையானதாகவும் ஆக்கும். இந்த அழகான பயணத்தை உங்களுடன் கொண்டாடுவதற்கு நாங்கள் ஆவலுடன் காத்திருக்கிறோம்.',
+            events: {
+                haldi: {
+                    title: 'ஹல்தி & மெஹந்தி',
+                    date: '15 ஜூன் 2026',
+                    description: 'வண்ணங்கள், சிரிப்பு, இசை, மஞ்சள் ஆசீர்வாதங்கள், மெஹந்தி கலை, குடும்பம் மற்றும் நண்பர்களுடன் பகிர்ந்த மகிழ்ச்சியான தருணங்கள் நிறைந்த ஒரு மாலை.'
+                },
+                sangeeth: {
+                    title: 'சங்கீத் இரவு',
+                    date: '16 ஜூன் 2026',
+                    description: 'நடனம், இசை, கொண்டாட்டம், நிகழ்ச்சிகள், மற்றும் இரு குடும்பங்களும் மகிழ்ச்சியில் ஒன்றிணையும் மறக்க முடியாத நினைவுகளின் இரவு.'
+                },
+                reception: {
+                    title: 'வரவேற்பு',
+                    date: '17 ஜூன் 2026',
+                    description: 'அன்பு, ஆசீர்வாதங்கள், இதயத்தைத் தொடும் உரையாடல்கள், சுவையான இரவு உணவு, மற்றும் பிரமாண்ட கொண்டாட்டங்கள் நிறைந்த ஒரு நேர்த்தியான வரவேற்பு இரவில் எங்களுடன் சேருங்கள்.'
+                },
+                wedding: {
+                    title: 'திருமண சடங்கு',
+                    date: '18 ஜூன் 2026',
+                    description: 'இரு ஆத்மாக்களின் புனித ஒன்றிணைவு — பாரம்பரியங்கள், ஆசீர்வாதங்கள், சடங்குகள், மற்றும் அழகான என்றென்றும் தொடக்கத்துடன் கொண்டாடப்படுகிறது.'
+                }
+            },
+        },
         liveStream: {
             title: 'நேரடி ஒளிபரப்பு',
             placeholder: 'நேரடி ஒளிபரப்பு இங்கே தோன்றும்'
@@ -955,107 +1046,6 @@ const translations = {
         }
     }
 };
-
-function refreshCalendarLinks() {
-    const utils = globalThis.WeddingCalendarUtils;
-    if (!utils) {
-        return;
-    }
-    const eng = CONFIG.LOCATIONS.engagement;
-    const wed = CONFIG.LOCATIONS.marriage;
-    const engagementStart = new Date(CONFIG.ENGAGEMENT_DATE);
-    const engagementEnd = new Date(engagementStart);
-    engagementEnd.setDate(engagementEnd.getDate() + 1);
-    const marriageStart = new Date(CONFIG.MARRIAGE_DATE);
-    const marriageEnd = new Date(marriageStart);
-    marriageEnd.setDate(marriageEnd.getDate() + 1);
-
-    const couple = translations[currentLanguage]?.header?.coupleNames || 'Praveenraj & Madhumitha';
-    const cal = translations[currentLanguage]?.calendar || {};
-    const engTitle = `${cal.eventEngagementPrefix || 'Engagement'} — ${couple}`;
-    const wedTitle = `${cal.eventWeddingPrefix || 'Wedding'} — ${couple}`;
-
-    const gEng = document.getElementById('calendarGoogleEngagement');
-    const gWed = document.getElementById('calendarGoogleWedding');
-    if (gEng) {
-        gEng.href = utils.buildGoogleCalendarUrl({
-            title: engTitle,
-            startDate: engagementStart,
-            endDateExclusive: engagementEnd,
-            details: cal.engagementDetails || '',
-            location: `${eng.name}, ${eng.address}`
-        });
-    }
-    if (gWed) {
-        gWed.href = utils.buildGoogleCalendarUrl({
-            title: wedTitle,
-            startDate: marriageStart,
-            endDateExclusive: marriageEnd,
-            details: cal.weddingDetails || '',
-            location: `${wed.name}, ${wed.address}`
-        });
-    }
-}
-
-function downloadCelebrationIcs() {
-    const utils = globalThis.WeddingCalendarUtils;
-    if (!utils) {
-        return;
-    }
-    const eng = CONFIG.LOCATIONS.engagement;
-    const wed = CONFIG.LOCATIONS.marriage;
-    const engagementStart = new Date(CONFIG.ENGAGEMENT_DATE);
-    const engagementEnd = new Date(engagementStart);
-    engagementEnd.setDate(engagementEnd.getDate() + 1);
-    const marriageStart = new Date(CONFIG.MARRIAGE_DATE);
-    const marriageEnd = new Date(marriageStart);
-    marriageEnd.setDate(marriageEnd.getDate() + 1);
-
-    const couple = translations[currentLanguage]?.header?.coupleNames || 'Praveenraj & Madhumitha';
-    const cal = translations[currentLanguage]?.calendar || {};
-    const engTitle = `${cal.eventEngagementPrefix || 'Engagement'} — ${couple}`;
-    const wedTitle = `${cal.eventWeddingPrefix || 'Wedding'} — ${couple}`;
-
-    const ics = utils.buildIcsCalendar({
-        events: [
-            {
-                title: engTitle,
-                startDate: engagementStart,
-                endDateExclusive: engagementEnd,
-                location: `${eng.name}, ${eng.address}`,
-                description: cal.engagementDetails || ''
-            },
-            {
-                title: wedTitle,
-                startDate: marriageStart,
-                endDateExclusive: marriageEnd,
-                location: `${wed.name}, ${wed.address}`,
-                description: cal.weddingDetails || ''
-            }
-        ]
-    });
-    const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const anchor = document.createElement('a');
-    anchor.href = url;
-    anchor.download = 'praveenraj-madhumitha-celebrations.ics';
-    anchor.rel = 'noopener';
-    document.body.appendChild(anchor);
-    anchor.click();
-    document.body.removeChild(anchor);
-    URL.revokeObjectURL(url);
-}
-
-function bindCalendarDownloadOnce() {
-    const icsBtn = document.getElementById('calendarDownloadIcs');
-    if (!icsBtn || icsBtn.dataset.bound === '1') {
-        return;
-    }
-    icsBtn.dataset.bound = '1';
-    icsBtn.addEventListener('click', () => {
-        downloadCelebrationIcs();
-    });
-}
 
 // Current language
 let currentLanguage = localStorage.getItem('language') || 'en';
@@ -1113,9 +1103,14 @@ function updateLanguage(lang) {
         langBtn.textContent = lang === 'en' ? 'தமிழ்' : 'English';
     }
 
-    refreshCalendarLinks();
+    const rsvpCloseBtn = document.getElementById('rsvpModalClose');
+    if (rsvpCloseBtn) {
+        rsvpCloseBtn.setAttribute('aria-label', translations[lang]?.rsvp?.close || 'Close');
+    }
+
     updateCountdown();
-    
+    renderFriendRouteMap();
+
     // Refresh gallery to update dynamic text
     if (typeof initGallery === 'function' && document.getElementById('photoGrid')) {
         setTimeout(() => {
@@ -1147,6 +1142,226 @@ function scrollToGallery() {
 // Make scrollToGallery available globally
 window.scrollToGallery = scrollToGallery;
 
+function getRsvpTranslation(key) {
+    const keys = key.split('.');
+    let translation = translations[currentLanguage];
+    for (const k of keys) {
+        translation = translation?.[k];
+    }
+    return translation || '';
+}
+
+function showRsvpStatus(message, type) {
+    const statusEl = document.getElementById('rsvpStatus');
+    if (!statusEl) {
+        return;
+    }
+    statusEl.textContent = message;
+    statusEl.className = 'rsvp-message' + (type ? ` ${type}` : '');
+}
+
+function openRsvpModal() {
+    const modal = document.getElementById('rsvpModal');
+    if (!modal) {
+        return;
+    }
+    modal.classList.add('active');
+    document.body.classList.add('rsvp-modal-open');
+    const nameInput = document.getElementById('rsvpName');
+    if (nameInput) {
+        setTimeout(() => nameInput.focus(), 100);
+    }
+}
+
+function closeRsvpModal() {
+    const modal = document.getElementById('rsvpModal');
+    if (!modal) {
+        return;
+    }
+    modal.classList.remove('active');
+    document.body.classList.remove('rsvp-modal-open');
+}
+
+function initRsvp() {
+    const form = document.getElementById('rsvpForm');
+    const modal = document.getElementById('rsvpModal');
+    if (!form || !modal) {
+        return;
+    }
+
+    const submitBtn = document.getElementById('rsvpSubmitBtn');
+    const closeBtn = document.getElementById('rsvpModalClose');
+    const backdrop = document.getElementById('rsvpModalBackdrop');
+    const rsvpNavLink = document.getElementById('rsvpNavLink');
+
+    if (closeBtn) {
+        closeBtn.setAttribute('aria-label', getRsvpTranslation('rsvp.close') || 'Close');
+        closeBtn.addEventListener('click', closeRsvpModal);
+    }
+
+    if (backdrop) {
+        backdrop.addEventListener('click', closeRsvpModal);
+    }
+
+    if (rsvpNavLink) {
+        rsvpNavLink.addEventListener('click', (event) => {
+            event.preventDefault();
+            openRsvpModal();
+        });
+    }
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && modal.classList.contains('active')) {
+            closeRsvpModal();
+        }
+    });
+
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        showRsvpStatus('', '');
+
+        const payload = {
+            name: document.getElementById('rsvpName')?.value?.trim() || '',
+            phone: document.getElementById('rsvpPhone')?.value?.trim() || '',
+            attending: document.querySelector('input[name="attending"]:checked')?.value || ''
+        };
+
+        const defaultSubmitLabel = getRsvpTranslation('rsvp.submit');
+
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.textContent = getRsvpTranslation('rsvp.submitting');
+        }
+
+        try {
+            const response = await fetch('/api/rsvp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            const result = await response.json().catch(() => ({}));
+
+            if (!response.ok || !result.success) {
+                throw new Error(result.error || getRsvpTranslation('rsvp.errorGeneric'));
+            }
+
+            showRsvpStatus(getRsvpTranslation('rsvp.success'), 'success');
+            form.reset();
+            setTimeout(closeRsvpModal, 2000);
+        } catch (error) {
+            showRsvpStatus(error.message || getRsvpTranslation('rsvp.errorGeneric'), 'error');
+        } finally {
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = defaultSubmitLabel || 'Send RSVP';
+            }
+        }
+    });
+
+    setTimeout(openRsvpModal, 400);
+}
+
+function getRouteLabelTemplates() {
+    const en = translations.en?.journey || {};
+    const ta = translations.ta?.journey || {};
+    return {
+        en: {
+            routeTitle: en.routeTitle,
+            routeTitleNamed: en.routeTitleNamed,
+            routeGreeting: en.routeGreeting,
+            routeGreetingNamed: en.routeGreetingNamed,
+            routeStart: en.routeStart,
+            routeTravel: en.routeTravel,
+            routeDestination: en.routeDestination,
+            routeDestVenue: en.routeDestVenue,
+            routeDestNote: en.routeDestNote,
+            routeOpenMaps: en.routeOpenMaps
+        },
+        ta: {
+            routeTitle: ta.routeTitle,
+            routeTitleNamed: ta.routeTitleNamed,
+            routeGreeting: ta.routeGreeting,
+            routeGreetingNamed: ta.routeGreetingNamed,
+            routeStart: ta.routeStart,
+            routeTravel: ta.routeTravel,
+            routeDestination: ta.routeDestination,
+            routeDestVenue: ta.routeDestVenue,
+            routeDestNote: ta.routeDestNote,
+            routeOpenMaps: ta.routeOpenMaps
+        }
+    };
+}
+
+function renderFriendRouteMap() {
+    const friendRouteApi = window.WeddingInvite?.friendRoute;
+    const routeSection = document.getElementById('journeyRoute');
+    if (!friendRouteApi || !routeSection) {
+        return;
+    }
+
+    const routeKey = friendRouteApi.resolveFriendRouteKey(
+        new URLSearchParams(window.location.search)
+    );
+    const view = friendRouteApi.getFriendRouteView(
+        routeKey,
+        currentLanguage,
+        getRouteLabelTemplates()
+    );
+
+    const setText = (id, text) => {
+        const el = document.getElementById(id);
+        if (el && text) {
+            el.textContent = text;
+        }
+    };
+
+    setText('journeyRouteTitle', view.title);
+    setText('journeyRouteGreeting', view.greeting);
+    setText('journeyRouteStartLabel', view.startLabel);
+    setText('journeyRouteFromCity', view.fromCity);
+    setText('journeyRouteFromNote', view.fromNote);
+    setText('journeyRouteTravelLabel', view.travelLabel);
+    setText('journeyRouteTravelNote', view.travel);
+    setText('journeyRouteDestLabel', view.destinationLabel);
+    setText('journeyRouteDestVenue', view.destinationVenue);
+    setText('journeyRouteDestNote', view.destinationNote);
+
+    const mapsLink = document.getElementById('journeyRouteMapsLink');
+    if (mapsLink) {
+        mapsLink.href = view.mapsUrl;
+        mapsLink.textContent = view.openMapsLabel;
+    }
+
+    const rsvpNameInput = document.getElementById('rsvpName');
+    if (rsvpNameInput && view.rsvpName && !rsvpNameInput.value.trim()) {
+        rsvpNameInput.value = view.rsvpName;
+    }
+}
+
+function initWeddingJourney() {
+    renderFriendRouteMap();
+
+    const animatedItems = document.querySelectorAll('[data-journey-animate]');
+    if (!animatedItems.length) {
+        return;
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.18,
+        rootMargin: '0px 0px -30px 0px'
+    });
+
+    animatedItems.forEach((item) => observer.observe(item));
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
     // Initialize language first
     initLanguage();
@@ -1159,8 +1374,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             updateLanguage(newLang);
         });
     }
-
-    bindCalendarDownloadOnce();
 
     const heroPhotosBtn = document.getElementById('heroPhotosBtn');
     if (heroPhotosBtn) {
@@ -1186,6 +1399,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Gallery preview now uses static photos in HTML
     initLocationTabs();
     initNavigation();
+    initRsvp();
+    initWeddingJourney();
     
     // Initialize footer date dynamically
     updateCountdown(); // This will set the footer date based on current event
