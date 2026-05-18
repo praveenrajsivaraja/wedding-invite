@@ -49,13 +49,11 @@ test('getFriendRouteView personalizes named friends', () => {
     assert.equal(view.title, 'Arun, Your Route to Us');
     assert.match(view.greeting, /Hey Arun!/);
     assert.equal(view.fromCity, 'Chennai');
-    assert.equal(view.rsvpName, 'Arun');
 });
 
 test('getFriendRouteView uses city-only route without a name', () => {
     const view = getFriendRouteView('chennai', 'en', ROUTE_LABELS);
     assert.equal(view.title, 'Your Route to Celebrate With Us');
-    assert.equal(view.rsvpName, '');
     assert.equal(view.fromCity, 'Chennai');
 });
 

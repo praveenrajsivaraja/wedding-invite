@@ -5,8 +5,6 @@ const fs = require('fs');
 const path = require('path');
 const cors = require('cors');
 const multer = require('multer');
-const { handleRsvpRequest } = require('./lib/rsvp-handler');
-
 const app = express();
 const PORT = process.env.PORT || 2801;
 
@@ -51,18 +49,6 @@ app.get('/api/photos', (req, res) => {
     if (!fs.existsSync(folderPath)) return res.json({ images: [] });
     const files = fs.readdirSync(folderPath).filter(f => /\.(jpg|jpeg|png|webp|gif)$/i.test(f));
     res.json({ images: files });
-});
-
-app.post('/api/rsvp', async (req, res) => {
-    try {
-        const result = await handleRsvpRequest(req.body);
-        res.json(result);
-    } catch (error) {
-        const statusCode = error.code === 'VALIDATION_ERROR' ? 400
-            : error.code === 'NOT_CONFIGURED' ? 503
-                : 500;
-        res.status(statusCode).json({ success: false, error: error.message });
-    }
 });
 
 app.get('/api/header-images', (req, res) => {

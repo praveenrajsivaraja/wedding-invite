@@ -658,9 +658,6 @@ function initNavigation() {
     
     navLinks.forEach(link => {
         link.addEventListener('click', (e) => {
-            if (link.id === 'rsvpNavLink') {
-                return;
-            }
             e.preventDefault();
             const targetId = link.getAttribute('href').substring(1);
             const targetElement = document.getElementById(targetId);
@@ -754,8 +751,7 @@ const translations = {
     en: {
         nav: {
             details: 'Schedule & details',
-            journey: 'Wedding Journey',
-            rsvp: 'RSVP'
+            journey: 'Wedding Journey'
         },
         header: {
             coupleNames: 'Praveenraj & Madhumitha',
@@ -837,20 +833,6 @@ const translations = {
             openMaps: '📍 Open in Google Maps',
             mapNote: 'Interactive map - Click and drag to explore'
         },
-        rsvp: {
-            title: 'RSVP',
-            description: 'Please let us know if you can celebrate with us.',
-            nameLabel: 'Name',
-            phoneLabel: 'Phone number',
-            attendingLabel: 'Will you attend?',
-            attendingYes: 'Yes, I will attend',
-            attendingNo: 'Sorry, I cannot attend',
-            submit: 'Send RSVP',
-            submitting: 'Sending…',
-            success: 'Thank you! Your RSVP has been saved.',
-            errorGeneric: 'Could not save your RSVP. Please try again.',
-            close: 'Close'
-        },
         journey: {
             title: 'Our Wedding Journey',
             subtitle: 'Four beautiful days of love, tradition, and celebration await you.',
@@ -901,8 +883,7 @@ const translations = {
     ta: {
         nav: {
             details: 'நிகழ்ச்சி விவரங்கள்',
-            journey: 'திருமண பயணம்',
-            rsvp: 'உறுதிப்படுத்தல்'
+            journey: 'திருமண பயணம்'
         },
         header: {
             coupleNames: 'பிரவீன்ராஜ் & மதுமிதா',
@@ -983,20 +964,6 @@ const translations = {
             wedding: 'திருமணம்',
             openMaps: '📍 கூகிள் மேப்ஸில் திறக்க',
             mapNote: 'ஊடாடும் வரைபடம் - ஆராய கிளிக் செய்து இழுக்கவும்'
-        },
-        rsvp: {
-            title: 'உறுதிப்படுத்தல்',
-            description: 'எங்களுடன் கொண்டாட முடியுமா என்று தெரிவிக்கவும்.',
-            nameLabel: 'பெயர்',
-            phoneLabel: 'தொலைபேசி எண்',
-            attendingLabel: 'நீங்கள் வருவீர்களா?',
-            attendingYes: 'ஆம், வருவேன்',
-            attendingNo: 'மன்னிக்கவும், வர முடியாது',
-            submit: 'உறுதிப்படுத்தல் அனுப்பு',
-            submitting: 'அனுப்புகிறது…',
-            success: 'நன்றி! உங்கள் உறுதிப்படுத்தல் சேமிக்கப்பட்டது.',
-            errorGeneric: 'உறுதிப்படுத்தலை சேமிக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்.',
-            close: 'மூடு'
         },
         journey: {
             title: 'எங்கள் திருமண பயணம்',
@@ -1103,11 +1070,6 @@ function updateLanguage(lang) {
         langBtn.textContent = lang === 'en' ? 'தமிழ்' : 'English';
     }
 
-    const rsvpCloseBtn = document.getElementById('rsvpModalClose');
-    if (rsvpCloseBtn) {
-        rsvpCloseBtn.setAttribute('aria-label', translations[lang]?.rsvp?.close || 'Close');
-    }
-
     updateCountdown();
     renderFriendRouteMap();
 
@@ -1141,126 +1103,6 @@ function scrollToGallery() {
 
 // Make scrollToGallery available globally
 window.scrollToGallery = scrollToGallery;
-
-function getRsvpTranslation(key) {
-    const keys = key.split('.');
-    let translation = translations[currentLanguage];
-    for (const k of keys) {
-        translation = translation?.[k];
-    }
-    return translation || '';
-}
-
-function showRsvpStatus(message, type) {
-    const statusEl = document.getElementById('rsvpStatus');
-    if (!statusEl) {
-        return;
-    }
-    statusEl.textContent = message;
-    statusEl.className = 'rsvp-message' + (type ? ` ${type}` : '');
-}
-
-function openRsvpModal() {
-    const modal = document.getElementById('rsvpModal');
-    if (!modal) {
-        return;
-    }
-    modal.classList.add('active');
-    document.body.classList.add('rsvp-modal-open');
-    const nameInput = document.getElementById('rsvpName');
-    if (nameInput) {
-        setTimeout(() => nameInput.focus(), 100);
-    }
-}
-
-function closeRsvpModal() {
-    const modal = document.getElementById('rsvpModal');
-    if (!modal) {
-        return;
-    }
-    modal.classList.remove('active');
-    document.body.classList.remove('rsvp-modal-open');
-}
-
-function initRsvp() {
-    const form = document.getElementById('rsvpForm');
-    const modal = document.getElementById('rsvpModal');
-    if (!form || !modal) {
-        return;
-    }
-
-    const submitBtn = document.getElementById('rsvpSubmitBtn');
-    const closeBtn = document.getElementById('rsvpModalClose');
-    const backdrop = document.getElementById('rsvpModalBackdrop');
-    const rsvpNavLink = document.getElementById('rsvpNavLink');
-
-    if (closeBtn) {
-        closeBtn.setAttribute('aria-label', getRsvpTranslation('rsvp.close') || 'Close');
-        closeBtn.addEventListener('click', closeRsvpModal);
-    }
-
-    if (backdrop) {
-        backdrop.addEventListener('click', closeRsvpModal);
-    }
-
-    if (rsvpNavLink) {
-        rsvpNavLink.addEventListener('click', (event) => {
-            event.preventDefault();
-            openRsvpModal();
-        });
-    }
-
-    document.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape' && modal.classList.contains('active')) {
-            closeRsvpModal();
-        }
-    });
-
-    form.addEventListener('submit', async (event) => {
-        event.preventDefault();
-        showRsvpStatus('', '');
-
-        const payload = {
-            name: document.getElementById('rsvpName')?.value?.trim() || '',
-            phone: document.getElementById('rsvpPhone')?.value?.trim() || '',
-            attending: document.querySelector('input[name="attending"]:checked')?.value || ''
-        };
-
-        const defaultSubmitLabel = getRsvpTranslation('rsvp.submit');
-
-        if (submitBtn) {
-            submitBtn.disabled = true;
-            submitBtn.textContent = getRsvpTranslation('rsvp.submitting');
-        }
-
-        try {
-            const response = await fetch('/api/rsvp', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-
-            const result = await response.json().catch(() => ({}));
-
-            if (!response.ok || !result.success) {
-                throw new Error(result.error || getRsvpTranslation('rsvp.errorGeneric'));
-            }
-
-            showRsvpStatus(getRsvpTranslation('rsvp.success'), 'success');
-            form.reset();
-            setTimeout(closeRsvpModal, 2000);
-        } catch (error) {
-            showRsvpStatus(error.message || getRsvpTranslation('rsvp.errorGeneric'), 'error');
-        } finally {
-            if (submitBtn) {
-                submitBtn.disabled = false;
-                submitBtn.textContent = defaultSubmitLabel || 'Send RSVP';
-            }
-        }
-    });
-
-    setTimeout(openRsvpModal, 400);
-}
 
 function getRouteLabelTemplates() {
     const en = translations.en?.journey || {};
@@ -1333,10 +1175,6 @@ function renderFriendRouteMap() {
         mapsLink.textContent = view.openMapsLabel;
     }
 
-    const rsvpNameInput = document.getElementById('rsvpName');
-    if (rsvpNameInput && view.rsvpName && !rsvpNameInput.value.trim()) {
-        rsvpNameInput.value = view.rsvpName;
-    }
 }
 
 function initWeddingJourney() {
@@ -1399,7 +1237,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Gallery preview now uses static photos in HTML
     initLocationTabs();
     initNavigation();
-    initRsvp();
     initWeddingJourney();
     
     // Initialize footer date dynamically
