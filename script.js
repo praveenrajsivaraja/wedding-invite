@@ -750,7 +750,7 @@ const translations = {
             journey: 'Wedding Journey'
         },
         header: {
-            coupleNames: 'Praveenraj & Madhumitha',
+            coupleNames: 'We Are Getting Married',
             groom: 'Chennai Paiyan',
             weds: 'Weds',
             bride: 'Trichy Ponnu',
@@ -828,6 +828,22 @@ const translations = {
             wedding: 'Wedding',
             openMaps: '📍 Open in Google Maps',
             mapNote: 'Interactive map - Click and drag to explore'
+        },
+        calendar: {
+            title: 'Save the Date',
+            subtitle: 'Tap a highlighted date to explore our celebration week',
+            hint: 'Tap a date to see event details',
+            addToCalendar: 'Add wedding to calendar',
+            viewVenue: 'View venue',
+            monthNames: ['January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'],
+            weekdays: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+            eventIcons: {
+                haldi: '🌼',
+                sangeeth: '🎵',
+                reception: '🥂',
+                wedding: '❤'
+            }
         },
         journey: {
             title: 'Wedding Planner',
@@ -961,6 +977,22 @@ const translations = {
             openMaps: '📍 கூகிள் மேப்ஸில் திறக்க',
             mapNote: 'ஊடாடும் வரைபடம் - ஆராய கிளிக் செய்து இழுக்கவும்'
         },
+        calendar: {
+            title: 'தேதியை நினைவில் கொள்ளுங்கள்',
+            subtitle: 'எங்கள் கொண்டாட்ட வாரத்தை அறிய வண்ண நிற தேதியைத் தட்டவும்',
+            hint: 'விவரங்களுக்கு தேதியைத் தட்டவும்',
+            addToCalendar: 'திருமணத்தை நாட்காட்டியில் சேர்க்கவும்',
+            viewVenue: 'இடத்தைப் பார்க்க',
+            monthNames: ['ஜனவரி', 'பிப்ரவரி', 'மார்ச்', 'ஏப்ரல்', 'மே', 'ஜூன்',
+                'ஜூலை', 'ஆகஸ்ட்', 'செப்டம்பர்', 'அக்டோபர்', 'நவம்பர்', 'டிசம்பர்'],
+            weekdays: ['ஞா', 'தி', 'செ', 'பு', 'வி', 'வெ', 'ச'],
+            eventIcons: {
+                haldi: '🌼',
+                sangeeth: '🎵',
+                reception: '🥂',
+                wedding: '❤'
+            }
+        },
         journey: {
             title: 'திருமண திட்டமிடுபவர்',
             subtitle: 'அன்பு, பாரம்பரியம், கொண்டாட்டம் நிறைந்த நான்கு அழகான நாட்கள் உங்களுக்காக காத்திருக்கின்றன.',
@@ -1068,6 +1100,10 @@ function updateLanguage(lang) {
 
     updateCountdown();
     renderFriendRouteMap();
+    renderWeddingCalendar();
+    if (selectedCalendarDay !== null) {
+        showCalendarEventPanel(selectedCalendarDay);
+    }
 
     // Refresh gallery to update dynamic text
     if (typeof initGallery === 'function' && document.getElementById('photoGrid')) {
@@ -1173,6 +1209,212 @@ function renderFriendRouteMap() {
 
 }
 
+const CALENDAR_EVENT_ORDER = ['haldi', 'sangeeth', 'reception', 'wedding'];
+const CALENDAR_EVENT_DAYS = {
+    haldi: 15,
+    sangeeth: 16,
+    reception: 17,
+    wedding: 18
+};
+
+let selectedCalendarDay = null;
+let weddingCalendarBound = false;
+
+function getCalendarCopy() {
+    return translations[currentLanguage]?.calendar || translations.en.calendar;
+}
+
+function getCalendarEventMap() {
+    const journeyEvents = translations[currentLanguage]?.journey?.events
+        || translations.en.journey.events;
+    const map = {};
+    CALENDAR_EVENT_ORDER.forEach((eventKey) => {
+        const day = CALENDAR_EVENT_DAYS[eventKey];
+        const event = journeyEvents[eventKey];
+        if (event && day) {
+            map[day] = { key: eventKey, ...event };
+        }
+    });
+    return map;
+}
+
+function formatCalendarPanelDate(day, monthIndex, year) {
+    const monthNames = getCalendarCopy().monthNames || translations.en.calendar.monthNames;
+    return `${day} ${monthNames[monthIndex]} ${year}`;
+}
+
+function showCalendarEventPanel(day) {
+    const panel = document.getElementById('calendarEventPanel');
+    const eventMap = getCalendarEventMap();
+    const event = eventMap[day];
+    if (!panel || !event) {
+        return;
+    }
+
+    const weddingDate = new Date(CONFIG.MARRIAGE_DATE);
+    const year = weddingDate.getFullYear();
+    const month = weddingDate.getMonth();
+
+    document.getElementById('calendarPanelDate').textContent =
+        formatCalendarPanelDate(day, month, year);
+    document.getElementById('calendarPanelTitle').textContent = event.title || '';
+    panel.hidden = false;
+    selectedCalendarDay = day;
+
+    document.querySelectorAll('.wedding-calendar-day--event').forEach((cell) => {
+        const cellDay = Number(cell.dataset.day);
+        cell.classList.toggle('wedding-calendar-day--selected', cellDay === day);
+    });
+}
+
+function hideCalendarEventPanel() {
+    const panel = document.getElementById('calendarEventPanel');
+    if (panel) {
+        panel.hidden = true;
+    }
+    selectedCalendarDay = null;
+    document.querySelectorAll('.wedding-calendar-day--selected').forEach((cell) => {
+        cell.classList.remove('wedding-calendar-day--selected');
+    });
+}
+
+function buildWeddingGoogleCalendarUrl() {
+    const utils = globalThis.WeddingCalendarUtils;
+    const weddingDate = new Date(CONFIG.MARRIAGE_DATE);
+    const startDate = new Date(weddingDate.getFullYear(), weddingDate.getMonth(), weddingDate.getDate());
+    const endDateExclusive = new Date(startDate);
+    endDateExclusive.setDate(endDateExclusive.getDate() + 1);
+    const event = getCalendarEventMap()[CALENDAR_EVENT_DAYS.wedding];
+    const location = CONFIG.LOCATIONS.marriage;
+
+    if (utils && typeof utils.buildGoogleCalendarUrl === 'function') {
+        return utils.buildGoogleCalendarUrl({
+            title: event?.title || 'Wedding',
+            startDate,
+            endDateExclusive,
+            details: event?.description || '',
+            location: `${location.name}, ${location.address}`
+        });
+    }
+
+    const pad = (n) => String(n).padStart(2, '0');
+    const format = (d) => `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}`;
+    const params = new URLSearchParams({
+        action: 'TEMPLATE',
+        text: event?.title || 'Wedding',
+        dates: `${format(startDate)}/${format(endDateExclusive)}`,
+        details: event?.description || '',
+        location: `${location.name}, ${location.address}`
+    });
+    return `https://calendar.google.com/calendar/render?${params.toString()}`;
+}
+
+function bindWeddingCalendarInteractions() {
+    if (weddingCalendarBound) {
+        return;
+    }
+    weddingCalendarBound = true;
+
+    const container = document.getElementById('weddingCalendar');
+    if (container) {
+        container.addEventListener('click', (e) => {
+            const cell = e.target.closest('.wedding-calendar-day--event');
+            if (!cell) {
+                return;
+            }
+            const day = Number(cell.dataset.day);
+            if (day) {
+                showCalendarEventPanel(day);
+            }
+        });
+    }
+
+    const closeBtn = document.getElementById('calendarPanelClose');
+    if (closeBtn) {
+        closeBtn.addEventListener('click', hideCalendarEventPanel);
+    }
+
+    const addBtn = document.getElementById('addToCalendarBtn');
+    if (addBtn) {
+        addBtn.addEventListener('click', () => {
+            window.open(buildWeddingGoogleCalendarUrl(), '_blank', 'noopener,noreferrer');
+        });
+    }
+}
+
+function renderWeddingCalendar() {
+    const container = document.getElementById('weddingCalendar');
+    if (!container) {
+        return;
+    }
+
+    const weddingDate = new Date(CONFIG.MARRIAGE_DATE);
+    const year = weddingDate.getFullYear();
+    const month = weddingDate.getMonth();
+    const weddingDay = weddingDate.getDate();
+    const calendarCopy = getCalendarCopy();
+    const monthNames = calendarCopy.monthNames || translations.en.calendar.monthNames;
+    const weekdays = calendarCopy.weekdays || translations.en.calendar.weekdays;
+    const icons = calendarCopy.eventIcons || translations.en.calendar.eventIcons;
+    const eventMap = getCalendarEventMap();
+
+    const firstDayOfMonth = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    let daysHtml = '';
+    for (let i = 0; i < firstDayOfMonth; i += 1) {
+        daysHtml += '<div class="wedding-calendar-day wedding-calendar-day--empty" aria-hidden="true"></div>';
+    }
+
+    for (let day = 1; day <= daysInMonth; day += 1) {
+        const event = eventMap[day];
+        if (event) {
+            const isWeddingDay = day === weddingDay;
+            const isSelected = selectedCalendarDay === day;
+            const icon = icons[event.key] || '';
+            const ariaLabel = `${monthNames[month]} ${day}, ${year} — ${event.title}`;
+            if (isWeddingDay) {
+                daysHtml += `
+                    <button type="button" class="wedding-calendar-day wedding-calendar-day--event wedding-calendar-day--wedding wedding-calendar-day--${event.key}${isSelected ? ' wedding-calendar-day--selected' : ''}"
+                        data-day="${day}" aria-label="${ariaLabel}" aria-current="${isSelected ? 'date' : 'false'}">
+                        <span class="calendar-heart" aria-hidden="true">&#10084;</span>
+                        <span class="calendar-day-num">${day}</span>
+                    </button>`;
+            } else {
+                daysHtml += `
+                    <button type="button" class="wedding-calendar-day wedding-calendar-day--event wedding-calendar-day--${event.key}${isSelected ? ' wedding-calendar-day--selected' : ''}"
+                        data-day="${day}" aria-label="${ariaLabel}">
+                        <span class="calendar-day-icon" aria-hidden="true">${icon}</span>
+                        <span class="calendar-day-num">${day}</span>
+                    </button>`;
+            }
+        } else {
+            daysHtml += `<div class="wedding-calendar-day" role="gridcell">${day}</div>`;
+        }
+    }
+
+    const weekdaysHtml = weekdays.map((label) =>
+        `<div class="wedding-calendar-weekday">${label}</div>`
+    ).join('');
+
+    container.innerHTML = `
+        <div class="wedding-calendar-header">
+            <h3 class="wedding-calendar-month">${monthNames[month]} ${year}</h3>
+        </div>
+        <div class="wedding-calendar-weekdays" role="row">${weekdaysHtml}</div>
+        <div class="wedding-calendar-grid" role="grid">${daysHtml}</div>
+    `;
+}
+
+function initWeddingCalendar() {
+    if (!document.getElementById('weddingCalendar')) {
+        return;
+    }
+    bindWeddingCalendarInteractions();
+    renderWeddingCalendar();
+    showCalendarEventPanel(CALENDAR_EVENT_DAYS.wedding);
+}
+
 function initWeddingJourney() {
     renderFriendRouteMap();
 
@@ -1233,6 +1475,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Gallery preview now uses static photos in HTML
     initLocationTabs();
     initNavigation();
+    initWeddingCalendar();
     initWeddingJourney();
     
     // Initialize footer date dynamically

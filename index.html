@@ -5,13 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="description"
-        content="Wedding celebrations for Praveenraj and Madhumitha â€” engagement and wedding in Tamil Nadu. Venues, photos, and live stream.">
-    <meta property="og:title" content="Praveenraj & Madhumitha â€” Wedding">
+        content="Wedding celebrations for Praveenraj and Madhumitha — engagement and wedding in Tamil Nadu. Venues, photos, and live stream.">
+    <meta property="og:title" content="Praveenraj & Madhumitha — Wedding">
     <meta property="og:description"
         content="Save the date and celebrate with us. Venue details, photos, and live stream.">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Praveenraj & Madhumitha â€” Wedding">
+    <meta name="twitter:title" content="Praveenraj & Madhumitha — Wedding">
     <meta name="twitter:description" content="Save the date and celebrate with us.">
     <meta name="theme-color" content="#8B0000">
     <title>Praveenraj & Madhumitha - Wedding</title>
@@ -26,7 +26,7 @@
 <body>
     <!-- Language Toggle Button -->
     <button class="language-toggle-btn" id="languageToggleBtn" aria-label="Toggle language" title="Change Language">
-        <span class="language-text" id="languageText">à®¤à®®à®¿à®´à¯</span>
+        <span class="language-text" id="languageText">தமிழ்</span>
     </button>
     <!-- Navigation Bar -->
     <nav class="main-nav" id="mainNav">
@@ -92,16 +92,13 @@
         </div>
         <div class="header-overlay"></div>
         <div class="container header-content">
-            <p class="couple-names" data-i18n="header.coupleNames">Praveenraj &amp; Madhumitha</p>
+            <p class="couple-names" data-i18n="header.coupleNames">We Are Getting Married</p>
             <h2 class="were-getting" data-i18n="header.groom">Chennai Paiyan</h2>
             <h1 class="were-getting gold-text" data-i18n="header.weds">Weds</h1>
             <h2 class="were-getting" data-i18n="header.bride">Trichy Ponnu</h2>
 
             <p class="event-date" id="eventDate" aria-live="polite"></p>
             <p class="countdown-label" id="countdownLabel" data-i18n="header.countdownEngagement"></p>
-            <p class="save-the-date" data-i18n="header.saveTheDate">SAVE THE DATE</p>
-            <button type="button" class="hero-photos-btn" id="heroPhotosBtn" data-i18n="header.viewPhotos">View
-                photos</button>
             <div class="timer" id="timer">
                 <div class="time-unit">
                     <div class="time-value" id="days">00</div>
@@ -124,6 +121,36 @@
         </div>
     </section>
 
+    <!-- Wedding Date Calendar -->
+    <section id="wedding-calendar" class="wedding-calendar-section">
+        <div class="calendar-decor" aria-hidden="true">
+            <span class="calendar-petal calendar-petal-1">&#10084;</span>
+            <span class="calendar-petal calendar-petal-2">&#10084;</span>
+            <span class="calendar-petal calendar-petal-3">&#10084;</span>
+            <span class="calendar-sparkle calendar-sparkle-1"></span>
+            <span class="calendar-sparkle calendar-sparkle-2"></span>
+        </div>
+        <div class="container">
+            <h2 class="section-title">
+                <span class="gold-text" data-i18n="calendar.title">Save the Date</span>
+            </h2>
+            <p class="calendar-subtitle" data-i18n="calendar.subtitle">Tap a highlighted date to explore our celebration week</p>
+            <div class="wedding-calendar-wrap">
+                <div class="wedding-calendar-card">
+                    <div class="wedding-calendar" id="weddingCalendar" aria-label="Wedding month calendar"></div>
+                    <div class="calendar-event-panel" id="calendarEventPanel" hidden>
+                        <button type="button" class="calendar-panel-close" id="calendarPanelClose" aria-label="Close event details">&times;</button>
+                        <p class="calendar-panel-date" id="calendarPanelDate"></p>
+                        <h3 class="calendar-panel-title" id="calendarPanelTitle"></h3>
+                    </div>
+                </div>
+                <div class="calendar-actions">
+                    <button type="button" class="calendar-link calendar-link-primary" id="addToCalendarBtn" data-i18n="calendar.addToCalendar">Add wedding to calendar</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Location Map Section -->
     <section id="venue" class="map-section">
         <div class="container">
@@ -138,7 +165,7 @@
                 <p class="venue-name" id="mapVenueName">Hotel Padmavathi</p>
                 <p class="venue-date" id="mapVenueDate"></p>
                 <p class="venue-address" id="mapVenueAddress"></p>
-                <a href="#" id="mapLink" target="_blank" class="map-link" data-i18n="venue.openMaps">ðŸ“ Open in Google
+                <a href="#" id="mapLink" target="_blank" class="map-link" data-i18n="venue.openMaps">📍 Open in Google
                     Maps</a>
             </div>
             <div id="map" class="map">
@@ -154,9 +181,9 @@
     <!-- Wedding Journey Section -->
     <section id="wedding-journey" class="wedding-journey-section">
         <div class="journey-decor" aria-hidden="true">
-            <span class="journey-petal journey-petal-1">âœ¿</span>
-            <span class="journey-petal journey-petal-2">â€</span>
-            <span class="journey-petal journey-petal-3">âœ¿</span>
+            <span class="journey-petal journey-petal-1">✿</span>
+            <span class="journey-petal journey-petal-2">❀</span>
+            <span class="journey-petal journey-petal-3">✿</span>
             <span class="journey-glow journey-glow-1"></span>
             <span class="journey-glow journey-glow-2"></span>
             <span class="journey-glow journey-glow-3"></span>
@@ -248,7 +275,7 @@
                         </div>
                         <div class="journey-route-card">
                             <span class="journey-route-step" id="journeyRouteTravelLabel">On the way</span>
-                            <h3 class="journey-route-city journey-route-city-travel">â†’ Trichy</h3>
+                            <h3 class="journey-route-city journey-route-city-travel">→ Trichy</h3>
                             <p class="journey-route-note" id="journeyRouteTravelNote"></p>
                         </div>
                     </li>
@@ -259,7 +286,7 @@
                         </div>
                         <div class="journey-route-card journey-route-card-dest">
                             <span class="journey-route-step" id="journeyRouteDestLabel">Celebrate with us</span>
-                            <h3 class="journey-route-city" id="journeyRouteDestVenue">Shree Narayana Mahall Â· Trichy</h3>
+                            <h3 class="journey-route-city" id="journeyRouteDestVenue">Shree Narayana Mahall · Trichy</h3>
                             <p class="journey-route-note" id="journeyRouteDestNote"></p>
                         </div>
                     </li>
@@ -281,7 +308,7 @@
                 <div class="person-card person-left">
                     <div class="person-image">
                         <div class="about-image-frame">
-                            <img src="photos/header/WIN_4969.JPG" alt="Praveenraj" id="praveenrajImage"
+                            <img src="photos/header/WIN_5084.JPG" alt="Praveenraj" id="praveenrajImage"
                                 onerror="this.style.display='none'" decoding="async">
                         </div>
                     </div>
@@ -400,7 +427,7 @@
             <h2 class="section-title" data-i18n="liveStream.title">Live Streaming</h2>
             <div class="video-stream-container" id="videoStreamContainer">
                 <div class="video-placeholder" id="videoPlaceholder">
-                    <div class="video-icon">ðŸ“¹</div>
+                    <div class="video-icon">📹</div>
                     <p data-i18n="liveStream.placeholder">Live stream will appear here on the day of the wedding</p>
                 </div>
                 <div class="video-wrapper" id="videoWrapper" style="display: none;">
@@ -444,6 +471,7 @@
         <button class="modal-next" id="modalNext" aria-label="Next image">&#10095;</button>
     </div>
 
+    <script src="calendar-utils.js"></script>
     <script src="lib/friend-route.js"></script>
     <script src="script.js"></script>
 </body>
