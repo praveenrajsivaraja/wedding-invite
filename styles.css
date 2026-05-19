@@ -135,9 +135,8 @@ body {
 
 @media (max-width: 767px) {
     .header-section {
-        min-height: 100svh;
-        min-height: 100dvh;
-        padding-top: max(80px, env(safe-area-inset-top, 0px));
+        min-height: auto;
+        padding-top: max(72px, calc(var(--mobile-nav-height, 56px) + env(safe-area-inset-top, 0px)));
     }
 
     .header-slideshow {
@@ -946,6 +945,274 @@ body {
     font-family: 'Poppins', sans-serif;
 }
 
+/* Wedding Calendar Section */
+.wedding-calendar-section {
+    position: relative;
+    padding: 70px 20px 80px;
+    background: linear-gradient(180deg, #ffffff 0%, var(--cream-tint) 55%, #ffffff 100%);
+    text-align: center;
+    overflow: hidden;
+}
+
+.calendar-decor {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.calendar-petal {
+    position: absolute;
+    font-size: 1.25rem;
+    color: rgba(212, 175, 55, 0.35);
+    animation: calendarPetalFloat 8s ease-in-out infinite;
+}
+
+.calendar-petal-1 { top: 12%; left: 8%; animation-delay: 0s; }
+.calendar-petal-2 { top: 20%; right: 10%; animation-delay: 2s; }
+.calendar-petal-3 { bottom: 18%; left: 14%; animation-delay: 4s; }
+
+.calendar-sparkle {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #f6d365 0%, transparent 70%);
+    animation: calendarSparkle 3s ease-in-out infinite;
+}
+
+.calendar-sparkle-1 { top: 28%; right: 22%; }
+.calendar-sparkle-2 { bottom: 30%; right: 18%; animation-delay: 1.2s; }
+
+@keyframes calendarPetalFloat {
+    0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.35; }
+    50% { transform: translateY(-12px) rotate(8deg); opacity: 0.65; }
+}
+
+@keyframes calendarSparkle {
+    0%, 100% { transform: scale(1); opacity: 0.4; }
+    50% { transform: scale(1.6); opacity: 1; }
+}
+
+.calendar-subtitle {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.05rem;
+    color: #666666;
+    margin: -8px auto 36px;
+    max-width: 520px;
+    line-height: 1.55;
+}
+
+.wedding-calendar-wrap {
+    max-width: 480px;
+    margin: 0 auto;
+}
+
+.wedding-calendar-card {
+    position: relative;
+    padding: 28px 22px 22px;
+    background: #ffffff;
+    border-radius: 22px;
+    border: 1px solid rgba(212, 175, 55, 0.35);
+    box-shadow: 0 14px 40px rgba(139, 0, 0, 0.1);
+}
+
+.wedding-calendar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+    padding: 0 4px;
+}
+
+.wedding-calendar-month {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.45rem;
+    font-weight: 600;
+    color: #8B0000;
+    margin: 0;
+}
+
+.wedding-calendar-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    margin-bottom: 8px;
+}
+
+.wedding-calendar-weekday {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #8B0000;
+    opacity: 0.75;
+    padding: 6px 0;
+}
+
+.wedding-calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+}
+
+.wedding-calendar-day {
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #444;
+    background: #fafafa;
+    border: 1px solid transparent;
+    position: relative;
+    min-height: 44px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.wedding-calendar-day--empty {
+    background: transparent;
+    border: none;
+    pointer-events: none;
+}
+
+button.wedding-calendar-day {
+    font: inherit;
+    padding: 0;
+    margin: 0;
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+.wedding-calendar-day--event {
+    cursor: pointer;
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.wedding-calendar-day--event:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.wedding-calendar-day--selected {
+    outline: 2px solid #8B0000;
+    outline-offset: 2px;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(139, 0, 0, 0.25);
+}
+
+.wedding-calendar-day--haldi {
+    background: linear-gradient(145deg, #e8b923 0%, #d4a017 100%);
+}
+
+.wedding-calendar-day--sangeeth {
+    background: linear-gradient(145deg, #e879a8 0%, #c75b8a 100%);
+}
+
+.wedding-calendar-day--reception {
+    background: linear-gradient(145deg, #9b6dd4 0%, #7b4fb8 100%);
+}
+
+.wedding-calendar-day--wedding {
+    background: linear-gradient(145deg, #b30000 0%, #8B0000 100%);
+}
+
+.wedding-calendar-day--wedding .calendar-day-num {
+    opacity: 0;
+}
+
+.calendar-heart {
+    position: absolute;
+    font-size: 1.35rem;
+    line-height: 1;
+    animation: calendarHeartPulse 1.4s ease-in-out infinite;
+}
+
+@keyframes calendarHeartPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.12); }
+}
+
+.calendar-day-icon {
+    font-size: 0.85rem;
+    line-height: 1;
+    margin-bottom: 2px;
+}
+
+.calendar-event-panel {
+    margin-top: 20px;
+    padding: 20px 18px 18px;
+    background: linear-gradient(135deg, #fffef8 0%, #ffffff 100%);
+    border-radius: 16px;
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    text-align: left;
+    position: relative;
+    animation: fadeIn 0.35s ease;
+}
+
+.calendar-event-panel[hidden] {
+    display: none !important;
+}
+
+.calendar-panel-close {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: transparent;
+    font-size: 1.5rem;
+    line-height: 1;
+    color: #8B0000;
+    cursor: pointer;
+    border-radius: 50%;
+}
+
+.calendar-panel-close:hover {
+    background: rgba(139, 0, 0, 0.08);
+}
+
+.calendar-panel-date {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #D4AF37;
+    margin: 0 0 8px 0;
+}
+
+.calendar-panel-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.35rem;
+    color: #8B0000;
+    margin: 0 0 10px 0;
+}
+
+.wedding-calendar-section .calendar-actions {
+    margin-top: 28px;
+}
+
+@media (max-width: 480px) {
+    .wedding-calendar-card {
+        padding: 22px 14px 18px;
+    }
+
+    .wedding-calendar-day {
+        font-size: 0.85rem;
+        min-height: 38px;
+        border-radius: 10px;
+    }
+
+}
+
 /* Map Section */
 .map-section {
     padding: 60px 20px;
@@ -1297,8 +1564,7 @@ body {
     
     .header-section {
         padding: 60px 16px 40px;
-        min-height: 100svh;
-        min-height: 100dvh;
+        min-height: auto;
     }
     
     .together-forever {
@@ -2108,9 +2374,8 @@ body {
 }
 
 .mobile-device .header-section {
-    padding-top: max(85px, env(safe-area-inset-top, 0px));
-    min-height: 100svh;
-    min-height: 100dvh;
+    padding: calc(var(--mobile-nav-height, 56px) + env(safe-area-inset-top, 0px) + 16px) 15px 40px;
+    min-height: auto;
     margin-top: 0;
     width: 100%;
     box-sizing: border-box;
@@ -2213,9 +2478,8 @@ body {
 }
 
 .mobile-device .header-section {
-    padding: max(85px, env(safe-area-inset-top, 0px)) 15px 40px;
-    min-height: 100svh;
-    min-height: 100dvh;
+    padding: calc(var(--mobile-nav-height, 56px) + env(safe-area-inset-top, 0px) + 16px) 15px 40px;
+    min-height: auto;
     width: 100%;
     box-sizing: border-box;
     overflow-x: hidden;
