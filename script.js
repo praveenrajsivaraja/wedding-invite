@@ -501,6 +501,11 @@ function adjustHeaderImageFit(img) {
 }
 
 async function initHeaderSlideshow() {
+    const headerSection = document.querySelector('.header-section');
+    if (headerSection) {
+        headerSection.style.removeProperty('background');
+    }
+
     try {
         const response = await fetch('/api/header-images');
         
@@ -527,28 +532,13 @@ async function initHeaderSlideshow() {
                 } else {
                     console.error('Header slideshow element not found');
                 }
-            } else {
-                // If no header images, use default background
-                const headerSection = document.querySelector('.header-section');
-                if (headerSection) {
-                    headerSection.style.background = '#8B0000';
-                }
             }
         } else {
             console.error('Failed to fetch header images:', response.status, response.statusText);
-            const headerSection = document.querySelector('.header-section');
-            if (headerSection) {
-                headerSection.style.background = '#8B0000';
-            }
         }
     } catch (error) {
         console.error('Error loading header images:', error);
         console.error('Make sure the server is running: node server.js');
-        // Fallback to default background
-        const headerSection = document.querySelector('.header-section');
-        if (headerSection) {
-            headerSection.style.background = '#8B0000';
-        }
     }
 }
 
@@ -564,10 +554,6 @@ function startHeaderSlideshow() {
     );
     
     if (images.length === 0) {
-        const headerSection = document.querySelector('.header-section');
-        if (headerSection) {
-            headerSection.style.background = '#8B0000';
-        }
         return;
     }
     
@@ -844,7 +830,7 @@ const translations = {
             mapNote: 'Interactive map - Click and drag to explore'
         },
         journey: {
-            title: 'Our Wedding Journey',
+            title: 'Wedding Planner',
             subtitle: 'Four beautiful days of love, tradition, and celebration await you.',
             routeTitle: 'Your Route to Celebrate With Us',
             routeTitleNamed: '{name}, Your Route to Us',
@@ -976,7 +962,7 @@ const translations = {
             mapNote: 'ஊடாடும் வரைபடம் - ஆராய கிளிக் செய்து இழுக்கவும்'
         },
         journey: {
-            title: 'எங்கள் திருமண பயணம்',
+            title: 'திருமண திட்டமிடுபவர்',
             subtitle: 'அன்பு, பாரம்பரியம், கொண்டாட்டம் நிறைந்த நான்கு அழகான நாட்கள் உங்களுக்காக காத்திருக்கின்றன.',
             routeTitle: 'எங்களிடம் வரும் உங்கள் பாதை',
             routeTitleNamed: '{name}, எங்களிடம் வரும் பாதை',
