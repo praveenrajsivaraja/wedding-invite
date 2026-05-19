@@ -492,6 +492,14 @@ let currentHeaderImageIndex = 0;
 let headerImages = [];
 let headerSlideshowInterval = null;
 
+function adjustHeaderImageFit(img) {
+    if (!img || window.innerWidth > 767) {
+        return;
+    }
+    const isLandscape = img.naturalWidth > img.naturalHeight;
+    img.style.objectPosition = isLandscape ? 'center 35%' : 'center center';
+}
+
 async function initHeaderSlideshow() {
     try {
         const response = await fetch('/api/header-images');
@@ -507,7 +515,9 @@ async function initHeaderSlideshow() {
                     // Create image elements using the folder name from server (simpler innerHTML approach)
                     slideshowEl.innerHTML = headerImages.map((img, index) => {
                         const imgPath = `photos/${folderName}/${img}`;
-                        return `<img src="${imgPath}" alt="Header ${index + 1}" class="${index === 0 ? 'active' : ''}" onerror="this.style.display='none';">`;
+                        const loadingAttr = index === 0 ? 'eager' : 'lazy';
+                        const fetchPriority = index === 0 ? ' fetchpriority="high"' : '';
+                        return `<img src="${imgPath}" alt="Header ${index + 1}" class="${index === 0 ? 'active' : ''}" loading="${loadingAttr}" decoding="async" sizes="100vw"${fetchPriority} onerror="this.style.display='none';" onload="adjustHeaderImageFit(this)">`;
                     }).join('');
                     
                     // Wait a bit for images to start loading, then start slideshow
