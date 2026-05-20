@@ -488,58 +488,84 @@ function initLocationTabs() {
 
 
 // Header Slideshow
+const HEADER_SLIDESHOW_FALLBACK = [
+    'photos/header/WIN_5040.JPG',
+    'photos/header/WIN_5080.JPG',
+    'photos/header/WIN_5084.JPG'
+];
+
 let currentHeaderImageIndex = 0;
 let headerImages = [];
 let headerSlideshowInterval = null;
 
-function adjustHeaderImageFit(img) {
-    if (!img || window.innerWidth > 767) {
+function updateHeaderSlideshowAspectRatio(img) {
+    const frame = document.getElementById('headerSlideshowFrame');
+    if (!frame || !img?.naturalWidth || !img.naturalHeight) {
         return;
     }
-    const isLandscape = img.naturalWidth > img.naturalHeight;
-    img.style.objectPosition = isLandscape ? 'center 35%' : 'center center';
+    frame.style.setProperty('--header-slide-aspect', `${img.naturalWidth} / ${img.naturalHeight}`);
+}
+
+function adjustHeaderImageFit(img) {
+    updateHeaderSlideshowAspectRatio(img);
+}
+
+window.adjustHeaderImageFit = adjustHeaderImageFit;
+
+function populateHeaderSlideshow(imageSources) {
+    const slideshowEl = document.getElementById('headerSlideshow');
+    const headerSection = document.querySelector('.header-section');
+    const sources = (imageSources || []).filter(Boolean);
+
+    if (!slideshowEl || sources.length === 0) {
+        headerSection?.classList.remove('header-has-slideshow');
+        return false;
+    }
+
+    headerImages = sources.map((src) => src.split('/').pop());
+
+    const imagesHtml = sources.map((src, index) => {
+        const loadingAttr = index === 0 ? 'eager' : 'lazy';
+        const fetchPriority = index === 0 ? ' fetchpriority="high"' : '';
+        return `<img src="${src}" alt="Header ${index + 1}" class="${index === 0 ? 'active' : ''}" loading="${loadingAttr}" decoding="async" sizes="100vw"${fetchPriority} onerror="this.style.display='none';" onload="adjustHeaderImageFit(this)">`;
+    }).join('');
+
+    slideshowEl.innerHTML = `<div class="header-slideshow-frame" id="headerSlideshowFrame">${imagesHtml}</div>`;
+
+    headerSection?.classList.add('header-has-slideshow');
+    replayHeaderTextAnimations();
+    setTimeout(() => {
+        startHeaderSlideshow();
+    }, 500);
+    return true;
 }
 
 async function initHeaderSlideshow() {
     const headerSection = document.querySelector('.header-section');
-    if (headerSection) {
-        headerSection.style.removeProperty('background');
-    }
+    headerSection?.classList.remove('header-has-slideshow');
 
     try {
         const response = await fetch('/api/header-images');
-        
+
         if (response.ok) {
             const data = await response.json();
-            headerImages = data.images || [];
-            const folderName = data.folder || 'header'; // Use folder name from server
-            
-            if (headerImages.length > 0) {
-                const slideshowEl = document.getElementById('headerSlideshow');
-                if (slideshowEl) {
-                    // Create image elements using the folder name from server (simpler innerHTML approach)
-                    slideshowEl.innerHTML = headerImages.map((img, index) => {
-                        const imgPath = `photos/${folderName}/${img}`;
-                        const loadingAttr = index === 0 ? 'eager' : 'lazy';
-                        const fetchPriority = index === 0 ? ' fetchpriority="high"' : '';
-                        return `<img src="${imgPath}" alt="Header ${index + 1}" class="${index === 0 ? 'active' : ''}" loading="${loadingAttr}" decoding="async" sizes="100vw"${fetchPriority} onerror="this.style.display='none';" onload="adjustHeaderImageFit(this)">`;
-                    }).join('');
-                    
-                    // Wait a bit for images to start loading, then start slideshow
-                    setTimeout(() => {
-                        startHeaderSlideshow();
-                    }, 500);
-                } else {
-                    console.error('Header slideshow element not found');
+            const folderName = data.folder || 'header';
+            const files = data.images || [];
+
+            if (files.length > 0 && folderName !== 'none') {
+                const sources = files.map((img) => `photos/${folderName}/${img}`);
+                if (populateHeaderSlideshow(sources)) {
+                    return;
                 }
             }
         } else {
-            console.error('Failed to fetch header images:', response.status, response.statusText);
+            console.warn('Failed to fetch header images:', response.status, response.statusText);
         }
     } catch (error) {
-        console.error('Error loading header images:', error);
-        console.error('Make sure the server is running: node server.js');
+        console.warn('Error loading header images from API, using fallback paths:', error.message);
     }
+
+    populateHeaderSlideshow(HEADER_SLIDESHOW_FALLBACK);
 }
 
 function startHeaderSlideshow() {
@@ -549,11 +575,12 @@ function startHeaderSlideshow() {
     }
     
     // Get only visible images (not hidden due to errors)
-    const images = Array.from(document.querySelectorAll('.header-slideshow img')).filter(img => 
+    const images = Array.from(document.querySelectorAll('.header-slideshow-frame img')).filter(img =>
         img.style.display !== 'none'
     );
     
     if (images.length === 0) {
+        document.querySelector('.header-section')?.classList.remove('header-hassang-slideshow');
         return;
     }
     
@@ -561,8 +588,15 @@ function startHeaderSlideshow() {
     if (images.length <= 1) {
         if (images[0]) {
             images[0].classList.add('active');
+            if (images[0].complete && images[0].naturalWidth) {
+                updateHeaderSlideshowAspectRatio(images[0]);
+            }
         }
         return;
+    }
+    
+    if (images[0]?.complete && images[0].naturalWidth) {
+        updateHeaderSlideshowAspectRatio(images[0]);
     }
     
     // Ensure first image is visible and others are hidden
@@ -578,7 +612,7 @@ function startHeaderSlideshow() {
     
     // Start cycling through images
     headerSlideshowInterval = setInterval(() => {
-        const currentImages = Array.from(document.querySelectorAll('.header-slideshow img')).filter(img => 
+        const currentImages = Array.from(document.querySelectorAll('.header-slideshow-frame img')).filter(img =>
             img.style.display !== 'none'
         );
         
@@ -596,8 +630,12 @@ function startHeaderSlideshow() {
         currentHeaderImageIndex = (currentHeaderImageIndex + 1) % currentImages.length;
         
         // Add active class to new image
-        if (currentImages[currentHeaderImageIndex]) {
-            currentImages[currentHeaderImageIndex].classList.add('active');
+        const nextImage = currentImages[currentHeaderImageIndex];
+        if (nextImage) {
+            nextImage.classList.add('active');
+            if (nextImage.complete && nextImage.naturalWidth) {
+                updateHeaderSlideshowAspectRatio(nextImage);
+            }
         }
     }, 4000); // Change image every 4 seconds
     
@@ -741,6 +779,15 @@ function detectDevice() {
     return isMobileDevice;
 }
 
+function updateMobileNavHeight() {
+    const mainNav = document.getElementById('mainNav');
+    if (!mainNav || !document.body.classList.contains('mobile-device')) {
+        return;
+    }
+    const height = Math.ceil(mainNav.getBoundingClientRect().height);
+    document.documentElement.style.setProperty('--mobile-nav-height', `${height}px`);
+}
+
     // Initialize everything
 // Language Translations
 const translations = {
@@ -839,10 +886,10 @@ const translations = {
                 'July', 'August', 'September', 'October', 'November', 'December'],
             weekdays: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
             eventIcons: {
-                haldi: '🌼',
-                sangeeth: '🎵',
+                dinner: '🍽️',
+                mehendi: '💮',
                 reception: '🥂',
-                wedding: '❤'
+                wedding: '💒'
             }
         },
         journey: {
@@ -861,17 +908,27 @@ const translations = {
             closing: 'Your presence will make our celebration more special, memorable, and complete. We cannot wait to celebrate this beautiful journey with you.',
             events: {
                 haldi: {
-                    title: 'Haldi & Mehendi',
+                    title: 'Haldi',
                     date: '15 June 2026',
-                    description: 'An evening filled with colors, laughter, music, turmeric blessings, henna artistry, and joyful moments shared with family and friends.'
+                    description: 'An evening filled with colors, laughter, music, turmeric blessings, and joyful moments shared with family and friends.'
                 },
                 sangeeth: {
                     title: 'Sangeeth Night',
                     date: '16 June 2026',
                     description: 'A night of dance, music, celebration, performances, and unforgettable memories as both families come together in happiness.'
                 },
+                mehendi: {
+                    title: 'Mehandi & Sangeeth Night',
+                    date: '16 June 2026',
+                    description: 'An evening of beautiful henna artistry, vibrant traditions, music, and joyful moments with family and friends.'
+                },
+                dinner: {
+                    title: 'Dinner Party',
+                    date: '15 June 2026',
+                    description: 'Join us for a wonderful dinner party with haldi and mehendi celebrations, delicious food, music, and joyful moments with family and friends.'
+                },
                 reception: {
-                    title: 'Reception',
+                    title: 'Wedding Reception',
                     date: '17 June 2026',
                     description: 'Join us for an elegant evening reception filled with love, blessings, heartfelt conversations, delicious dinner, and grand celebrations.'
                 },
@@ -987,10 +1044,9 @@ const translations = {
                 'ஜூலை', 'ஆகஸ்ட்', 'செப்டம்பர்', 'அக்டோபர்', 'நவம்பர்', 'டிசம்பர்'],
             weekdays: ['ஞா', 'தி', 'செ', 'பு', 'வி', 'வெ', 'ச'],
             eventIcons: {
-                haldi: '🌼',
-                sangeeth: '🎵',
+                dinner: '🍽️',
                 reception: '🥂',
-                wedding: '❤'
+                wedding: '💒'
             }
         },
         journey: {
@@ -1009,14 +1065,24 @@ const translations = {
             closing: 'உங்கள் வருகை எங்கள் கொண்டாட்டத்தை இன்னும் சிறப்பாகவும், நினைவில் நிற்கக்கூடியதாகவும், முழுமையானதாகவும் ஆக்கும். இந்த அழகான பயணத்தை உங்களுடன் கொண்டாடுவதற்கு நாங்கள் ஆவலுடன் காத்திருக்கிறோம்.',
             events: {
                 haldi: {
-                    title: 'ஹல்தி & மெஹந்தி',
+                    title: 'ஹல்தி',
                     date: '15 ஜூன் 2026',
-                    description: 'வண்ணங்கள், சிரிப்பு, இசை, மஞ்சள் ஆசீர்வாதங்கள், மெஹந்தி கலை, குடும்பம் மற்றும் நண்பர்களுடன் பகிர்ந்த மகிழ்ச்சியான தருணங்கள் நிறைந்த ஒரு மாலை.'
+                    description: 'வண்ணங்கள், சிரிப்பு, இசை, மஞ்சள் ஆசீர்வாதங்கள், குடும்பம் மற்றும் நண்பர்களுடன் பகிர்ந்த மகிழ்ச்சியான தருணங்கள் நிறைந்த ஒரு மாலை.'
                 },
                 sangeeth: {
                     title: 'சங்கீத் இரவு',
                     date: '16 ஜூன் 2026',
                     description: 'நடனம், இசை, கொண்டாட்டம், நிகழ்ச்சிகள், மற்றும் இரு குடும்பங்களும் மகிழ்ச்சியில் ஒன்றிணையும் மறக்க முடியாத நினைவுகளின் இரவு.'
+                },
+                mehendi: {
+                    title: 'மெஹந்தி',
+                    date: '16 ஜூன் 2026',
+                    description: 'அழகான மெஹந்தி கலை, வண்ணமயமான பாரம்பரியங்கள், இசை, குடும்பம் மற்றும் நண்பர்களுடன் மகிழ்ச்சியான தருணங்கள் நிறைந்த ஒரு மாலை.'
+                },
+                dinner: {
+                    title: 'இரவு விருந்து',
+                    date: '15 ஜூன் 2026',
+                    description: 'ஹல்தி மற்றும் மெஹந்தி கொண்டாட்டங்களுடன் சுவையான உணவு, இசை, குடும்பம் மற்றும் நண்பர்களுடன் மகிழ்ச்சியான தருணங்கள் நிறைந்த ஒரு அற்புதமான இரவு விருந்தில் எங்களுடன் சேருங்கள்.'
                 },
                 reception: {
                     title: 'வரவேற்பு',
@@ -1044,6 +1110,18 @@ const translations = {
 
 // Current language
 let currentLanguage = localStorage.getItem('language') || 'en';
+
+function replayHeaderTextAnimations() {
+    const headerSection = document.querySelector('.header-section.header-has-slideshow');
+    if (!headerSection) {
+        return;
+    }
+    headerSection.querySelectorAll('.header-anim').forEach((element) => {
+        element.style.animation = 'none';
+        void element.offsetWidth;
+        element.style.animation = '';
+    });
+}
 
 // Function to update all text based on current language
 function updateLanguage(lang) {
@@ -1101,6 +1179,7 @@ function updateLanguage(lang) {
     updateCountdown();
     renderFriendRouteMap();
     renderWeddingCalendar();
+    replayHeaderTextAnimations();
     if (selectedCalendarDay !== null) {
         showCalendarEventPanel(selectedCalendarDay);
     }
@@ -1209,10 +1288,10 @@ function renderFriendRouteMap() {
 
 }
 
-const CALENDAR_EVENT_ORDER = ['haldi', 'sangeeth', 'reception', 'wedding'];
+const CALENDAR_EVENT_ORDER = ['dinner', 'mehendi', 'reception', 'wedding'];
 const CALENDAR_EVENT_DAYS = {
-    haldi: 15,
-    sangeeth: 16,
+    dinner: 15,
+    mehendi: 16,
     reception: 17,
     wedding: 18
 };
@@ -1371,23 +1450,17 @@ function renderWeddingCalendar() {
         if (event) {
             const isWeddingDay = day === weddingDay;
             const isSelected = selectedCalendarDay === day;
-            const icon = icons[event.key] || '';
+            const icon = icons[event.key] || '📅';
             const ariaLabel = `${monthNames[month]} ${day}, ${year} — ${event.title}`;
-            if (isWeddingDay) {
-                daysHtml += `
-                    <button type="button" class="wedding-calendar-day wedding-calendar-day--event wedding-calendar-day--wedding wedding-calendar-day--${event.key}${isSelected ? ' wedding-calendar-day--selected' : ''}"
-                        data-day="${day}" aria-label="${ariaLabel}" aria-current="${isSelected ? 'date' : 'false'}">
-                        <span class="calendar-heart" aria-hidden="true">&#10084;</span>
-                        <span class="calendar-day-num">${day}</span>
-                    </button>`;
-            } else {
-                daysHtml += `
-                    <button type="button" class="wedding-calendar-day wedding-calendar-day--event wedding-calendar-day--${event.key}${isSelected ? ' wedding-calendar-day--selected' : ''}"
-                        data-day="${day}" aria-label="${ariaLabel}">
-                        <span class="calendar-day-icon" aria-hidden="true">${icon}</span>
-                        <span class="calendar-day-num">${day}</span>
-                    </button>`;
-            }
+            const weddingClass = isWeddingDay ? ' wedding-calendar-day--wedding' : '';
+            const selectedClass = isSelected ? ' wedding-calendar-day--selected' : '';
+            const ariaCurrent = isSelected ? ' aria-current="date"' : '';
+            daysHtml += `
+                <button type="button" class="wedding-calendar-day wedding-calendar-day--event wedding-calendar-day--${event.key}${weddingClass}${selectedClass}"
+                    data-day="${day}" aria-label="${ariaLabel}"${ariaCurrent}>
+                    <span class="calendar-day-emoji" aria-hidden="true">${icon}</span>
+                    <span class="calendar-day-num">${day}</span>
+                </button>`;
         } else {
             daysHtml += `<div class="wedding-calendar-day" role="gridcell">${day}</div>`;
         }
@@ -1461,6 +1534,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     // Detect device first
     detectDevice();
+    updateMobileNavHeight();
+    window.addEventListener('load', updateMobileNavHeight);
+    window.addEventListener('resize', updateMobileNavHeight);
     
     // Menu is always visible - never apply menu-closed
     const mainNav = document.getElementById('mainNav');
@@ -1521,6 +1597,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 document.documentElement.classList.remove('mobile-device');
                 document.documentElement.classList.add('desktop-device');
             }
+            updateMobileNavHeight();
         }, 250);
     });
 });
