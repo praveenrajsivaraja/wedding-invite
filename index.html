@@ -14,6 +14,7 @@
     <meta name="twitter:title" content="Praveenraj & Madhumitha — Wedding">
     <meta name="twitter:description" content="Save the date and celebrate with us.">
     <meta name="theme-color" content="#8B0000">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
     <title>Praveenraj & Madhumitha - Wedding</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -24,10 +25,6 @@
 </head>
 
 <body>
-    <!-- Language Toggle Button -->
-    <button class="language-toggle-btn" id="languageToggleBtn" aria-label="Toggle language" title="Change Language">
-        <span class="language-text" id="languageText">தமிழ்</span>
-    </button>
     <!-- Navigation Bar -->
     <nav class="main-nav" id="mainNav">
         <div class="nav-top-bar"></div>
@@ -215,7 +212,7 @@
                 <article class="journey-event journey-event-reverse" data-journey-animate>
                     <div class="journey-event-visual">
                         <div class="journey-image">
-                            <img src="photos/Day 2.png" alt="Mehandi" loading="lazy" decoding="async">
+                            <img src="photos/Day 2.png" alt="Mehandi and Sangeeth Night" loading="lazy" decoding="async">
                         </div>
                         <span class="journey-event-badge">Day 02</span>
                     </div>
@@ -399,7 +396,7 @@
             <h2 class="section-title">
                 <span class="gold-text" data-i18n="gallery.title"> Photo Wall </span><br>
             </h2>
-            <div class="tab-container">
+            <div class="tab-container" style="padding-bottom: 0px !important">
                 <button class="tab-btn" data-category="engagement" data-i18n="gallery.engagement">Engagement</button>
                 <button class="tab-btn active" data-category="others" data-i18n="gallery.others">Others</button>
             </div>
@@ -428,23 +425,10 @@
     <section id="live-stream" class="live-stream-section">
         <div class="container">
             <h2 class="section-title" data-i18n="liveStream.title">Live Streaming</h2>
-            <div class="video-stream-container" id="videoStreamContainer">
+            <div class="video-stream-container" id="videoStreamContainer" data-youtube-video-id="oFUyORF-2ms">
                 <div class="video-placeholder" id="videoPlaceholder">
                     <div class="video-icon">📹</div>
                     <p data-i18n="liveStream.placeholder">Live stream will appear here on the day of the wedding</p>
-                </div>
-                <div class="video-wrapper" id="videoWrapper" style="display: none;">
-                    <iframe id="videoStreamFrame" class="video-stream-frame" frameborder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        allowfullscreen>
-                    </iframe>
-                    <button class="pip-toggle-btn" id="pipToggleBtn" title="Toggle Picture-in-Picture">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <rect x="2" y="2" width="20" height="20" rx="2" ry="2"></rect>
-                            <path d="M8 2v20M16 2v20M2 8h20M2 16h20"></path>
-                        </svg>
-                    </button>
                 </div>
             </div>
         </div>

@@ -1,4 +1,4 @@
-// Configuration
+﻿// Configuration
 const CONFIG = {
     ENGAGEMENT_DATE: new Date('2026-01-28T00:00:00').getTime(),
     MARRIAGE_DATE: new Date(2026, 5, 18, 9, 30, 0).getTime(),
@@ -133,7 +133,7 @@ function setCountdownPhaseLabel(phase) {
     if (!el) {
         return;
     }
-    const header = translations[currentLanguage]?.header;
+    const header = translations.en?.header;
     if (!header) {
         return;
     }
@@ -306,9 +306,9 @@ async function fetchPhotos(category, page = 1, onRendered) {
             // Show pagination
             if (totalPages > 1) {
                 paginationEl.style.display = 'flex';
-                const pageText = translations[currentLanguage]?.gallery?.page || 'Page';
-                const ofText = translations[currentLanguage]?.gallery?.of || 'of';
-                const photosText = translations[currentLanguage]?.gallery?.photos || 'photos';
+                const pageText = translations.en?.gallery?.page || 'Page';
+                const ofText = translations.en?.gallery?.of || 'of';
+                const photosText = translations.en?.gallery?.photos || 'photos';
                 paginationInfo.textContent = `${pageText} ${page} ${ofText} ${totalPages} (${shuffledImages.length} ${photosText})`;
                 
                 prevBtn.disabled = page === 1;
@@ -345,7 +345,7 @@ async function fetchPhotos(category, page = 1, onRendered) {
             }
         } else {
             gridEl.style.minHeight = '';
-            const noPhotosText = translations[currentLanguage]?.gallery?.noPhotos || 'No photos available to view';
+            const noPhotosText = translations.en?.gallery?.noPhotos || 'No photos available to view';
             gridEl.innerHTML = `<div class="error" style="display: flex; align-items: center; justify-content: center; padding: 40px 20px; text-align: center; color: #8B0000; font-size: 1.2rem; min-height: 200px; width: 100%; margin: 0 auto;">${noPhotosText}</div>`;
         }
     } catch (error) {
@@ -810,17 +810,17 @@ const translations = {
         schedule: {
             title: 'Schedule',
             engagementHeading: 'Engagement',
-            engagementWhen: '28 January 2026 · Hotel Padmavathi, Palpannai, Trichy',
+            engagementWhen: '28 January 2026 Â· Hotel Padmavathi, Palpannai, Trichy',
             engagementNote: 'Update this line with muhurtham and reception timings for guests.',
             weddingHeading: 'Wedding',
-            weddingWhen: '18 June 2026 · Shree Narayana Mahall, Trichy',
+            weddingWhen: '18 June 2026 Â· Shree Narayana Mahall, Trichy',
             weddingNote: 'Update with your ceremony and reception schedule.'
         },
         guestInfo: {
             title: 'Celebration details',
             practicalTitle: 'For our guests',
             dressCodeTitle: 'Dress code',
-            dressCode: 'Traditional Indian festive wear — please wear your joyous best.',
+            dressCode: 'Traditional Indian festive wear â€” please wear your joyous best.',
             parkingTitle: 'Parking',
             parking: 'Parking is available at both venues; follow signage and volunteer directions.',
             landmarkTitle: 'Landmark',
@@ -837,7 +837,7 @@ const translations = {
         about: {
             title: 'Our Story',
             paragraph1: 'It was at the divine Thiruvanaikoil Temple where our eyes first met, and in that moment, we fell in love at first sight. What started as a traditional matchmaking turned into an extraordinary journey of discovery, filled with love, laughter, and countless emotions.',
-            paragraph2: 'From romantic dinners at Roof Top Restaurant to exploring the wonders of Birds Park, from thrilling bike rides to cozy car rides, and even trying ice skating together—every moment became a cherished memory.',
+            paragraph2: 'From romantic dinners at Roof Top Restaurant to exploring the wonders of Birds Park, from thrilling bike rides to cozy car rides, and even trying ice skating togetherâ€”every moment became a cherished memory.',
             paragraph3: 'As we take this beautiful step forward, we invite you to be part of our celebration. Your presence and blessings make our special day even more meaningful.',
             brideName: 'Madhumitha',
             brideIntro: 'With grace and joy, she fills every chapter of our story. We cannot wait to celebrate surrounded by everyone we love.'
@@ -873,7 +873,7 @@ const translations = {
             title: 'Venue Locations',
             engagement: 'Engagement',
             wedding: 'Wedding',
-            openMaps: '📍 Open in Google Maps',
+            openMaps: '\u{1F4CD} Open in Google Maps',
             mapNote: 'Interactive map - Click and drag to explore'
         },
         calendar: {
@@ -887,11 +887,11 @@ const translations = {
                 'July', 'August', 'September', 'October', 'November', 'December'],
             weekdays: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
             eventIcons: {
-                dinner: '🍽️',
-                mehendi: '💮',
-                reception: '🥂',
-                wedding: '💗',
-                postwedding: '🎉'
+                dinner: '\u{1F37D}\uFE0F',
+                mehendi: '\u{1F4AE}',
+                reception: '\u{1F942}',
+                wedding: '\u{1F497}',
+                postwedding: '\u{1F389}'
             }
         },
         journey: {
@@ -904,8 +904,8 @@ const translations = {
             routeStart: 'You are here',
             routeTravel: 'On the way',
             routeDestination: 'Celebrate with us',
-            routeDestVenue: 'Shree Narayana Mahall · Trichy',
-            routeDestNote: 'Five days of love, music, and moments — 15–19 June 2026',
+            routeDestVenue: 'Shree Narayana Mahall Â· Trichy',
+            routeDestNote: 'Five days of love, music, and moments â€” 15â€“19 June 2026',
             routeOpenMaps: 'Open your route in Google Maps',
             closing: 'Your presence will make our celebration more special, memorable, and complete. We cannot wait to celebrate this beautiful journey with you.',
             events: {
@@ -920,7 +920,7 @@ const translations = {
                     description: 'A night of dance, music, celebration, performances, and unforgettable memories as both families come together in happiness.'
                 },
                 mehendi: {
-                    title: 'Mehandi',
+                    title: 'Mehandi & Sangeeth Night',
                     date: '16 June 2026',
                     description: 'An evening of beautiful henna artistry, vibrant traditions, music, and joyful moments with family and friends.'
                 },
@@ -942,7 +942,7 @@ const translations = {
                 postwedding: {
                     title: 'Postwedding Party',
                     date: '19 June 2026',
-                    description: 'Celebrate with us after the wedding — food, music, laughter, and joyful moments with family and friends.'
+                    description: 'Celebrate with us after the wedding â€” food, music, laughter, and joyful moments with family and friends.'
                 }
             },
         },
@@ -955,176 +955,8 @@ const translations = {
             madeWithLove: 'MADE WITH LOVE',
             developedBy: 'Designed and Developed by Praveenraj Madhumitha'
         }
-    },
-    ta: {
-        nav: {
-            details: 'நிகழ்ச்சி விவரங்கள்',
-            journey: 'திருமண பயணம்'
-        },
-        header: {
-            coupleNames: 'பிரவீன்ராஜ் & மதுமிதா',
-            groom: 'சென்னை பையன்',
-            weds: 'திருமணம்',
-            bride: 'திருச்சி பொண்ணு',
-            saveTheDate: 'தேதியை நினைவில் கொள்ளுங்கள்',
-            countdownEngagement: 'நிச்சயதார்த்தத்திற்கான எண்ணிக்கை',
-            countdownWedding: 'திருமணத்திற்கான எண்ணிக்கை',
-            countdownComplete: 'எங்கள் பயணத்தில் பங்கேற்ற அனைவருக்கும் நன்றி',
-            viewPhotos: 'புகைப்படங்கள்'
-        },
-        schedule: {
-            title: 'நிகழ்ச்சி அட்டவணை',
-            engagementHeading: 'நிச்சயதார்த்தம்',
-            engagementWhen: '28 ஜனவரி 2026 · ஹோட்டல் பத்மாவதி, பல்பன்னை, திருச்சி',
-            engagementNote: 'முகூர்த்தம் மற்றும் வரவேற்பு நேரங்களை இங்கே புதுப்பிக்கவும்.',
-            weddingHeading: 'திருமணம்',
-            weddingWhen: '18 ஜூன் 2026 · ஸ்ரீ நாராயண மஹால், திருச்சி',
-            weddingNote: 'சடங்கு மற்றும் வரவேற்பு அட்டவணையை இங்கே சேர்க்கவும்.'
-        },
-        guestInfo: {
-            title: 'கொண்டாட்ட விவரங்கள்',
-            practicalTitle: 'விருந்தினர்களுக்கு',
-            dressCodeTitle: 'உடை',
-            dressCode: 'பாரம்பரிய இந்திய கொண்டாட்ட உடை — உங்கள் மகிழ்ச்சியான சிறந்த உடை அணியவும்.',
-            parkingTitle: 'பார்க்கிங்',
-            parking: 'இரண்டு இடங்களிலும் பார்க்கிங் உள்ளது; அறிவுறுத்தல்களையும் தன்னார்வலர்களையும் பின்பற்றவும்.',
-            landmarkTitle: 'அடையாள இடம்',
-            landmark: 'திசைகளுக்கு மேலே உள்ள வரைபட இணைப்புகளைப் பயன்படுத்தவும்; மூத்தவர்களுக்கு அருகிலுள்ள அறியப்பட்ட இடத்தை இங்கே சேர்க்கலாம்.',
-            contactTitle: 'தொடர்பு',
-            contact: 'நாள் தொடர்பான கேள்விகளுக்கு குடும்பத்தினரைத் தொடர்பு கொள்ளவும் (தொலைபேசி அல்லது வாட்ஸ்அப் சேர்க்கவும்).'
-        },
-        timer: {
-            days: 'நாட்கள்',
-            hours: 'மணி',
-            minutes: 'நிமிடங்கள்',
-            seconds: 'வினாடிகள்'
-        },
-        about: {
-            title: 'எங்கள் கதை',
-            paragraph1: 'புனிதமான திருவணைகோயில் கோவிலில் நம் கண்கள் முதல் முறையாக சந்தித்தன. அந்த கணத்திலேயே, நாம் முதல் பார்வையிலேயே காதலில் விழுந்தோம். பாரம்பரிய திருமண ஏற்பாட்டாகத் தொடங்கியது, அன்பு, சிரிப்பு, உணர்ச்சிகள் நிறைந்த ஒரு அற்புதமான பயணமாக மாறியது.',
-            paragraph2: 'ரெஸ்டாரண்டில் ரொமான்டிக் இரவு உணவிலிருந்து பேர்ட்ஸ் பார்க்கின் அழகுகளை பார்த்தது, உற்சாகமான பைக் சவாரிகள், வசதியான கார் சவாரிகள், ஒன்றாக ஐஸ் ஸ்கேட்டிங் முயற்சித்தது - ஒவ்வொரு கணமும் ஒரு அன்பான நினைவாக மாறியது.',
-            paragraph3: 'இந்த அழகான பயணத்தை நாம் தொடர்ந்து செல்லும்போது, எங்கள் கொண்டாட்டத்தில் நீங்களும் பங்கேற்குமாறு அழைக்கிறோம். உங்கள் வருகையும் ஆசீர்வாதமும் எங்கள் சிறப்பு நாளை இன்னும் அர்த்தமுள்ளதாக்கும்.',
-            brideName: 'மதுமிதா',
-            brideIntro: 'கருணையும் மகிழ்ச்சியும் நிறைந்தவள் — எங்கள் கதையின் ஒவ்வொரு பக்கத்தையும் அழகாக்குகிறாள். நாங்கள் நேசிக்கும் அனைவருடனும் கொண்டாட காத்திருக்கிறோம்.'
-        },
-        engagement: {
-            title: 'நிச்சயதார்த்த கதை',
-            paragraph1: 'நாங்கள் மோதிரங்களை பரிமாறிக்கொண்டபோது, நேரம் நிற்கிறது போல் தோன்றியது. அந்த அமைதியான ஆனால் சக்திவாய்ந்த கணத்தில், வாக்குறுதிகள் முத்திரையிடப்பட்டன. எங்களின் என்றென்றும் நடக்கும் பயணம் அன்றே தொடங்கியது.',
-            paragraph2: 'கேக் வெட்டுவதுடன் கொண்டாட்டம் இனிமையாக வளர்ந்தது. அதைத் தொடர்ந்து மறக்கமுடியாத ஆச்சரியம்! கேக்கிற்குள் மறைக்கப்பட்டிருந்தது அவளுக்கான சிறப்பு பரிசு - ஒரு ஐஃபோன். அவளின் எதிர்வினை, தூய மகிழ்ச்சியும் உற்சாகமும் நிறைந்தது. அது நாளின் மிகவும் அன்பான தருணங்களில் ஒன்றாக மாறியது.',
-            paragraph3: 'இதயத்திலிருந்து வந்த ஒரு அன்பான சைகை. அவள் அவனுக்கு ஒரு வெள்ளி வளையம் பரிசளித்தாள், நம் பெயர்களுடன் நுட்பமாக செதுக்கப்பட்டது. அது அன்பு, சிந்தனை, என்றென்றும் நீடிக்கும் பிணைப்பின் காலமற்ற சின்னம்.',
-            paragraph4: 'நீண்ட காலத்திற்குப் பிறகு உறவினர்களுடன் மீண்டும் சேர்வது கொண்டாட்டத்தை உற்சாகமும் சிரிப்பும் நிறைத்தது. முடிவில்லாத செல்ஃபிகள், குழு புகைப்படங்கள், பகிரப்பட்ட கதைகள், மகிழ்ச்சியான தருணங்கள் - கூட்டம் அன்பும் ஒற்றுமையும் நிறைந்த அழகான மறுசந்திப்பாக மாறியது.',
-            paragraph5: 'ஒரு கொண்டாட்டத்தை விட, நிச்சயதார்த்தம் எங்களின் என்றென்றும் நடக்கும் பயணத்தின் தொடக்கம். நாங்கள் வாழ்நாள் முழுவதும் வைத்திருப்போம் என்ற நினைவுகளால் நிறைந்த ஒரு நாள்.',
-            discoverMore: 'மேலும் பார்க்க'
-        },
-        gallery: {
-            title: 'புகைப்பட சுவர்',
-            engagement: 'நிச்சயதார்த்தம்',
-            others: 'மற்றவை',
-            all: 'அனைத்தும்',
-            teamBride: 'மணமகள் அணி',
-            teamGroom: 'மணமகன் அணி',
-            loading: 'புகைப்படங்கள் ஏற்றப்படுகின்றன...',
-            noPhotos: 'பார்க்க புகைப்படங்கள் இல்லை',
-            page: 'பக்கம்',
-            of: 'இல்',
-            photos: 'புகைப்படங்கள்'
-        },
-        upload: {
-            title: 'உங்கள் புகைப்படங்களை பகிரவும்',
-            description: 'எங்களுடன் உங்கள் அன்பான தருணங்களை பகிர்ந்து கொள்ளுங்கள்! பதிவேற்றும்போது பொருத்தமான வகையைத் தேர்ந்தெடுக்கவும்.',
-            button: 'புகைப்படங்களை பதிவேற்றவும்'
-        },
-        venue: {
-            title: 'இடம்',
-            engagement: 'நிச்சயதார்த்தம்',
-            wedding: 'திருமணம்',
-            openMaps: '📍 கூகிள் மேப்ஸில் திறக்க',
-            mapNote: 'ஊடாடும் வரைபடம் - ஆராய கிளிக் செய்து இழுக்கவும்'
-        },
-        calendar: {
-            title: 'தேதியை நினைவில் கொள்ளுங்கள்',
-            subtitle: 'எங்கள் கொண்டாட்ட வாரத்தை அறிய வண்ண நிற தேதியைத் தட்டவும்',
-            hint: 'விவரங்களுக்கு தேதியைத் தட்டவும்',
-            addToCalendar: 'திருமணத்தை நாட்காட்டியில் சேர்க்கவும்',
-            googleCalendarWeddingTitle: 'பிரவீன்ராஜ் மற்றும் மதுமிதா திருமணம்',
-            viewVenue: 'இடத்தைப் பார்க்க',
-            monthNames: ['ஜனவரி', 'பிப்ரவரி', 'மார்ச்', 'ஏப்ரல்', 'மே', 'ஜூன்',
-                'ஜூலை', 'ஆகஸ்ட்', 'செப்டம்பர்', 'அக்டோபர்', 'நவம்பர்', 'டிசம்பர்'],
-            weekdays: ['ஞா', 'தி', 'செ', 'பு', 'வி', 'வெ', 'ச'],
-            eventIcons: {
-                dinner: '🍽️',
-                mehendi: '💮',
-                reception: '🥂',
-                wedding: '💗',
-                postwedding: '🎉'
-            }
-        },
-        journey: {
-            title: 'திருமண திட்டமிடுபவர்',
-            subtitle: 'அன்பு, பாரம்பரியம், கொண்டாட்டம் நிறைந்த ஐந்து அழகான நாட்கள் உங்களுக்காக காத்திருக்கின்றன.',
-            routeTitle: 'எங்களிடம் வரும் உங்கள் பாதை',
-            routeTitleNamed: '{name}, எங்களிடம் வரும் பாதை',
-            routeGreeting: 'உங்கள் நகரத்திலிருந்து திருச்சியில் நான்கு நாள் கொண்டாட்டத்திற்கான வழியை வரைபடமாகக் காட்டியுள்ளோம்.',
-            routeGreetingNamed: 'ஹேய் {name}! {from} இலிருந்து எங்கள் திருமண வாரத்திற்கான உங்கள் பாதை இதோ.',
-            routeStart: 'நீங்கள் இங்கே',
-            routeTravel: 'வழியில்',
-            routeDestination: 'எங்களுடன் கொண்டாடுங்கள்',
-            routeDestVenue: 'ஸ்ரீ நாராயண மஹால் · திருச்சி',
-            routeDestNote: 'அன்பு, இசை, தருணங்கள் நிறைந்த ஐந்து நாட்கள் — 15–19 ஜூன் 2026',
-            routeOpenMaps: 'Google Maps இல் உங்கள் பாதையைத் திறக்கவும்',
-            closing: 'உங்கள் வருகை எங்கள் கொண்டாட்டத்தை இன்னும் சிறப்பாகவும், நினைவில் நிற்கக்கூடியதாகவும், முழுமையானதாகவும் ஆக்கும். இந்த அழகான பயணத்தை உங்களுடன் கொண்டாடுவதற்கு நாங்கள் ஆவலுடன் காத்திருக்கிறோம்.',
-            events: {
-                haldi: {
-                    title: 'ஹல்தி',
-                    date: '15 ஜூன் 2026',
-                    description: 'வண்ணங்கள், சிரிப்பு, இசை, மஞ்சள் ஆசீர்வாதங்கள், குடும்பம் மற்றும் நண்பர்களுடன் பகிர்ந்த மகிழ்ச்சியான தருணங்கள் நிறைந்த ஒரு மாலை.'
-                },
-                sangeeth: {
-                    title: 'சங்கீத் இரவு',
-                    date: '16 ஜூன் 2026',
-                    description: 'நடனம், இசை, கொண்டாட்டம், நிகழ்ச்சிகள், மற்றும் இரு குடும்பங்களும் மகிழ்ச்சியில் ஒன்றிணையும் மறக்க முடியாத நினைவுகளின் இரவு.'
-                },
-                mehendi: {
-                    title: 'மெஹந்தி',
-                    date: '16 ஜூன் 2026',
-                    description: 'அழகான மெஹந்தி கலை, வண்ணமயமான பாரம்பரியங்கள், இசை, குடும்பம் மற்றும் நண்பர்களுடன் மகிழ்ச்சியான தருணங்கள் நிறைந்த ஒரு மாலை.'
-                },
-                dinner: {
-                    title: 'இரவு விருந்து',
-                    date: '15 ஜூன் 2026',
-                    description: 'ஹல்தி மற்றும் மெஹந்தி கொண்டாட்டங்களுடன் சுவையான உணவு, இசை, குடும்பம் மற்றும் நண்பர்களுடன் மகிழ்ச்சியான தருணங்கள் நிறைந்த ஒரு அற்புதமான இரவு விருந்தில் எங்களுடன் சேருங்கள்.'
-                },
-                reception: {
-                    title: 'வரவேற்பு',
-                    date: '17 ஜூன் 2026',
-                    description: 'அன்பு, ஆசீர்வாதங்கள், இதயத்தைத் தொடும் உரையாடல்கள், சுவையான இரவு உணவு, மற்றும் பிரமாண்ட கொண்டாட்டங்கள் நிறைந்த ஒரு நேர்த்தியான வரவேற்பு இரவில் எங்களுடன் சேருங்கள்.'
-                },
-                wedding: {
-                    title: 'திருமண சடங்கு',
-                    date: '18 ஜூன் 2026',
-                    description: 'இரு ஆத்மாக்களின் புனித ஒன்றிணைவு — பாரம்பரியங்கள், ஆசீர்வாதங்கள், சடங்குகள், மற்றும் அழகான என்றென்றும் தொடக்கத்துடன் கொண்டாடப்படுகிறது.'
-                },
-                postwedding: {
-                    title: 'திருமணத்திற்குப் பிறகு விருந்து',
-                    date: '19 ஜூன் 2026',
-                    description: 'திருமணத்திற்குப் பிறகு எங்களுடன் கொண்டாடுங்கள் — உணவு, இசை, சிரிப்பு, குடும்பம் மற்றும் நண்பர்களுடன் மகிழ்ச்சியான தருணங்கள்.'
-                }
-            },
-        },
-        liveStream: {
-            title: 'நேரடி ஒளிபரப்பு',
-            placeholder: 'நேரடி ஒளிபரப்பு இங்கே தோன்றும்'
-        },
-        footer: {
-            title: 'அன்பிற்கும் உண்டோ அடைக்கும் தாழ்',
-            madeWithLove: 'அன்புடன் உருவாக்கப்பட்டது',
-            developedBy: 'பிரவீன்ராஜ் மதுமிதாவால் வடிவமைக்கப்பட்டு உருவாக்கப்பட்டது'
-        }
     }
 };
-
-// Current language
-let currentLanguage = localStorage.getItem('language') || 'en';
 
 function replayHeaderTextAnimations() {
     const headerSection = document.querySelector('.header-section.header-has-slideshow');
@@ -1138,17 +970,14 @@ function replayHeaderTextAnimations() {
     });
 }
 
-// Function to update all text based on current language
-function updateLanguage(lang) {
-    currentLanguage = lang;
-    localStorage.setItem('language', lang);
-    document.documentElement.lang = lang;
+// Apply English copy to all data-i18n elements
+function applyTranslations() {
+    document.documentElement.lang = 'en';
     
-    // Update all elements with data-i18n attribute
     document.querySelectorAll('[data-i18n]').forEach(element => {
         const key = element.getAttribute('data-i18n');
         const keys = key.split('.');
-        let translation = translations[lang];
+        let translation = translations.en;
         
         for (const k of keys) {
             translation = translation?.[k];
@@ -1176,7 +1005,7 @@ function updateLanguage(lang) {
     document.querySelectorAll('[data-i18n-title]').forEach((element) => {
         const key = element.getAttribute('data-i18n-title');
         const keys = key.split('.');
-        let translation = translations[lang];
+        let translation = translations.en;
         for (const k of keys) {
             translation = translation?.[k];
         }
@@ -1184,12 +1013,6 @@ function updateLanguage(lang) {
             element.setAttribute('title', translation);
         }
     });
-    
-    // Update language toggle button text
-    const langBtn = document.getElementById('languageText');
-    if (langBtn) {
-        langBtn.textContent = lang === 'en' ? 'தமிழ்' : 'English';
-    }
 
     updateCountdown();
     renderFriendRouteMap();
@@ -1207,9 +1030,9 @@ function updateLanguage(lang) {
     }
 }
 
-// Initialize language on page load
 function initLanguage() {
-    updateLanguage(currentLanguage);
+    localStorage.removeItem('language');
+    applyTranslations();
 }
 
 // Function to scroll to gallery section
@@ -1231,32 +1054,19 @@ function scrollToGallery() {
 window.scrollToGallery = scrollToGallery;
 
 function getRouteLabelTemplates() {
-    const en = translations.en?.journey || {};
-    const ta = translations.ta?.journey || {};
+    const journey = translations.en?.journey || {};
     return {
         en: {
-            routeTitle: en.routeTitle,
-            routeTitleNamed: en.routeTitleNamed,
-            routeGreeting: en.routeGreeting,
-            routeGreetingNamed: en.routeGreetingNamed,
-            routeStart: en.routeStart,
-            routeTravel: en.routeTravel,
-            routeDestination: en.routeDestination,
-            routeDestVenue: en.routeDestVenue,
-            routeDestNote: en.routeDestNote,
-            routeOpenMaps: en.routeOpenMaps
-        },
-        ta: {
-            routeTitle: ta.routeTitle,
-            routeTitleNamed: ta.routeTitleNamed,
-            routeGreeting: ta.routeGreeting,
-            routeGreetingNamed: ta.routeGreetingNamed,
-            routeStart: ta.routeStart,
-            routeTravel: ta.routeTravel,
-            routeDestination: ta.routeDestination,
-            routeDestVenue: ta.routeDestVenue,
-            routeDestNote: ta.routeDestNote,
-            routeOpenMaps: ta.routeOpenMaps
+            routeTitle: journey.routeTitle,
+            routeTitleNamed: journey.routeTitleNamed,
+            routeGreeting: journey.routeGreeting,
+            routeGreetingNamed: journey.routeGreetingNamed,
+            routeStart: journey.routeStart,
+            routeTravel: journey.routeTravel,
+            routeDestination: journey.routeDestination,
+            routeDestVenue: journey.routeDestVenue,
+            routeDestNote: journey.routeDestNote,
+            routeOpenMaps: journey.routeOpenMaps
         }
     };
 }
@@ -1273,7 +1083,7 @@ function renderFriendRouteMap() {
     );
     const view = friendRouteApi.getFriendRouteView(
         routeKey,
-        currentLanguage,
+        'en',
         getRouteLabelTemplates()
     );
 
@@ -1316,12 +1126,11 @@ let selectedCalendarDay = null;
 let weddingCalendarBound = false;
 
 function getCalendarCopy() {
-    return translations[currentLanguage]?.calendar || translations.en.calendar;
+    return translations.en.calendar;
 }
 
 function getCalendarEventMap() {
-    const journeyEvents = translations[currentLanguage]?.journey?.events
-        || translations.en.journey.events;
+    const journeyEvents = translations.en.journey.events;
     const map = {};
     CALENDAR_EVENT_ORDER.forEach((eventKey) => {
         const day = CALENDAR_EVENT_DAYS[eventKey];
@@ -1473,8 +1282,8 @@ function renderWeddingCalendar() {
         if (event) {
             const isWeddingDay = day === weddingDay;
             const isSelected = selectedCalendarDay === day;
-            const icon = icons[event.key] || '📅';
-            const ariaLabel = `${monthNames[month]} ${day}, ${year} — ${event.title}`;
+            const icon = icons[event.key] || '\u{1F4C5}';
+            const ariaLabel = `${monthNames[month]} ${day}, ${year} - ${event.title}`;
             const weddingClass = isWeddingDay ? ' wedding-calendar-day--wedding' : '';
             const selectedClass = isSelected ? ' wedding-calendar-day--selected' : '';
             const ariaCurrent = isSelected ? ' aria-current="date"' : '';
@@ -1535,17 +1344,7 @@ function initWeddingJourney() {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // Initialize language first
     initLanguage();
-    
-    // Language toggle button
-    const languageToggleBtn = document.getElementById('languageToggleBtn');
-    if (languageToggleBtn) {
-        languageToggleBtn.addEventListener('click', () => {
-            const newLang = currentLanguage === 'en' ? 'ta' : 'en';
-            updateLanguage(newLang);
-        });
-    }
 
     const heroPhotosBtn = document.getElementById('heroPhotosBtn');
     if (heroPhotosBtn) {
@@ -1586,9 +1385,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     // Initialize photo upload
     initPhotoUpload();
-    
-    // Initialize live stream
-    initLiveStream();
     
     // Initialize image modal
     initImageModal();
@@ -1800,7 +1596,7 @@ function initPhotoUpload() {
         progressFill.style.width = '100%';
         if (uploadedCount > 0) {
             progressText.textContent = `Upload complete! ${uploadedCount} of ${totalFiles} uploaded`;
-            showUploadMessage(`✅ Successfully uploaded ${uploadedCount} photo(s)!${failedCount > 0 ? ` (${failedCount} failed)` : ''}`, 'success');
+            showUploadMessage(`âœ… Successfully uploaded ${uploadedCount} photo(s)!${failedCount > 0 ? ` (${failedCount} failed)` : ''}`, 'success');
             uploadedPreview.innerHTML = `<p class="uploaded-count">${uploadedCount} photo(s) uploaded</p>`;
             
             // Refresh the gallery if "Others" tab is active
@@ -1812,7 +1608,7 @@ function initPhotoUpload() {
             }
         } else {
             progressText.textContent = 'Upload failed';
-            showUploadMessage(`❌ Failed to upload files. Please try again.`, 'error');
+            showUploadMessage(`âŒ Failed to upload files. Please try again.`, 'error');
             isUploading = false; // Reset upload flag immediately on failure
         }
         
@@ -1911,7 +1707,7 @@ function initPhotoUpload() {
                         progressFill.style.width = '100%';
                         progressText.textContent = 'Upload complete!';
                         
-                        showUploadMessage(`✅ Successfully uploaded ${response.files.length} photo(s)!`, 'success');
+                        showUploadMessage(`âœ… Successfully uploaded ${response.files.length} photo(s)!`, 'success');
                         
                         // Show preview of uploaded files
                         uploadedPreview.innerHTML = `<p class="uploaded-count">${response.files.length} photo(s) uploaded</p>`;
@@ -1932,16 +1728,16 @@ function initPhotoUpload() {
                         }, 2000);
                     } catch (parseError) {
                         console.error('Error parsing response:', parseError);
-                        showUploadMessage('❌ Upload response error', 'error');
+                        showUploadMessage('âŒ Upload response error', 'error');
                         uploadProgress.style.display = 'none';
                         isUploading = false; // Reset upload flag
                     }
                 } else {
                     try {
                         const error = JSON.parse(xhr.responseText);
-                        showUploadMessage(`❌ Upload failed: ${error.error || 'Unknown error'}`, 'error');
+                        showUploadMessage(`âŒ Upload failed: ${error.error || 'Unknown error'}`, 'error');
                     } catch (parseError) {
-                        showUploadMessage(`❌ Upload failed: Server error (${xhr.status})`, 'error');
+                        showUploadMessage(`âŒ Upload failed: Server error (${xhr.status})`, 'error');
                     }
                     uploadProgress.style.display = 'none';
                     isUploading = false; // Reset upload flag
@@ -1949,20 +1745,20 @@ function initPhotoUpload() {
             });
             
             xhr.addEventListener('error', (e) => {
-                showUploadMessage('❌ Network error. Please check your connection and try again.', 'error');
+                showUploadMessage('âŒ Network error. Please check your connection and try again.', 'error');
                 uploadProgress.style.display = 'none';
                 isUploading = false; // Reset upload flag
             });
             
             xhr.addEventListener('abort', () => {
-                showUploadMessage('❌ Upload was cancelled. Please try again.', 'error');
+                showUploadMessage('âŒ Upload was cancelled. Please try again.', 'error');
                 uploadProgress.style.display = 'none';
                 isUploading = false; // Reset upload flag
             });
             
             xhr.addEventListener('timeout', () => {
                 console.error('Upload timeout');
-                showUploadMessage('❌ Upload timed out. Please try again with smaller files or better connection.', 'error');
+                showUploadMessage('âŒ Upload timed out. Please try again with smaller files or better connection.', 'error');
                 uploadProgress.style.display = 'none';
                 isUploading = false; // Reset upload flag
             });
@@ -1975,7 +1771,7 @@ function initPhotoUpload() {
             
         } catch (error) {
             console.error('Upload error:', error);
-            showUploadMessage('❌ Upload failed. Please try again.', 'error');
+            showUploadMessage('âŒ Upload failed. Please try again.', 'error');
             uploadProgress.style.display = 'none';
             isUploading = false; // Reset upload flag
         }
@@ -2182,141 +1978,8 @@ function initImageModal() {
 window.openImageModal = openImageModal;
 window.closeImageModal = closeImageModal;
 
-// Initialize Live Stream
-function initLiveStream() {
-    // YouTube Live Stream Configuration
-    // Option 1: YouTube Video ID (for live streams or regular videos)
-    const youtubeVideoId = ''; // Example: 'dQw4w9WgXcQ' (from URL: https://www.youtube.com/watch?v=dQw4w9WgXcQ)
-    
-    // Option 2: YouTube Live Stream ID (for live broadcasts)
-    const youtubeLiveId = ''; // Example: 'jfKfPfyJRdk' (from URL: https://www.youtube.com/live/jfKfPfyJRdk)
-    
-    // Option 3: Full YouTube embed URL (if you have a custom embed URL)
-    const youtubeEmbedUrl = ''; // Example: 'https://www.youtube.com/embed/VIDEO_ID'
-    
-    const videoContainer = document.getElementById('videoStreamContainer');
-    const videoWrapper = document.getElementById('videoWrapper');
-    const videoFrame = document.getElementById('videoStreamFrame');
-    const placeholder = document.getElementById('videoPlaceholder');
-    const pipToggleBtn = document.getElementById('pipToggleBtn');
-    
-    let embedUrl = '';
-    let isPipMode = false;
-    let isDragging = false;
-    let dragOffset = { x: 0, y: 0 };
-    
-    // Build YouTube embed URL based on provided configuration
-    if (youtubeLiveId) {
-        // Use YouTube live stream embed
-        embedUrl = `https://www.youtube.com/embed/${youtubeLiveId}?autoplay=1&mute=0`;
-    } else if (youtubeVideoId) {
-        // Use regular YouTube video embed (works for live streams too)
-        embedUrl = `https://www.youtube.com/embed/${youtubeVideoId}?autoplay=1&mute=0`;
-    } else if (youtubeEmbedUrl) {
-        // Use provided embed URL
-        embedUrl = youtubeEmbedUrl;
-    }
-    
-    // Load YouTube embed if URL is available
-    if (embedUrl && videoContainer && videoFrame && videoWrapper) {
-        if (placeholder) placeholder.style.display = 'none';
-        videoWrapper.style.display = 'block';
-        videoFrame.src = embedUrl;
-        
-        // Automatically enable PiP mode when video loads
-        setTimeout(() => {
-            enablePipMode();
-        }, 2000); // Wait 2 seconds for video to start loading
-        
-        // Toggle PiP mode button
-        if (pipToggleBtn) {
-            pipToggleBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                togglePipMode();
-            });
-        }
-        
-        // Make PiP window draggable
-        if (videoContainer) {
-            videoContainer.addEventListener('mousedown', startDrag);
-            document.addEventListener('mousemove', drag);
-            document.addEventListener('mouseup', stopDrag);
-            
-            // Touch events for mobile
-            videoContainer.addEventListener('touchstart', startDrag);
-            document.addEventListener('touchmove', drag);
-            document.addEventListener('touchend', stopDrag);
-        }
-    } else {
-        // Keep placeholder visible if no URL is configured
-        if (placeholder) placeholder.style.display = 'flex';
-        if (videoWrapper) videoWrapper.style.display = 'none';
-    }
-    
-    // Enable PiP mode
-    function enablePipMode() {
-        if (videoContainer && !isPipMode) {
-            isPipMode = true;
-            videoContainer.classList.add('pip-mode');
-        }
-    }
-    
-    // Disable PiP mode
-    function disablePipMode() {
-        if (videoContainer && isPipMode) {
-            isPipMode = false;
-            videoContainer.classList.remove('pip-mode');
-        }
-    }
-    
-    // Toggle PiP mode
-    function togglePipMode() {
-        if (isPipMode) {
-            disablePipMode();
-        } else {
-            enablePipMode();
-        }
-    }
-    
-    // Drag functionality
-    function startDrag(e) {
-        if (!isPipMode) return;
-        isDragging = true;
-        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-        const rect = videoContainer.getBoundingClientRect();
-        dragOffset.x = clientX - rect.left;
-        dragOffset.y = clientY - rect.top;
-        e.preventDefault();
-    }
-    
-    function drag(e) {
-        if (!isDragging || !isPipMode) return;
-        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-        
-        const newX = clientX - dragOffset.x;
-        const newY = clientY - dragOffset.y;
-        
-        // Keep within viewport bounds
-        const maxX = window.innerWidth - videoContainer.offsetWidth;
-        const maxY = window.innerHeight - videoContainer.offsetHeight;
-        
-        const constrainedX = Math.max(0, Math.min(newX, maxX));
-        const constrainedY = Math.max(0, Math.min(newY, maxY));
-        
-        videoContainer.style.left = constrainedX + 'px';
-        videoContainer.style.top = constrainedY + 'px';
-        videoContainer.style.right = 'auto';
-        videoContainer.style.bottom = 'auto';
-        
-        e.preventDefault();
-    }
-    
-    function stopDrag() {
-        isDragging = false;
-    }
-}
+// Live stream embed disabled — dummy YouTube id for when embed is re-enabled
+const YOUTUBE_LIVE_VIDEO_ID = 'oFUyORF-2ms';
 
 // Cleanup on page unload
 window.addEventListener('beforeunload', () => {

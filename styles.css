@@ -1420,6 +1420,7 @@ button.wedding-calendar-day {
 }
 
 .calendar-day-emoji {
+    font-family: "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif;
     font-size: clamp(1rem, 3.5vw, 1.35rem);
     line-height: 1;
     margin-bottom: 3px;
@@ -1589,6 +1590,7 @@ button.wedding-calendar-day {
     text-decoration: none;
     font-size: 1rem;
     font-weight: 500;
+    font-family: "Poppins", "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif;
     transition: all 0.3s ease;
 }
 
@@ -2000,12 +2002,12 @@ button.wedding-calendar-day {
 }
 
 .video-stream-container {
-    max-width: 800px;
+    max-width: 900px;
+    width: 100%;
     margin: 0 auto;
     background: #000;
     border-radius: 20px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-    min-height: 500px;
     position: relative;
     overflow: hidden;
     aspect-ratio: 16 / 9;
@@ -2013,7 +2015,8 @@ button.wedding-calendar-day {
 }
 
 .video-wrapper {
-    position: relative;
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
     border-radius: 20px;
@@ -2021,9 +2024,11 @@ button.wedding-calendar-day {
 }
 
 .video-stream-frame {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
-    border: none;
+    border: 0;
     border-radius: 20px;
 }
 
@@ -2104,6 +2109,22 @@ button.wedding-calendar-day {
     font-size: 1.1rem;
     color: #ccc;
     margin: 0;
+}
+
+.video-file-protocol-warning {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    margin: 0;
+    text-align: center;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.85);
 }
 
 .upload-section,
@@ -2870,7 +2891,6 @@ button.wedding-calendar-day {
 }
 
 .mobile-device .video-stream-container {
-    min-height: 300px;
     max-width: 100%;
 }
 
