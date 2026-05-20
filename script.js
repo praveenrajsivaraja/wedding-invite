@@ -881,6 +881,7 @@ const translations = {
             subtitle: 'Tap a highlighted date to explore our celebration week',
             hint: 'Tap a date to see event details',
             addToCalendar: 'Add wedding to calendar',
+            googleCalendarWeddingTitle: 'Praveenraj and Madhumitha Wedding',
             viewVenue: 'View venue',
             monthNames: ['January', 'February', 'March', 'April', 'May', 'June',
                 'July', 'August', 'September', 'October', 'November', 'December'],
@@ -889,12 +890,13 @@ const translations = {
                 dinner: '🍽️',
                 mehendi: '💮',
                 reception: '🥂',
-                wedding: '💒'
+                wedding: '💗',
+                postwedding: '🎉'
             }
         },
         journey: {
             title: 'Wedding Planner',
-            subtitle: 'Four beautiful days of love, tradition, and celebration await you.',
+            subtitle: 'Five beautiful days of love, tradition, and celebration await you.',
             routeTitle: 'Your Route to Celebrate With Us',
             routeTitleNamed: '{name}, Your Route to Us',
             routeGreeting: 'We mapped the way from your city to our four-day celebration in Trichy.',
@@ -903,7 +905,7 @@ const translations = {
             routeTravel: 'On the way',
             routeDestination: 'Celebrate with us',
             routeDestVenue: 'Shree Narayana Mahall · Trichy',
-            routeDestNote: 'Four days of love, music, and moments — 15–18 June 2026',
+            routeDestNote: 'Five days of love, music, and moments — 15–19 June 2026',
             routeOpenMaps: 'Open your route in Google Maps',
             closing: 'Your presence will make our celebration more special, memorable, and complete. We cannot wait to celebrate this beautiful journey with you.',
             events: {
@@ -918,7 +920,7 @@ const translations = {
                     description: 'A night of dance, music, celebration, performances, and unforgettable memories as both families come together in happiness.'
                 },
                 mehendi: {
-                    title: 'Mehandi & Sangeeth Night',
+                    title: 'Mehandi',
                     date: '16 June 2026',
                     description: 'An evening of beautiful henna artistry, vibrant traditions, music, and joyful moments with family and friends.'
                 },
@@ -936,6 +938,11 @@ const translations = {
                     title: 'Wedding Ceremony',
                     date: '18 June 2026',
                     description: 'The sacred union of two souls, celebrated with traditions, blessings, rituals, and the beginning of a beautiful forever together.'
+                },
+                postwedding: {
+                    title: 'Postwedding Party',
+                    date: '19 June 2026',
+                    description: 'Celebrate with us after the wedding — food, music, laughter, and joyful moments with family and friends.'
                 }
             },
         },
@@ -1039,19 +1046,22 @@ const translations = {
             subtitle: 'எங்கள் கொண்டாட்ட வாரத்தை அறிய வண்ண நிற தேதியைத் தட்டவும்',
             hint: 'விவரங்களுக்கு தேதியைத் தட்டவும்',
             addToCalendar: 'திருமணத்தை நாட்காட்டியில் சேர்க்கவும்',
+            googleCalendarWeddingTitle: 'பிரவீன்ராஜ் மற்றும் மதுமிதா திருமணம்',
             viewVenue: 'இடத்தைப் பார்க்க',
             monthNames: ['ஜனவரி', 'பிப்ரவரி', 'மார்ச்', 'ஏப்ரல்', 'மே', 'ஜூன்',
                 'ஜூலை', 'ஆகஸ்ட்', 'செப்டம்பர்', 'அக்டோபர்', 'நவம்பர்', 'டிசம்பர்'],
             weekdays: ['ஞா', 'தி', 'செ', 'பு', 'வி', 'வெ', 'ச'],
             eventIcons: {
                 dinner: '🍽️',
+                mehendi: '💮',
                 reception: '🥂',
-                wedding: '💒'
+                wedding: '💗',
+                postwedding: '🎉'
             }
         },
         journey: {
             title: 'திருமண திட்டமிடுபவர்',
-            subtitle: 'அன்பு, பாரம்பரியம், கொண்டாட்டம் நிறைந்த நான்கு அழகான நாட்கள் உங்களுக்காக காத்திருக்கின்றன.',
+            subtitle: 'அன்பு, பாரம்பரியம், கொண்டாட்டம் நிறைந்த ஐந்து அழகான நாட்கள் உங்களுக்காக காத்திருக்கின்றன.',
             routeTitle: 'எங்களிடம் வரும் உங்கள் பாதை',
             routeTitleNamed: '{name}, எங்களிடம் வரும் பாதை',
             routeGreeting: 'உங்கள் நகரத்திலிருந்து திருச்சியில் நான்கு நாள் கொண்டாட்டத்திற்கான வழியை வரைபடமாகக் காட்டியுள்ளோம்.',
@@ -1060,7 +1070,7 @@ const translations = {
             routeTravel: 'வழியில்',
             routeDestination: 'எங்களுடன் கொண்டாடுங்கள்',
             routeDestVenue: 'ஸ்ரீ நாராயண மஹால் · திருச்சி',
-            routeDestNote: 'அன்பு, இசை, தருணங்கள் நிறைந்த நான்கு நாட்கள் — 15–18 ஜூன் 2026',
+            routeDestNote: 'அன்பு, இசை, தருணங்கள் நிறைந்த ஐந்து நாட்கள் — 15–19 ஜூன் 2026',
             routeOpenMaps: 'Google Maps இல் உங்கள் பாதையைத் திறக்கவும்',
             closing: 'உங்கள் வருகை எங்கள் கொண்டாட்டத்தை இன்னும் சிறப்பாகவும், நினைவில் நிற்கக்கூடியதாகவும், முழுமையானதாகவும் ஆக்கும். இந்த அழகான பயணத்தை உங்களுடன் கொண்டாடுவதற்கு நாங்கள் ஆவலுடன் காத்திருக்கிறோம்.',
             events: {
@@ -1093,6 +1103,11 @@ const translations = {
                     title: 'திருமண சடங்கு',
                     date: '18 ஜூன் 2026',
                     description: 'இரு ஆத்மாக்களின் புனித ஒன்றிணைவு — பாரம்பரியங்கள், ஆசீர்வாதங்கள், சடங்குகள், மற்றும் அழகான என்றென்றும் தொடக்கத்துடன் கொண்டாடப்படுகிறது.'
+                },
+                postwedding: {
+                    title: 'திருமணத்திற்குப் பிறகு விருந்து',
+                    date: '19 ஜூன் 2026',
+                    description: 'திருமணத்திற்குப் பிறகு எங்களுடன் கொண்டாடுங்கள் — உணவு, இசை, சிரிப்பு, குடும்பம் மற்றும் நண்பர்களுடன் மகிழ்ச்சியான தருணங்கள்.'
                 }
             },
         },
@@ -1288,12 +1303,13 @@ function renderFriendRouteMap() {
 
 }
 
-const CALENDAR_EVENT_ORDER = ['dinner', 'mehendi', 'reception', 'wedding'];
+const CALENDAR_EVENT_ORDER = ['dinner', 'mehendi', 'reception', 'wedding', 'postwedding'];
 const CALENDAR_EVENT_DAYS = {
     dinner: 15,
     mehendi: 16,
     reception: 17,
-    wedding: 18
+    wedding: 18,
+    postwedding: 19
 };
 
 let selectedCalendarDay = null;
@@ -1357,6 +1373,12 @@ function hideCalendarEventPanel() {
     });
 }
 
+function getGoogleCalendarWeddingTitle() {
+    const calendarCopy = getCalendarCopy();
+    return calendarCopy.googleCalendarWeddingTitle
+        || translations.en.calendar.googleCalendarWeddingTitle;
+}
+
 function buildWeddingGoogleCalendarUrl() {
     const utils = globalThis.WeddingCalendarUtils;
     const weddingDate = new Date(CONFIG.MARRIAGE_DATE);
@@ -1365,10 +1387,11 @@ function buildWeddingGoogleCalendarUrl() {
     endDateExclusive.setDate(endDateExclusive.getDate() + 1);
     const event = getCalendarEventMap()[CALENDAR_EVENT_DAYS.wedding];
     const location = CONFIG.LOCATIONS.marriage;
+    const calendarTitle = getGoogleCalendarWeddingTitle();
 
     if (utils && typeof utils.buildGoogleCalendarUrl === 'function') {
         return utils.buildGoogleCalendarUrl({
-            title: event?.title || 'Wedding',
+            title: calendarTitle,
             startDate,
             endDateExclusive,
             details: event?.description || '',
@@ -1380,7 +1403,7 @@ function buildWeddingGoogleCalendarUrl() {
     const format = (d) => `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}`;
     const params = new URLSearchParams({
         action: 'TEMPLATE',
-        text: event?.title || 'Wedding',
+        text: calendarTitle,
         dates: `${format(startDate)}/${format(endDateExclusive)}`,
         details: event?.description || '',
         location: `${location.name}, ${location.address}`

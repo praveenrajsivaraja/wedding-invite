@@ -1415,6 +1415,10 @@ button.wedding-calendar-day {
     background: linear-gradient(145deg, #b30000 0%, #8B0000 100%);
 }
 
+.wedding-calendar-day--postwedding {
+    background: linear-gradient(145deg, #f48fb1 0%, #ec407a 100%);
+}
+
 .calendar-day-emoji {
     font-size: clamp(1rem, 3.5vw, 1.35rem);
     line-height: 1;
