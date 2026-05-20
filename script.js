@@ -881,6 +881,7 @@ const translations = {
             subtitle: 'Tap a highlighted date to explore our celebration week',
             hint: 'Tap a date to see event details',
             addToCalendar: 'Add wedding to calendar',
+            googleCalendarWeddingTitle: 'Praveenraj and Madhumitha\'s Wedding',
             viewVenue: 'View venue',
             monthNames: ['January', 'February', 'March', 'April', 'May', 'June',
                 'July', 'August', 'September', 'October', 'November', 'December'],
@@ -889,7 +890,8 @@ const translations = {
                 dinner: '🍽️',
                 mehendi: '💮',
                 reception: '🥂',
-                wedding: '💒'
+                wedding: '💗',
+                postwedding: '🎉'
             }
         },
         journey: {
@@ -936,6 +938,11 @@ const translations = {
                     title: 'Wedding Ceremony',
                     date: '18 June 2026',
                     description: 'The sacred union of two souls, celebrated with traditions, blessings, rituals, and the beginning of a beautiful forever together.'
+                },
+                postwedding: {
+                    title: 'Postwedding Party',
+                    date: '19 June 2026',
+                    description: 'Celebrate with us after the wedding — food, music, laughter, and joyful moments with family and friends.'
                 }
             },
         },
@@ -1039,14 +1046,17 @@ const translations = {
             subtitle: 'எங்கள் கொண்டாட்ட வாரத்தை அறிய வண்ண நிற தேதியைத் தட்டவும்',
             hint: 'விவரங்களுக்கு தேதியைத் தட்டவும்',
             addToCalendar: 'திருமணத்தை நாட்காட்டியில் சேர்க்கவும்',
+            googleCalendarWeddingTitle: 'பிரவீன்ராஜ் மற்றும் மதுமிதா திருமணம்',
             viewVenue: 'இடத்தைப் பார்க்க',
             monthNames: ['ஜனவரி', 'பிப்ரவரி', 'மார்ச்', 'ஏப்ரல்', 'மே', 'ஜூன்',
                 'ஜூலை', 'ஆகஸ்ட்', 'செப்டம்பர்', 'அக்டோபர்', 'நவம்பர்', 'டிசம்பர்'],
             weekdays: ['ஞா', 'தி', 'செ', 'பு', 'வி', 'வெ', 'ச'],
             eventIcons: {
                 dinner: '🍽️',
+                mehendi: '💮',
                 reception: '🥂',
-                wedding: '💒'
+                wedding: '💗',
+                postwedding: '🎉'
             }
         },
         journey: {
@@ -1093,6 +1103,11 @@ const translations = {
                     title: 'திருமண சடங்கு',
                     date: '18 ஜூன் 2026',
                     description: 'இரு ஆத்மாக்களின் புனித ஒன்றிணைவு — பாரம்பரியங்கள், ஆசீர்வாதங்கள், சடங்குகள், மற்றும் அழகான என்றென்றும் தொடக்கத்துடன் கொண்டாடப்படுகிறது.'
+                },
+                postwedding: {
+                    title: 'திருமணத்திற்குப் பிறகு விருந்து',
+                    date: '19 ஜூன் 2026',
+                    description: 'திருமணத்திற்குப் பிறகு எங்களுடன் கொண்டாடுங்கள் — உணவு, இசை, சிரிப்பு, குடும்பம் மற்றும் நண்பர்களுடன் மகிழ்ச்சியான தருணங்கள்.'
                 }
             },
         },
@@ -1288,12 +1303,13 @@ function renderFriendRouteMap() {
 
 }
 
-const CALENDAR_EVENT_ORDER = ['dinner', 'mehendi', 'reception', 'wedding'];
+const CALENDAR_EVENT_ORDER = ['dinner', 'mehendi', 'reception', 'wedding', 'postwedding'];
 const CALENDAR_EVENT_DAYS = {
     dinner: 15,
     mehendi: 16,
     reception: 17,
-    wedding: 18
+    wedding: 18,
+    postwedding: 19
 };
 
 let selectedCalendarDay = null;
@@ -1357,6 +1373,12 @@ function hideCalendarEventPanel() {
     });
 }
 
+function getGoogleCalendarWeddingTitle() {
+    const calendarCopy = getCalendarCopy();
+    return calendarCopy.googleCalendarWeddingTitle
+        || translations.en.calendar.googleCalendarWeddingTitle;
+}
+
 function buildWeddingGoogleCalendarUrl() {
     const utils = globalThis.WeddingCalendarUtils;
     const weddingDate = new Date(CONFIG.MARRIAGE_DATE);
@@ -1365,10 +1387,11 @@ function buildWeddingGoogleCalendarUrl() {
     endDateExclusive.setDate(endDateExclusive.getDate() + 1);
     const event = getCalendarEventMap()[CALENDAR_EVENT_DAYS.wedding];
     const location = CONFIG.LOCATIONS.marriage;
+    const calendarTitle = getGoogleCalendarWeddingTitle();
 
     if (utils && typeof utils.buildGoogleCalendarUrl === 'function') {
         return utils.buildGoogleCalendarUrl({
-            title: event?.title || 'Wedding',
+            title: calendarTitle,
             startDate,
             endDateExclusive,
             details: event?.description || '',
@@ -1380,7 +1403,7 @@ function buildWeddingGoogleCalendarUrl() {
     const format = (d) => `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}`;
     const params = new URLSearchParams({
         action: 'TEMPLATE',
-        text: event?.title || 'Wedding',
+        text: calendarTitle,
         dates: `${format(startDate)}/${format(endDateExclusive)}`,
         details: event?.description || '',
         location: `${location.name}, ${location.address}`
