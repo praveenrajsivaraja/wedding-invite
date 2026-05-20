@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" id="htmlLang">
 
 <head>
@@ -19,7 +19,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600&family=Dancing+Script:wght@400;600;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600&family=Dancing+Script:wght@400;600;700&family=Great+Vibes&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap"
         rel="stylesheet">
 </head>
 
@@ -87,19 +87,22 @@
     </nav>
     <!-- Header Section -->
     <section id="home" class="header-section">
-        <div class="header-slideshow" id="headerSlideshow">
-            <!-- Images will be loaded dynamically -->
-        </div>
+        <div class="header-hero-stack">
+            <div class="header-slideshow" id="headerSlideshow">
+                <!-- Images will be loaded dynamically -->
+            </div>
         <div class="header-overlay"></div>
         <div class="container header-content">
-            <p class="couple-names" data-i18n="header.coupleNames">We Are Getting Married</p>
-            <h2 class="were-getting" data-i18n="header.groom">Chennai Paiyan</h2>
-            <h1 class="were-getting gold-text" data-i18n="header.weds">Weds</h1>
-            <h2 class="were-getting" data-i18n="header.bride">Trichy Ponnu</h2>
+            <div class="header-hero-text">
+                <p class="couple-names header-anim header-anim-tagline" data-i18n="header.coupleNames">We Are Getting Married</p>
+                <h2 class="were-getting header-anim header-anim-slide-left" data-i18n="header.groom">Chennai Paiyan</h2>
+                <h1 class="were-getting gold-text header-anim header-anim-weds" data-i18n="header.weds">Weds</h1>
+                <h2 class="were-getting header-anim header-anim-slide-right" data-i18n="header.bride">Trichy Ponnu</h2>
+            </div>
 
-            <p class="event-date" id="eventDate" aria-live="polite"></p>
-            <p class="countdown-label" id="countdownLabel" data-i18n="header.countdownEngagement"></p>
-            <div class="timer" id="timer">
+            <p class="event-date header-anim header-anim-date" id="eventDate" aria-live="polite"></p>
+            <p class="countdown-label header-anim header-anim-countdown" id="countdownLabel" data-i18n="header.countdownEngagement"></p>
+            <div class="timer header-anim header-anim-timer" id="timer">
                 <div class="time-unit">
                     <div class="time-value" id="days">00</div>
                     <div class="time-label" data-i18n="timer.days">DAYS</div>
@@ -118,6 +121,7 @@
                 </div>
             </div>
 
+            </div>
         </div>
     </section>
 

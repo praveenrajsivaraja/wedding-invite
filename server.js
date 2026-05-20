@@ -52,12 +52,25 @@ app.get('/api/photos', (req, res) => {
 });
 
 app.get('/api/header-images', (req, res) => {
-    const folderPath = path.join(__dirname, 'photos', 'header');
-    if (!fs.existsSync(folderPath)) {
-        return res.json({ images: [], folder: 'none' });
+    const headerPath = path.join(__dirname, 'photos', 'header');
+    if (fs.existsSync(headerPath)) {
+        const headerFiles = fs.readdirSync(headerPath).filter(f => /\.(jpg|jpeg|png|webp)$/i.test(f));
+        if (headerFiles.length > 0) {
+            return res.json({ images: headerFiles, folder: 'header' });
+        }
     }
-    const files = fs.readdirSync(folderPath).filter(f => /\.(jpg|jpeg|png|webp)$/i.test(f));
-    res.json({ images: files, folder: 'header' });
+
+    const engagementPath = path.join(__dirname, 'photos', 'engagement');
+    if (fs.existsSync(engagementPath)) {
+        const engagementFiles = fs.readdirSync(engagementPath)
+            .filter(f => /\.(jpg|jpeg|png|webp)$/i.test(f))
+            .slice(0, 5);
+        if (engagementFiles.length > 0) {
+            return res.json({ images: engagementFiles, folder: 'engagement' });
+        }
+    }
+
+    res.json({ images: [], folder: 'none' });
 });
 
 app.use('/photos', express.static(path.join(__dirname, 'photos')));
