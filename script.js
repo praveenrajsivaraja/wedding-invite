@@ -1623,7 +1623,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             'header and fonts'
         );
 
-        setPageLoaderStatus('Loading gallery…');
+        setPageLoaderStatus('Preparing to invite you to the biggest celebration of our lives!🎉');
         await waitWithTimeout(initGallery(), PAGE_LOADER_MAX_MS, 'gallery');
 
         startCountdown();
@@ -1637,12 +1637,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         initImageModal();
 
         window.staticEngagementImages = [
-            'photos/engagement/WIN_4488.JPG',
-            'photos/engagement/WIN_4269.JPG',
-            'photos/engagement/WIN_4401.JPG',
-            'photos/engagement/WIN_4415.JPG',
-            'photos/engagement/WIN_4698.JPG',
-            'photos/engagement/WIN_5084.JPG'
+            
         ];
     } catch (error) {
         console.error('Error while initializing page:', error);
