@@ -4,6 +4,84 @@
     box-sizing: border-box;
 }
 
+html.is-page-loading body > :not(#pageLoader):not(script) {
+    visibility: hidden;
+}
+
+.page-loader-inner {
+    text-align: center;
+    padding: 32px 28px;
+    max-width: 22rem;
+}
+
+.page-loader-eyebrow {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-style: italic;
+    font-size: clamp(1rem, 3vw, 1.25rem);
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: #8B0000;
+    margin-bottom: 12px;
+}
+
+.page-loader-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(1.5rem, 5vw, 2rem);
+    font-weight: 600;
+    color: #8B0000;
+    line-height: 1.3;
+    margin-bottom: 8px;
+}
+
+.page-loader-ampersand {
+    font-family: 'Great Vibes', cursive;
+    font-weight: 400;
+    color: #D4AF37;
+}
+
+.page-loader-date {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-style: italic;
+    font-size: clamp(1.05rem, 3vw, 1.2rem);
+    color: #666666;
+    margin-bottom: 28px;
+}
+
+.page-loader-spinner {
+    width: 44px;
+    height: 44px;
+    margin: 0 auto 18px;
+    border: 3px solid rgba(139, 0, 0, 0.15);
+    border-top-color: #8B0000;
+    border-radius: 50%;
+    animation: pageLoaderSpin 0.9s linear infinite;
+}
+
+.page-loader-status {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    color: #666666;
+}
+
+@keyframes pageLoaderSpin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .page-loader-spinner {
+        animation: none;
+        border-top-color: #8B0000;
+    }
+
+    .page-loader {
+        transition: none;
+    }
+}
+
 :root {
     --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
@@ -20,26 +98,16 @@
 }
 
 body {
-    padding-left: 70px;
     font-family: 'Poppins', sans-serif;
     background: #ffffff;
     color: #8B0000;
     line-height: 1.6;
     overflow-x: hidden;
-    transition: padding-left 0.3s ease-in-out;
     width: 100%;
     box-sizing: border-box;
 }
 
 .mobile-device {
-    padding-left: 0 !important;
-    width: 100%;
-    box-sizing: border-box;
-    overflow-x: hidden;
-}
-
-.mobile-device body {
-    padding-left: 0 !important;
     width: 100%;
     box-sizing: border-box;
     overflow-x: hidden;
@@ -86,6 +154,28 @@ body {
     background: #ffffff;
 }
 
+.header-section.header-pending-hero {
+    background: #1a1a1a;
+    min-height: 50vh;
+    padding: max(56px, calc(var(--mobile-nav-height, 56px) + env(safe-area-inset-top, 0px))) 0 0;
+}
+
+.header-section.header-pending-hero .header-content,
+.header-section.header-pending-hero::before,
+.header-section.header-pending-hero::after {
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.header-section.header-has-slideshow:not(.header-hero-ready) .header-content {
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.header-section.header-has-slideshow .header-slideshow {
+    background: #1a1a1a;
+}
+
 .header-slideshow {
     position: absolute;
     inset: 0;
@@ -100,7 +190,7 @@ body {
 .header-section.header-has-slideshow {
     background: transparent;
     min-height: 0;
-    padding: 0;
+    padding: max(56px, calc(var(--mobile-nav-height, 56px) + env(safe-area-inset-top, 0px))) 0 0;
     margin: 0;
     display: block;
     overflow: hidden;
@@ -451,7 +541,7 @@ body {
 
 .header-slideshow-frame img.active {
     opacity: 1;
-    z-index: 1;
+    z-index: 2;
 }
 
 .header-overlay {
@@ -764,7 +854,7 @@ body {
     -webkit-overflow-scrolling: touch;
     position: -webkit-sticky;
     position: sticky;
-    top: 0;
+    top: calc(env(safe-area-inset-top, 0px) + var(--mobile-nav-height, 56px));
     z-index: 100;
     background: #ffffff;
     padding: 15px 0;
@@ -810,7 +900,7 @@ body {
     gap: 12px;
     position: -webkit-sticky;
     position: sticky;
-    top: 77px;
+    top: calc(env(safe-area-inset-top, 0px) + var(--mobile-nav-height, 56px) + 52px);
     z-index: 50;
     background: #ffffff;
     padding: 10px 0;
@@ -2187,45 +2277,49 @@ button.wedding-calendar-day {
     position: fixed;
     top: 0;
     left: 0;
-    width: 70px;
-    height: 100vh;
+    right: 0;
+    width: 100%;
+    height: auto;
     background: #ffffff;
     z-index: 2000;
-    padding: 0;
-    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.08);
+    padding: env(safe-area-inset-top, 0px) 0 0;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    transform: translateX(0);
-    transition: transform 0.3s ease-in-out;
+    justify-content: center;
+    align-items: stretch;
+    transform: translateY(0);
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
 }
 
 .nav-top-bar {
-    width: 100%;
-    height: 3px;
-    background: #D4AF37;
-    margin: 0;
+    display: none;
 }
 
 .nav-menu {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     list-style: none;
     gap: 0;
     margin: 0;
-    padding: 20px 0;
+    padding: 10px 0;
     width: 100%;
     align-items: center;
+    justify-content: center;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .nav-menu li {
-    width: 100%;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    width: auto;
+    flex-shrink: 0;
+    border-bottom: none;
+    border-right: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 .nav-menu li:last-child {
-    border-bottom: none;
+    border-right: none;
 }
 
 .nav-link {
@@ -2234,8 +2328,8 @@ button.wedding-calendar-day {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 20px 0;
-    width: 100%;
+    padding: 12px 20px;
+    width: auto;
     transition: all 0.3s ease;
     position: relative;
 }
@@ -2258,23 +2352,28 @@ button.wedding-calendar-day {
     content: '';
     position: absolute;
     left: 0;
-    top: 0;
+    right: 0;
+    top: auto;
     bottom: 0;
-    width: 3px;
+    width: 100%;
+    height: 3px;
     background: #8B0000;
 }
 
 .nav-icon {
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     stroke: currentColor;
     transition: all 0.3s ease;
 }
 
-.mobile-device .nav-link:hover,
-.mobile-device .nav-link.active {
-    padding-left: 5px;
+.nav-link:hover,
+.nav-link.active {
     color: #8B0000;
+}
+
+section[id] {
+    scroll-margin-top: calc(var(--mobile-nav-height, 56px) + env(safe-area-inset-top, 0px) + 12px);
 }
 
 /* Our Story Section */
@@ -2607,101 +2706,6 @@ button.wedding-calendar-day {
         grid-template-columns: 1fr;
     }
     
-    .main-nav {
-        width: 60px;
-    }
-    
-    body {
-        padding-left: 60px;
-    }
-}
-
-/* Mobile Device Specific Styles - Only applies when .mobile-device class is present */
-.mobile-device .main-nav {
-    width: 100%;
-    height: auto;
-    position: fixed;
-    top: 0;
-    left: 0;
-    padding: 0;
-    z-index: 1000;
-    background: #ffffff;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-    transform: translateY(0);
-    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
-    flex-direction: row;
-    justify-content: center;
-}
-
-.mobile-device .main-nav.menu-hidden {
-    transform: translateY(-100%);
-    opacity: 0;
-    pointer-events: none;
-    visibility: hidden;
-}
-
-.mobile-device .nav-menu.menu-hidden {
-    opacity: 0;
-    visibility: hidden;
-}
-
-.mobile-device .nav-top-bar {
-    display: none;
-}
-
-.mobile-device .nav-menu {
-    flex-direction: row;
-    padding: 10px 0;
-    gap: 0;
-    width: auto;
-}
-
-.mobile-device .nav-menu li {
-    border-bottom: none;
-    border-right: 1px solid rgba(0, 0, 0, 0.08);
-    width: auto;
-}
-
-.mobile-device .nav-menu li:last-child {
-    border-right: none;
-}
-
-.mobile-device .nav-link {
-    padding: 12px 20px;
-    width: auto;
-}
-
-.mobile-device .nav-link.active::before {
-    width: 100%;
-    height: 3px;
-    top: auto;
-    bottom: 0;
-    left: 0;
-    right: 0;
-}
-
-.mobile-device .nav-icon {
-    width: 20px;
-    height: 20px;
-}
-
-.mobile-device .main-nav {
-    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
-}
-
-.mobile-device .main-nav.menu-hidden {
-    transform: translateY(-100%);
-    opacity: 0;
-    pointer-events: none;
-}
-
-.mobile-device .nav-menu {
-    transition: opacity 0.3s ease-in-out;
-}
-
-.mobile-device .nav-menu.menu-hidden {
-    opacity: 0;
-    visibility: hidden;
 }
 
 .mobile-device .header-section {
@@ -2715,12 +2719,6 @@ button.wedding-calendar-day {
     display: flex;
     align-items: center;
     justify-content: center;
-}
-
-.mobile-device .header-section.header-has-slideshow {
-    min-height: 0;
-    padding: max(56px, calc(var(--mobile-nav-height, 56px) + env(safe-area-inset-top, 0px))) 0 0;
-    background: transparent;
 }
 
 .mobile-device .header-section.header-has-slideshow .header-hero-stack .header-content {
@@ -2826,10 +2824,6 @@ button.wedding-calendar-day {
 
 .mobile-device .section {
     padding: 30px 15px;
-}
-
-.mobile-device section[id] {
-    scroll-margin-top: calc(var(--mobile-nav-height, 56px) + 12px);
 }
 
 .mobile-device .wedding-calendar-section {

@@ -22,9 +22,43 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600&family=Dancing+Script:wght@400;600;700&family=Great+Vibes&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap"
         rel="stylesheet">
+    <style>
+        html.is-page-loading,
+        html.is-page-loading body {
+            overflow: hidden;
+        }
+
+        .page-loader {
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(160deg, #fdf8f4 0%, #ffffff 45%, #fff9f0 100%);
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .page-loader.is-hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+    </style>
+    <script>document.documentElement.classList.add('is-page-loading');</script>
 </head>
 
 <body>
+    <div id="pageLoader" class="page-loader" role="status" aria-live="polite" aria-busy="true">
+        <div class="page-loader-inner">
+            <p class="page-loader-eyebrow">We Are Getting Married</p>
+            <h1 class="page-loader-title">Chennai Paiyan <span class="page-loader-ampersand">&</span> Trichy Ponnu</h1>
+            <p class="page-loader-date">18th June 2026</p>
+            <div class="page-loader-spinner" aria-hidden="true"></div>
+            <p class="page-loader-status" id="pageLoaderStatus">Preparing your invitation…</p>
+        </div>
+    </div>
+
     <!-- Navigation Bar -->
     <nav class="main-nav" id="mainNav">
         <div class="nav-top-bar"></div>
@@ -83,7 +117,7 @@
         </ul>
     </nav>
     <!-- Header Section -->
-    <section id="home" class="header-section">
+    <section id="home" class="header-section header-pending-hero">
         <div class="header-hero-stack">
             <div class="header-slideshow" id="headerSlideshow">
                 <!-- Images will be loaded dynamically -->
@@ -248,6 +282,19 @@
                         <p class="journey-event-date" data-i18n="journey.events.wedding.date">18 June 2026</p>
                         <h3 class="journey-event-title" data-i18n="journey.events.wedding.title">Wedding Ceremony</h3>
                         <p class="journey-event-desc" data-i18n="journey.events.wedding.description">The sacred union of two souls, celebrated with traditions, blessings, rituals, and the beginning of a beautiful forever together.</p>
+                    </div> -->
+                </article>
+                <article class="journey-event" data-journey-animate>
+                    <div class="journey-event-visual">
+                        <div class="journey-image">
+                            <img src="photos/Day 5.png" alt="Dinner" loading="lazy" decoding="async">
+                        </div>
+                        <span class="journey-event-badge">Day 05</span>
+                    </div>
+                    <!-- <div class="journey-event-body">
+                        <p class="journey-event-date" data-i18n="journey.events.reception.date">17 June 2026</p>
+                        <h3 class="journey-event-title" data-i18n="journey.events.reception.title">Reception</h3>
+                        <p class="journey-event-desc" data-i18n="journey.events.reception.description">Join us for an elegant evening reception filled with love, blessings, heartfelt conversations, delicious dinner, and grand celebrations.</p>
                     </div> -->
                 </article>
             </div>

@@ -57,23 +57,12 @@ app.get('/api/photos', (req, res) => {
     res.json({ images: files });
 });
 
-app.get('/api/header-images', (req, res) => {
-    const headerPath = path.join(__dirname, 'photos', 'header');
-    if (fs.existsSync(headerPath)) {
-        const headerFiles = fs.readdirSync(headerPath).filter(f => /\.(jpg|jpeg|png|webp)$/i.test(f));
-        if (headerFiles.length > 0) {
-            return res.json({ images: headerFiles, folder: 'header' });
-        }
-    }
+const { listHeaderImages, syncHeaderManifest } = require('./lib/header-images.cjs');
 
-    const engagementPath = path.join(__dirname, 'photos', 'engagement');
-    if (fs.existsSync(engagementPath)) {
-        const engagementFiles = fs.readdirSync(engagementPath)
-            .filter(f => /\.(jpg|jpeg|png|webp)$/i.test(f))
-            .slice(0, 5);
-        if (engagementFiles.length > 0) {
-            return res.json({ images: engagementFiles, folder: 'engagement' });
-        }
+app.get('/api/header-images', (req, res) => {
+    const images = listHeaderImages();
+    if (images.length > 0) {
+        return res.json({ images, folder: 'header' });
     }
 
     res.json({ images: [], folder: 'none' });
@@ -81,6 +70,8 @@ app.get('/api/header-images', (req, res) => {
 
 app.use('/photos', express.static(path.join(__dirname, 'photos')));
 app.use(express.static(__dirname));
+
+syncHeaderManifest();
 
 app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`);

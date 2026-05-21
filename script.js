@@ -21,6 +21,118 @@ const CONFIG = {
     }
 };
 
+// Page loader
+const PAGE_LOADER_MIN_MS = 700;
+const PAGE_LOADER_MAX_MS = 15000;
+let pageLoaderStartTime = Date.now();
+let isPageLoaderHidden = false;
+
+function setPageLoaderStatus(message) {
+    const statusEl = document.getElementById('pageLoaderStatus');
+    if (statusEl && message) {
+        statusEl.textContent = message;
+    }
+}
+
+function waitForFontsReady(timeoutMs = 5000) {
+    if (!document.fonts?.ready) {
+        return Promise.resolve();
+    }
+    return Promise.race([
+        document.fonts.ready,
+        new Promise((resolve) => setTimeout(resolve, timeoutMs))
+    ]);
+}
+
+function waitForFirstHeaderImage(timeoutMs = 20000) {
+    return new Promise((resolve) => {
+        let isSettled = false;
+        const finish = () => {
+            if (isSettled) {
+                return;
+            }
+            isSettled = true;
+            resolve();
+        };
+
+        const getFirstImage = () =>
+            document.querySelector('.header-slideshow-frame img.active') ||
+            document.querySelector('.header-slideshow-frame img');
+
+        const attachListeners = (img) => {
+            if (!img) {
+                return;
+            }
+            if (img.complete && img.naturalWidth) {
+                finish();
+                return;
+            }
+            if (img.dataset.loaderListen) {
+                return;
+            }
+            img.dataset.loaderListen = '1';
+            img.addEventListener('load', finish, { once: true });
+            img.addEventListener('error', finish, { once: true });
+        };
+
+        attachListeners(getFirstImage());
+        if (!getFirstImage()) {
+            const frame = document.getElementById('headerSlideshow');
+            if (frame) {
+                const observer = new MutationObserver(() => {
+                    const img = getFirstImage();
+                    if (!img) {
+                        return;
+                    }
+                    attachListeners(img);
+                    if (isSettled) {
+                        observer.disconnect();
+                    }
+                });
+                observer.observe(frame, { childList: true, subtree: true });
+                setTimeout(() => observer.disconnect(), timeoutMs);
+            }
+        }
+
+        setTimeout(finish, timeoutMs);
+    });
+}
+
+async function hidePageLoader() {
+    if (isPageLoaderHidden) {
+        return;
+    }
+    isPageLoaderHidden = true;
+
+    const elapsed = Date.now() - pageLoaderStartTime;
+    const remaining = Math.max(0, PAGE_LOADER_MIN_MS - elapsed);
+    if (remaining > 0) {
+        await new Promise((resolve) => setTimeout(resolve, remaining));
+    }
+
+    const loader = document.getElementById('pageLoader');
+    document.documentElement.classList.remove('is-page-loading');
+    document.body.classList.remove('is-page-loading');
+
+    if (loader) {
+        loader.classList.add('is-hidden');
+        loader.setAttribute('aria-busy', 'false');
+        window.setTimeout(() => loader.remove(), 550);
+    }
+}
+
+function waitWithTimeout(promise, timeoutMs, taskLabel) {
+    return Promise.race([
+        promise,
+        new Promise((resolve) => {
+            setTimeout(() => {
+                console.warn(`Page loader timeout: ${taskLabel}`);
+                resolve();
+            }, timeoutMs);
+        })
+    ]);
+}
+
 // Countdown Timer
 let timerInterval = null;
 
@@ -317,8 +429,7 @@ async function fetchPhotos(category, page = 1, onRendered) {
                 const scrollToGalleryTop = () => {
                     const gallerySection = document.getElementById('gallery');
                     if (gallerySection) {
-                        const isMobile = document.body.classList.contains('mobile-device');
-                        const navHeight = isMobile ? (document.querySelector('.main-nav')?.offsetHeight || 0) : 0;
+                        const navHeight = document.querySelector('.main-nav')?.offsetHeight || 0;
                         const top = gallerySection.offsetTop - navHeight;
                         window.scrollTo({ top, behavior: 'auto' });
                     }
@@ -406,7 +517,7 @@ async function initGallery() {
         });
     });
 
-    fetchPhotos(currentCategory, currentPage);
+    await fetchPhotos(currentCategory, currentPage);
 }
 
 
@@ -486,17 +597,73 @@ function initLocationTabs() {
     });
 }
 
+// Header Slideshow — images loaded dynamically from photos/header/
+const HEADER_IMAGE_FOLDER = 'header';
+const HEADER_IMAGE_PATTERN = /\.(jpg|jpeg|png|webp|gif)$/i;
 
-// Header Slideshow
-const HEADER_SLIDESHOW_FALLBACK = [
-    'photos/header/WIN_5040.JPG',
-    'photos/header/WIN_5080.JPG',
-    'photos/header/WIN_5084.JPG'
-];
+function resolveSitePath(relativePath) {
+    const cleanPath = relativePath.replace(/^\//, '');
+    if (window.location.protocol === 'file:') {
+        return cleanPath;
+    }
+    return new URL(cleanPath, window.location.href).href;
+}
+
+function sortHeaderImageSources(sources) {
+    return [...sources].sort((a, b) => {
+        const aName = a.split('/').pop() || '';
+        const bName = b.split('/').pop() || '';
+        const aIsCompact = /^WIN_/i.test(aName);
+        const bIsCompact = /^WIN_/i.test(bName);
+        if (aIsCompact !== bIsCompact) {
+            return aIsCompact ? -1 : 1;
+        }
+        return aName.localeCompare(bName, undefined, { numeric: true, sensitivity: 'base' });
+    });
+}
+
+function handleHeaderImageError(img) {
+    console.warn('Header image failed to load:', img?.src);
+    if (!img) {
+        return;
+    }
+
+    img.classList.add('header-slide-broken');
+    img.style.display = 'none';
+
+    const visibleImages = getVisibleHeaderSlideshowImages();
+    if (visibleImages.length === 0) {
+        document.querySelector('.header-section')?.classList.remove('header-has-slideshow');
+        return;
+    }
+
+    if (img.classList.contains('active')) {
+        visibleImages.forEach((slide) => slide.classList.remove('active'));
+        visibleImages[0].classList.add('active');
+        if (visibleImages[0].complete && visibleImages[0].naturalWidth) {
+            adjustHeaderImageFit(visibleImages[0]);
+            markHeaderHeroReady(visibleImages[0]);
+        }
+    }
+}
+
+window.handleHeaderImageError = handleHeaderImageError;
 
 let currentHeaderImageIndex = 0;
 let headerImages = [];
 let headerSlideshowInterval = null;
+let headerSlideshowStartTimer = null;
+
+function clearHeaderSlideshowTimers() {
+    if (headerSlideshowInterval) {
+        clearInterval(headerSlideshowInterval);
+        headerSlideshowInterval = null;
+    }
+    if (headerSlideshowStartTimer) {
+        clearTimeout(headerSlideshowStartTimer);
+        headerSlideshowStartTimer = null;
+    }
+}
 
 function updateHeaderSlideshowAspectRatio(img) {
     const frame = document.getElementById('headerSlideshowFrame');
@@ -512,75 +679,163 @@ function adjustHeaderImageFit(img) {
 
 window.adjustHeaderImageFit = adjustHeaderImageFit;
 
+function markHeaderHeroReady(img) {
+    const headerSection = document.querySelector('.header-section');
+    const frame = document.getElementById('headerSlideshowFrame');
+    const activeImg = frame?.querySelector('img.active') || frame?.querySelector('img');
+
+    if (!headerSection || !activeImg || (img && img !== activeImg)) {
+        return;
+    }
+
+    if (headerSection.classList.contains('header-hero-ready')) {
+        return;
+    }
+
+    headerSection.classList.remove('header-pending-hero');
+    headerSection.classList.add('header-hero-ready');
+    replayHeaderTextAnimations();
+}
+
+window.markHeaderHeroReady = markHeaderHeroReady;
+
 function populateHeaderSlideshow(imageSources) {
     const slideshowEl = document.getElementById('headerSlideshow');
     const headerSection = document.querySelector('.header-section');
     const sources = (imageSources || []).filter(Boolean);
 
     if (!slideshowEl || sources.length === 0) {
+        clearHeaderSlideshowTimers();
         headerSection?.classList.remove('header-has-slideshow');
         return false;
     }
 
+    clearHeaderSlideshowTimers();
+
     headerImages = sources.map((src) => src.split('/').pop());
 
-    const imagesHtml = sources.map((src, index) => {
-        const loadingAttr = index === 0 ? 'eager' : 'lazy';
+    const sortedSources = sortHeaderImageSources(sources);
+
+    const imagesHtml = sortedSources.map((src, index) => {
+        const imageUrl = resolveSitePath(src);
         const fetchPriority = index === 0 ? ' fetchpriority="high"' : '';
-        return `<img src="${src}" alt="Header ${index + 1}" class="${index === 0 ? 'active' : ''}" loading="${loadingAttr}" decoding="async" sizes="100vw"${fetchPriority} onerror="this.style.display='none';" onload="adjustHeaderImageFit(this)">`;
+        return `<img src="${imageUrl}" alt="Header ${index + 1}" class="${index === 0 ? 'active' : ''}" loading="eager" decoding="async" sizes="100vw"${fetchPriority} onerror="handleHeaderImageError(this)" onload="adjustHeaderImageFit(this); markHeaderHeroReady(this)">`;
     }).join('');
 
     slideshowEl.innerHTML = `<div class="header-slideshow-frame" id="headerSlideshowFrame">${imagesHtml}</div>`;
 
+    headerSection?.classList.remove('header-hero-ready');
     headerSection?.classList.add('header-has-slideshow');
-    replayHeaderTextAnimations();
-    setTimeout(() => {
+
+    const firstImg = slideshowEl.querySelector('.header-slideshow-frame img');
+    if (firstImg?.complete && firstImg.naturalWidth) {
+        adjustHeaderImageFit(firstImg);
+        markHeaderHeroReady(firstImg);
+    }
+
+    headerSlideshowStartTimer = setTimeout(() => {
+        headerSlideshowStartTimer = null;
         startHeaderSlideshow();
-    }, 500);
+    }, 300);
     return true;
 }
 
-async function initHeaderSlideshow() {
-    const headerSection = document.querySelector('.header-section');
-    headerSection?.classList.remove('header-has-slideshow');
+function buildHeaderImageSources(folder, filenames) {
+    return (filenames || [])
+        .filter((file) => typeof file === 'string' && HEADER_IMAGE_PATTERN.test(file))
+        .map((file) => `photos/${folder}/${encodeURIComponent(file)}`);
+}
 
-    try {
-        const response = await fetch('/api/header-images');
+async function parseHeaderImagesResponse(response) {
+    const contentType = response.headers.get('content-type') || '';
+    if (!contentType.includes('application/json')) {
+        return null;
+    }
+    return response.json();
+}
 
-        if (response.ok) {
-            const data = await response.json();
-            const folderName = data.folder || 'header';
-            const files = data.images || [];
-
-            if (files.length > 0 && folderName !== 'none') {
-                const sources = files.map((img) => `photos/${folderName}/${img}`);
-                if (populateHeaderSlideshow(sources)) {
-                    return;
-                }
-            }
-        } else {
-            console.warn('Failed to fetch header images:', response.status, response.statusText);
-        }
-    } catch (error) {
-        console.warn('Error loading header images from API, using fallback paths:', error.message);
+async function fetchHeaderImagesFromApi() {
+    const response = await fetch(resolveSitePath('api/header-images'));
+    if (!response.ok) {
+        console.warn('Failed to fetch header images:', response.status, response.statusText);
+        return [];
     }
 
-    populateHeaderSlideshow(HEADER_SLIDESHOW_FALLBACK);
+    const data = await parseHeaderImagesResponse(response);
+    if (!data) {
+        console.warn('Header images API did not return JSON. Is the server running?');
+        return [];
+    }
+
+    const folderName = data.folder || HEADER_IMAGE_FOLDER;
+    const sources = buildHeaderImageSources(folderName, data.images);
+    if (sources.length > 0 && folderName !== 'none') {
+        return sources;
+    }
+    return [];
+}
+
+async function fetchHeaderImagesFromManifest() {
+    const manifestResponse = await fetch(resolveSitePath(`photos/${HEADER_IMAGE_FOLDER}/manifest.json`));
+    if (!manifestResponse.ok) {
+        return [];
+    }
+
+    const manifest = await manifestResponse.json();
+    const folderName = manifest.folder || HEADER_IMAGE_FOLDER;
+    return buildHeaderImageSources(folderName, manifest.images);
+}
+
+async function fetchHeaderImageSources() {
+    if (window.location.protocol !== 'file:') {
+        try {
+            const apiSources = await fetchHeaderImagesFromApi();
+            if (apiSources.length > 0) {
+                return apiSources;
+            }
+        } catch (error) {
+            console.warn('Error loading header images from API:', error.message);
+        }
+    }
+
+    try {
+        const manifestSources = await fetchHeaderImagesFromManifest();
+        if (manifestSources.length > 0) {
+            return manifestSources;
+        }
+    } catch (error) {
+        console.warn('Error loading header manifest.json:', error.message);
+    }
+
+    return [];
+}
+
+async function initHeaderSlideshow() {
+    const sources = await fetchHeaderImageSources();
+
+    if (sources.length === 0) {
+        console.warn('No images found in photos/header/. Add photos and restart the server.');
+        document.querySelector('.header-section')?.classList.remove('header-has-slideshow');
+        return;
+    }
+
+    populateHeaderSlideshow(sources);
+    await waitForFirstHeaderImage();
+}
+
+function getVisibleHeaderSlideshowImages() {
+    return Array.from(document.querySelectorAll('.header-slideshow-frame img')).filter((img) =>
+        !img.classList.contains('header-slide-broken') && img.style.display !== 'none'
+    );
 }
 
 function startHeaderSlideshow() {
-    // Clear any existing interval
-    if (headerSlideshowInterval) {
-        clearInterval(headerSlideshowInterval);
-    }
-    
-    // Get only visible images (not hidden due to errors)
-    const images = Array.from(document.querySelectorAll('.header-slideshow-frame img')).filter(img =>
-        img.style.display !== 'none'
-    );
+    clearHeaderSlideshowTimers();
+
+    const images = getVisibleHeaderSlideshowImages();
     
     if (images.length === 0) {
-        document.querySelector('.header-section')?.classList.remove('header-hassang-slideshow');
+        document.querySelector('.header-section')?.classList.remove('header-has-slideshow');
         return;
     }
     
@@ -611,34 +866,31 @@ function startHeaderSlideshow() {
     currentHeaderImageIndex = 0;
     
     // Start cycling through images
-    headerSlideshowInterval = setInterval(() => {
-        const currentImages = Array.from(document.querySelectorAll('.header-slideshow-frame img')).filter(img =>
-            img.style.display !== 'none'
-        );
-        
-        if (currentImages.length === 0) {
-            clearInterval(headerSlideshowInterval);
+    const advanceHeaderSlide = () => {
+        const currentImages = getVisibleHeaderSlideshowImages();
+
+        if (currentImages.length <= 1) {
+            clearHeaderSlideshowTimers();
             return;
         }
-        
-        // Remove active class from current image
-        if (currentImages[currentHeaderImageIndex]) {
-            currentImages[currentHeaderImageIndex].classList.remove('active');
-        }
-        
-        // Move to next image
-        currentHeaderImageIndex = (currentHeaderImageIndex + 1) % currentImages.length;
-        
-        // Add active class to new image
-        const nextImage = currentImages[currentHeaderImageIndex];
+
+        const currentActive = document.querySelector('.header-slideshow-frame img.active');
+        const currentIndex = currentImages.indexOf(currentActive);
+        const nextIndex = currentIndex >= 0 ? (currentIndex + 1) % currentImages.length : 0;
+
+        currentImages.forEach((img) => img.classList.remove('active'));
+        currentHeaderImageIndex = nextIndex;
+
+        const nextImage = currentImages[nextIndex];
         if (nextImage) {
             nextImage.classList.add('active');
             if (nextImage.complete && nextImage.naturalWidth) {
                 updateHeaderSlideshowAspectRatio(nextImage);
             }
         }
-    }, 4000); // Change image every 4 seconds
-    
+    };
+
+    headerSlideshowInterval = setInterval(advanceHeaderSlide, 4000);
 }
 
 // Gallery Preview
@@ -697,18 +949,8 @@ function initNavigation() {
             const targetElement = document.getElementById(targetId);
             
             if (targetElement) {
-                // On desktop, menu is a left sidebar, so we don't need to account for its height
-                // On mobile, menu is a top bar, so we need to account for its height
-                const isMobile = document.body.classList.contains('mobile-device');
-                let targetPosition = targetElement.offsetTop;
-                
-                if (isMobile) {
-                    const navHeight = document.querySelector('.main-nav').offsetHeight;
-                    targetPosition = targetElement.offsetTop - navHeight;
-                } else {
-                    // On desktop, just add a small offset for better positioning
-                    targetPosition = targetElement.offsetTop - 20;
-                }
+                const navHeight = document.querySelector('.main-nav')?.offsetHeight || 0;
+                const targetPosition = targetElement.offsetTop - navHeight;
                 
                 window.scrollTo({
                     top: targetPosition,
@@ -737,10 +979,7 @@ function initNavigation() {
     // Update active nav link on scroll
     window.addEventListener('scroll', () => {
         const sections = document.querySelectorAll('section[id]');
-        const isMobile = document.body.classList.contains('mobile-device');
-        // On desktop, menu is on the left, so we don't need to add navHeight
-        // On mobile, menu is on top, so we need to account for it
-        const navHeight = isMobile ? document.querySelector('.main-nav').offsetHeight : 0;
+        const navHeight = document.querySelector('.main-nav')?.offsetHeight || 0;
         const scrollPos = window.scrollY + navHeight + 100;
 
         sections.forEach(section => {
@@ -779,13 +1018,17 @@ function detectDevice() {
     return isMobileDevice;
 }
 
-function updateMobileNavHeight() {
+function updateNavHeight() {
     const mainNav = document.getElementById('mainNav');
-    if (!mainNav || !document.body.classList.contains('mobile-device')) {
+    if (!mainNav) {
         return;
     }
     const height = Math.ceil(mainNav.getBoundingClientRect().height);
     document.documentElement.style.setProperty('--mobile-nav-height', `${height}px`);
+}
+
+function updateMobileNavHeight() {
+    updateNavHeight();
 }
 
     // Initialize everything
@@ -1344,62 +1587,69 @@ function initWeddingJourney() {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-    initLanguage();
+    pageLoaderStartTime = Date.now();
+    document.body.classList.add('is-page-loading');
 
-    const heroPhotosBtn = document.getElementById('heroPhotosBtn');
-    if (heroPhotosBtn) {
-        heroPhotosBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            scrollToGallery();
-        });
+    try {
+        setPageLoaderStatus('Loading celebration details…');
+        initLanguage();
+
+        const heroPhotosBtn = document.getElementById('heroPhotosBtn');
+        if (heroPhotosBtn) {
+            heroPhotosBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                scrollToGallery();
+            });
+        }
+
+        detectDevice();
+        updateNavHeight();
+        window.addEventListener('load', updateNavHeight);
+        window.addEventListener('resize', updateNavHeight);
+
+        const mainNav = document.getElementById('mainNav');
+        if (mainNav) {
+            mainNav.classList.remove('menu-closed');
+            document.body.classList.remove('menu-closed');
+        }
+
+        setPageLoaderStatus('Loading photos and fonts…');
+        await waitWithTimeout(
+            Promise.all([
+                waitForFontsReady(),
+                initHeaderSlideshow()
+            ]),
+            PAGE_LOADER_MAX_MS,
+            'header and fonts'
+        );
+
+        setPageLoaderStatus('Loading gallery…');
+        await waitWithTimeout(initGallery(), PAGE_LOADER_MAX_MS, 'gallery');
+
+        startCountdown();
+        initLocationTabs();
+        initNavigation();
+        initWeddingCalendar();
+        initWeddingJourney();
+        updateCountdown();
+        updateMapLocation('marriage');
+        initPhotoUpload();
+        initImageModal();
+
+        window.staticEngagementImages = [
+            'photos/engagement/WIN_4488.JPG',
+            'photos/engagement/WIN_4269.JPG',
+            'photos/engagement/WIN_4401.JPG',
+            'photos/engagement/WIN_4415.JPG',
+            'photos/engagement/WIN_4698.JPG',
+            'photos/engagement/WIN_5084.JPG'
+        ];
+    } catch (error) {
+        console.error('Error while initializing page:', error);
+    } finally {
+        await hidePageLoader();
     }
-    
-    // Detect device first
-    detectDevice();
-    updateMobileNavHeight();
-    window.addEventListener('load', updateMobileNavHeight);
-    window.addEventListener('resize', updateMobileNavHeight);
-    
-    // Menu is always visible - never apply menu-closed
-    const mainNav = document.getElementById('mainNav');
-    if (mainNav) {
-        mainNav.classList.remove('menu-closed');
-        document.body.classList.remove('menu-closed');
-    }
 
-    await initHeaderSlideshow();
-    startCountdown();
-    await initGallery();
-    // Gallery preview now uses static photos in HTML
-    initLocationTabs();
-    initNavigation();
-    initWeddingCalendar();
-    initWeddingJourney();
-    
-    // Initialize footer date dynamically
-    updateCountdown(); // This will set the footer date based on current event
-    
-
-    // Initialize map with embedded iframe (no API key needed)
-    updateMapLocation('marriage');
-    
-    // Initialize photo upload
-    initPhotoUpload();
-    
-    // Initialize image modal
-    initImageModal();
-    
-    // Set static engagement images for modal navigation
-    window.staticEngagementImages = [
-        'photos/engagement/WIN_4488.JPG',
-        'photos/engagement/WIN_4269.JPG',
-        'photos/engagement/WIN_4401.JPG',
-        'photos/engagement/WIN_4415.JPG',
-        'photos/engagement/WIN_4698.JPG',
-        'photos/engagement/WIN_5084.JPG'
-    ];
-    
-    // Re-detect on resize (but don't change class if already set)
     let resizeTimer;
     window.addEventListener('resize', () => {
         clearTimeout(resizeTimer);
@@ -1416,7 +1666,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 document.documentElement.classList.remove('mobile-device');
                 document.documentElement.classList.add('desktop-device');
             }
-            updateMobileNavHeight();
+            updateNavHeight();
         }, 250);
     });
 });
