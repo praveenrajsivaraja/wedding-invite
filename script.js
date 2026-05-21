@@ -1613,7 +1613,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.body.classList.remove('menu-closed');
         }
 
-        setPageLoaderStatus('Loading photos and fonts…');
+        setPageLoaderStatus('Preparing to invite you to the biggest celebration of our lives!🎉');
         await waitWithTimeout(
             Promise.all([
                 waitForFontsReady(),
