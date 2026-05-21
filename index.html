@@ -14,6 +14,7 @@
     <meta name="twitter:title" content="Praveenraj & Madhumitha — Wedding">
     <meta name="twitter:description" content="Save the date and celebrate with us.">
     <meta name="theme-color" content="#8B0000">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
     <title>Praveenraj & Madhumitha - Wedding</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,13 +22,43 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600&family=Dancing+Script:wght@400;600;700&family=Great+Vibes&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap"
         rel="stylesheet">
+    <style>
+        html.is-page-loading,
+        html.is-page-loading body {
+            overflow: hidden;
+        }
+
+        .page-loader {
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(160deg, #fdf8f4 0%, #ffffff 45%, #fff9f0 100%);
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .page-loader.is-hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+    </style>
+    <script>document.documentElement.classList.add('is-page-loading');</script>
 </head>
 
 <body>
-    <!-- Language Toggle Button -->
-    <button class="language-toggle-btn" id="languageToggleBtn" aria-label="Toggle language" title="Change Language">
-        <span class="language-text" id="languageText">தமிழ்</span>
-    </button>
+    <div id="pageLoader" class="page-loader" role="status" aria-live="polite" aria-busy="true">
+        <div class="page-loader-inner">
+            <p class="page-loader-eyebrow">We Are Getting Married</p>
+            <h1 class="page-loader-title">Chennai Paiyan <span class="page-loader-ampersand">&</span> Trichy Ponnu</h1>
+            <p class="page-loader-date">18th June 2026</p>
+            <div class="page-loader-spinner" aria-hidden="true"></div>
+            <p class="page-loader-status" id="pageLoaderStatus">Preparing your invitation…</p>
+        </div>
+    </div>
+
     <!-- Navigation Bar -->
     <nav class="main-nav" id="mainNav">
         <div class="nav-top-bar"></div>
@@ -86,13 +117,13 @@
         </ul>
     </nav>
     <!-- Header Section -->
-    <section id="home" class="header-section">
+    <section id="home" class="header-section header-pending-hero">
         <div class="header-hero-stack">
             <div class="header-slideshow" id="headerSlideshow">
                 <!-- Images will be loaded dynamically -->
             </div>
-        <div class="header-overlay"></div>
-        <div class="container header-content">
+            <div class="header-overlay"></div>
+            <div class="container header-content">
             <div class="header-hero-text">
                 <p class="couple-names header-anim header-anim-tagline" data-i18n="header.coupleNames">We Are Getting Married</p>
                 <h2 class="were-getting header-anim header-anim-slide-left" data-i18n="header.groom">Chennai Paiyan</h2>
@@ -120,7 +151,6 @@
                     <div class="time-label" data-i18n="timer.seconds">SECONDS</div>
                 </div>
             </div>
-
             </div>
         </div>
     </section>
@@ -202,7 +232,7 @@
                 <article class="journey-event" data-journey-animate>
                     <div class="journey-event-visual">
                         <div class="journey-image">
-                            <img src="photos/Day 1.png" alt="Sangeeth Night" loading="lazy" decoding="async">
+                            <img src="photos/Day 1.png" alt="Dinner Party" loading="lazy" decoding="async">
                         </div>
                         <span class="journey-event-badge">Day 01</span>
                     </div>
@@ -216,7 +246,7 @@
                 <article class="journey-event journey-event-reverse" data-journey-animate>
                     <div class="journey-event-visual">
                         <div class="journey-image">
-                            <img src="photos/Day 2.png" alt="Haldi and Mehendi" loading="lazy" decoding="async">
+                            <img src="photos/Day 2.png" alt="Mehandi and Sangeeth Night" loading="lazy" decoding="async">
                         </div>
                         <span class="journey-event-badge">Day 02</span>
                     </div>
@@ -252,6 +282,19 @@
                         <p class="journey-event-date" data-i18n="journey.events.wedding.date">18 June 2026</p>
                         <h3 class="journey-event-title" data-i18n="journey.events.wedding.title">Wedding Ceremony</h3>
                         <p class="journey-event-desc" data-i18n="journey.events.wedding.description">The sacred union of two souls, celebrated with traditions, blessings, rituals, and the beginning of a beautiful forever together.</p>
+                    </div> -->
+                </article>
+                <article class="journey-event" data-journey-animate>
+                    <div class="journey-event-visual">
+                        <div class="journey-image">
+                            <img src="photos/Day 5.png" alt="Dinner" loading="lazy" decoding="async">
+                        </div>
+                        <span class="journey-event-badge">Day 05</span>
+                    </div>
+                    <!-- <div class="journey-event-body">
+                        <p class="journey-event-date" data-i18n="journey.events.reception.date">17 June 2026</p>
+                        <h3 class="journey-event-title" data-i18n="journey.events.reception.title">Reception</h3>
+                        <p class="journey-event-desc" data-i18n="journey.events.reception.description">Join us for an elegant evening reception filled with love, blessings, heartfelt conversations, delicious dinner, and grand celebrations.</p>
                     </div> -->
                 </article>
             </div>
@@ -400,7 +443,7 @@
             <h2 class="section-title">
                 <span class="gold-text" data-i18n="gallery.title"> Photo Wall </span><br>
             </h2>
-            <div class="tab-container">
+            <div class="tab-container" style="padding-bottom: 0px !important">
                 <button class="tab-btn" data-category="engagement" data-i18n="gallery.engagement">Engagement</button>
                 <button class="tab-btn active" data-category="others" data-i18n="gallery.others">Others</button>
             </div>
@@ -429,23 +472,10 @@
     <section id="live-stream" class="live-stream-section">
         <div class="container">
             <h2 class="section-title" data-i18n="liveStream.title">Live Streaming</h2>
-            <div class="video-stream-container" id="videoStreamContainer">
+            <div class="video-stream-container" id="videoStreamContainer" data-youtube-video-id="oFUyORF-2ms">
                 <div class="video-placeholder" id="videoPlaceholder">
                     <div class="video-icon">📹</div>
                     <p data-i18n="liveStream.placeholder">Live stream will appear here on the day of the wedding</p>
-                </div>
-                <div class="video-wrapper" id="videoWrapper" style="display: none;">
-                    <iframe id="videoStreamFrame" class="video-stream-frame" frameborder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        allowfullscreen>
-                    </iframe>
-                    <button class="pip-toggle-btn" id="pipToggleBtn" title="Toggle Picture-in-Picture">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <rect x="2" y="2" width="20" height="20" rx="2" ry="2"></rect>
-                            <path d="M8 2v20M16 2v20M2 8h20M2 16h20"></path>
-                        </svg>
-                    </button>
                 </div>
             </div>
         </div>
