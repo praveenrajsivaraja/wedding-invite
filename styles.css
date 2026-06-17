@@ -2211,6 +2211,7 @@ button.wedding-calendar-day {
 }
 
 .camera-stream-btn,
+.watch-live-btn,
 .facebook-live-btn {
     display: inline-flex;
     align-items: center;
@@ -2273,8 +2274,23 @@ button.wedding-calendar-day {
     box-shadow: 0 4px 14px rgba(24, 119, 242, 0.35);
 }
 
+.watch-live-btn {
+    background: #0f7b6c;
+    border: 2px solid #0f7b6c;
+    color: #fff;
+}
+
+.watch-live-btn:hover {
+    background: #0c6559;
+    border-color: #0c6559;
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(15, 123, 108, 0.35);
+}
+
 .facebook-live-btn[hidden],
-.camera-stream-btn[hidden] {
+.camera-stream-btn[hidden],
+.watch-live-btn[hidden] {
     display: none;
 }
 

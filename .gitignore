@@ -31,3 +31,6 @@ next-env.d.ts
 
 # photos folder (user uploaded images) - Commented out for hosting
 # /photos/
+
+# runtime stream signaling state (local server)
+/data/

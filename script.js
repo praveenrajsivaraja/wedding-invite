@@ -1198,6 +1198,7 @@ const translations = {
             stopCamera: 'Stop Camera',
             cameraLive: 'Live',
             watchingLive: 'Watching Live',
+            watchLiveNow: 'Watch Live Now',
             switchCamera: 'Switch camera',
             broadcasterBusy: 'Another device is already broadcasting.',
             cameraNotSupported: 'Camera streaming requires HTTPS or localhost. Please open this site through your local server.',
@@ -2396,12 +2397,25 @@ let isWatchingLive = false;
 const RTC_CONFIG = {
     iceServers: [
         { urls: 'stun:stun.l.google.com:19302' },
-        { urls: 'stun:stun1.l.google.com:19302' }
-    ]
+        { urls: 'stun:stun1.l.google.com:19302' },
+        {
+            urls: [
+                'turn:openrelay.metered.ca:80',
+                'turn:openrelay.metered.ca:443',
+                'turn:openrelay.metered.ca:443?transport=tcp'
+            ],
+            username: 'openrelayproject',
+            credential: 'openrelayproject'
+        }
+    ],
+    iceCandidatePoolSize: 10
 };
-const SIGNAL_POLL_MS = 1000;
-const HEARTBEAT_MS = 5000;
-const LIVE_STATUS_POLL_MS = 3000;
+const SIGNAL_POLL_MS = 500;
+const HEARTBEAT_MS = 4000;
+const LIVE_STATUS_POLL_MS = 2000;
+const HEARTBEAT_FAILURE_LIMIT = 3;
+
+let heartbeatFailureCount = 0;
 
 function getStreamApiUrl(path) {
     return `/api/stream/${path}`;
@@ -2418,7 +2432,8 @@ async function streamApiRequest(path, options = {}) {
     const response = await fetch(getStreamApiUrl(path), {
         ...options,
         method,
-        headers
+        headers,
+        cache: 'no-store'
     });
 
     const data = await response.json().catch(() => ({}));
@@ -2474,7 +2489,58 @@ function closePeerConnection(peerConnection) {
     }
     peerConnection.onicecandidate = null;
     peerConnection.ontrack = null;
+    peerConnection.onconnectionstatechange = null;
+    peerConnection._pendingIceCandidates = [];
     peerConnection.close();
+}
+
+function queueIceCandidate(peerConnection, candidatePayload) {
+    if (!peerConnection) {
+        return;
+    }
+    if (!Array.isArray(peerConnection._pendingIceCandidates)) {
+        peerConnection._pendingIceCandidates = [];
+    }
+    peerConnection._pendingIceCandidates.push(candidatePayload);
+}
+
+async function flushPendingIceCandidates(peerConnection) {
+    if (!peerConnection || !Array.isArray(peerConnection._pendingIceCandidates)) {
+        return;
+    }
+
+    const pendingCandidates = [...peerConnection._pendingIceCandidates];
+    peerConnection._pendingIceCandidates = [];
+
+    for (const candidatePayload of pendingCandidates) {
+        try {
+            await peerConnection.addIceCandidate(new RTCIceCandidate(candidatePayload));
+        } catch (error) {
+            console.warn('Failed to flush ICE candidate:', error);
+        }
+    }
+}
+
+async function applyRemoteDescription(peerConnection, sessionDescription) {
+    await peerConnection.setRemoteDescription(new RTCSessionDescription(sessionDescription));
+    await flushPendingIceCandidates(peerConnection);
+}
+
+async function addRemoteIceCandidate(peerConnection, candidatePayload) {
+    if (!peerConnection || !candidatePayload) {
+        return;
+    }
+
+    if (!peerConnection.remoteDescription) {
+        queueIceCandidate(peerConnection, candidatePayload);
+        return;
+    }
+
+    try {
+        await peerConnection.addIceCandidate(new RTCIceCandidate(candidatePayload));
+    } catch (error) {
+        console.warn('Failed to add ICE candidate:', error);
+    }
 }
 
 function closeAllViewerConnections() {
@@ -2519,7 +2585,9 @@ async function pollStreamSignals(peerId) {
         peerId,
         after: String(lastSignalMessageId)
     });
-    const response = await fetch(`${getStreamApiUrl('signal')}?${query.toString()}`);
+    const response = await fetch(`${getStreamApiUrl('signal')}?${query.toString()}`, {
+        cache: 'no-store'
+    });
     const data = await response.json();
 
     if (!response.ok) {
@@ -2582,6 +2650,7 @@ async function createBroadcasterOfferForViewer(viewerId) {
     }
 
     const peerConnection = new RTCPeerConnection(RTC_CONFIG);
+    peerConnection._pendingIceCandidates = [];
     broadcasterViewerConnections.set(viewerId, peerConnection);
 
     activeCameraStream.getTracks().forEach((track) => {
@@ -2616,21 +2685,27 @@ async function handleBroadcasterAnswer(message) {
         return;
     }
 
-    await peerConnection.setRemoteDescription(new RTCSessionDescription(message.payload));
+    await applyRemoteDescription(peerConnection, message.payload);
 }
 
 async function handleViewerOffer(message) {
-    if (!message.payload || viewerPeerConnection) {
+    if (!message.payload) {
         return;
     }
 
+    if (viewerPeerConnection) {
+        closeViewerConnection();
+    }
+
     const peerConnection = new RTCPeerConnection(RTC_CONFIG);
+    peerConnection._pendingIceCandidates = [];
     viewerPeerConnection = peerConnection;
 
     peerConnection.ontrack = (event) => {
         const viewerVideo = document.getElementById('viewerStreamVideo');
         if (viewerVideo && event.streams[0]) {
             viewerVideo.srcObject = event.streams[0];
+            viewerVideo.muted = true;
             viewerVideo.play().catch(() => {});
         }
     };
@@ -2650,7 +2725,7 @@ async function handleViewerOffer(message) {
         }
     };
 
-    await peerConnection.setRemoteDescription(new RTCSessionDescription(message.payload));
+    await applyRemoteDescription(peerConnection, message.payload);
     const answer = await peerConnection.createAnswer();
     await peerConnection.setLocalDescription(answer);
     await sendStreamSignal(viewerPeerId, message.from, 'answer', answer);
@@ -2661,15 +2736,7 @@ async function handleIceCandidate(message) {
         ? broadcasterViewerConnections.get(message.from)
         : viewerPeerConnection;
 
-    if (!peerConnection || !message.payload) {
-        return;
-    }
-
-    try {
-        await peerConnection.addIceCandidate(new RTCIceCandidate(message.payload));
-    } catch (error) {
-        console.warn('Failed to add ICE candidate:', error);
-    }
+    await addRemoteIceCandidate(peerConnection, message.payload);
 }
 
 function startSignalPolling(peerId) {
@@ -2683,19 +2750,37 @@ function startSignalPolling(peerId) {
 
 function startHeartbeat(peerId) {
     stopHeartbeat();
-    heartbeatTimer = setInterval(() => {
+    heartbeatFailureCount = 0;
+
+    const sendHeartbeat = () => {
         streamApiRequest('peer', {
             method: 'POST',
             body: JSON.stringify({ action: 'heartbeat', peerId })
+        }).then(() => {
+            heartbeatFailureCount = 0;
         }).catch((error) => {
             console.warn('Stream heartbeat failed:', error);
+            heartbeatFailureCount += 1;
+            if (heartbeatFailureCount < HEARTBEAT_FAILURE_LIMIT) {
+                return;
+            }
             if (isBroadcasting) {
                 endCameraBroadcast();
             } else if (isWatchingLive) {
                 endLiveViewerSession();
             }
         });
-    }, HEARTBEAT_MS);
+    };
+
+    sendHeartbeat();
+    heartbeatTimer = setInterval(sendHeartbeat, HEARTBEAT_MS);
+}
+
+function setWatchLiveButtonVisible(shouldShow) {
+    const watchLiveButton = document.getElementById('watchLiveButton');
+    if (watchLiveButton) {
+        watchLiveButton.hidden = !shouldShow;
+    }
 }
 
 function hideLiveStreamPanels() {
@@ -2855,6 +2940,7 @@ async function startLiveViewerSession() {
         if (viewerWrapper) {
             viewerWrapper.hidden = false;
         }
+        setWatchLiveButtonVisible(false);
 
         startSignalPolling(viewerPeerId);
         startHeartbeat(viewerPeerId);
@@ -2881,6 +2967,7 @@ function endLiveViewerSession() {
     }
 
     if (wasWatching) {
+        setWatchLiveButtonVisible(false);
         restoreLiveStreamViewAfterCamera();
     }
 }
@@ -2913,24 +3000,37 @@ function initLiveStreamViewer() {
         return;
     }
 
+    const watchLiveButton = document.getElementById('watchLiveButton');
+
     const checkLiveStatus = async () => {
         if (isBroadcasting || isWatchingLive) {
+            setWatchLiveButtonVisible(false);
             return;
         }
 
         try {
-            const response = await fetch(getStreamApiUrl('status'));
+            const response = await fetch(getStreamApiUrl('status'), { cache: 'no-store' });
             const status = await response.json();
             if (!response.ok) {
                 throw new Error(status.error || 'Failed to check live status.');
             }
+
+            setWatchLiveButtonVisible(Boolean(status.isLive));
+
             if (status.isLive) {
                 await startLiveViewerSession();
             }
         } catch (error) {
             console.warn('Live status check failed:', error);
+            setWatchLiveButtonVisible(false);
         }
     };
+
+    if (watchLiveButton) {
+        watchLiveButton.addEventListener('click', () => {
+            startLiveViewerSession();
+        });
+    }
 
     checkLiveStatus();
     stopLiveStatusPolling();

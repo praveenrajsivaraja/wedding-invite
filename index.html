@@ -506,7 +506,7 @@
                     </button>
                 </div>
                 <div class="viewer-wrapper" id="viewerWrapper" hidden>
-                    <video id="viewerStreamVideo" class="viewer-stream-video" autoplay playsinline></video>
+                    <video id="viewerStreamVideo" class="viewer-stream-video" autoplay playsinline muted></video>
                     <p class="camera-live-badge" aria-live="polite">
                         <span class="camera-live-dot" aria-hidden="true"></span>
                         <span data-i18n="liveStream.watchingLive">Watching Live</span>
@@ -523,6 +523,10 @@
                         </path>
                     </svg>
                     Stream from Camera
+                </button>
+                <button type="button" id="watchLiveButton" class="watch-live-btn" hidden
+                    data-i18n="liveStream.watchLiveNow">
+                    Watch Live Now
                 </button>
                 <button type="button" id="facebookLiveButton" class="facebook-live-btn" hidden
                     data-i18n="liveStream.watchOnFacebook">
