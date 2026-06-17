@@ -3,6 +3,7 @@ const CONFIG = {
     ENGAGEMENT_DATE: new Date('2026-01-28T00:00:00').getTime(),
     MARRIAGE_DATE: new Date(2026, 5, 18, 9, 30, 0).getTime(),
     GOOGLE_MAPS_API_KEY: 'YOUR_GOOGLE_MAPS_API_KEY', // Replace with your key in index.html script tag
+    FACEBOOK_LIVE_URL: '', // Facebook live/video page URL — update only here
     LOCATIONS: {
         engagement: {
             name: 'Hotel Padmavathi',
@@ -1191,7 +1192,14 @@ const translations = {
         },
         liveStream: {
             title: 'Live Streaming',
-            placeholder: 'Live stream will appear here on the day of the wedding'
+            placeholder: 'Live stream will appear here on the day of the wedding',
+            watchOnFacebook: 'Watch Live Stream',
+            streamFromCamera: 'Stream from Camera',
+            stopCamera: 'Stop Camera',
+            cameraLive: 'Live',
+            cameraNotSupported: 'Camera streaming requires HTTPS or localhost. Please open this site through your local server.',
+            cameraPermissionDenied: 'Camera access was denied. Please allow camera permission in your browser settings.',
+            cameraUnavailable: 'Could not access your camera. Please check that it is connected and not in use by another app.'
         },
         footer: {
             title: 'Forever & Always',
@@ -1635,6 +1643,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         updateMapLocation('marriage');
         initPhotoUpload();
         initImageModal();
+        initLiveStream();
+        initCameraStream();
 
         window.staticEngagementImages = [
             
@@ -2223,10 +2233,321 @@ function initImageModal() {
 window.openImageModal = openImageModal;
 window.closeImageModal = closeImageModal;
 
-// Live stream embed disabled — dummy YouTube id for when embed is re-enabled
-const YOUTUBE_LIVE_VIDEO_ID = 'oFUyORF-2ms';
+function buildFacebookEmbedUrl(livePageUrl) {
+    const trimmedUrl = livePageUrl.trim();
+    if (!trimmedUrl) {
+        return '';
+    }
+
+    if (trimmedUrl.includes('facebook.com/plugins/video.php')) {
+        return trimmedUrl;
+    }
+
+    const encodedHref = encodeURIComponent(trimmedUrl);
+    return `https://www.facebook.com/plugins/video.php?height=476&href=${encodedHref}&show_text=false&width=900`;
+}
+
+function getFacebookLivePageUrl() {
+    return CONFIG.FACEBOOK_LIVE_URL?.trim() || '';
+}
+
+function initLiveStream() {
+    const videoContainer = document.getElementById('videoStreamContainer');
+    const videoWrapper = document.getElementById('videoWrapper');
+    const videoFrame = document.getElementById('videoStreamFrame');
+    const placeholder = document.getElementById('videoPlaceholder');
+    const pipToggleBtn = document.getElementById('pipToggleBtn');
+    const facebookLiveButton = document.getElementById('facebookLiveButton');
+
+    const livePageUrl = getFacebookLivePageUrl();
+
+    if (facebookLiveButton) {
+        if (livePageUrl) {
+            facebookLiveButton.hidden = false;
+            facebookLiveButton.onclick = () => {
+                window.open(livePageUrl, '_blank', 'noopener,noreferrer');
+            };
+        } else {
+            facebookLiveButton.hidden = true;
+            facebookLiveButton.onclick = null;
+        }
+    }
+
+    const embedUrl = buildFacebookEmbedUrl(livePageUrl);
+
+    if (!embedUrl || !videoContainer || !videoFrame || !videoWrapper) {
+        if (placeholder) {
+            placeholder.hidden = false;
+        }
+        if (videoWrapper) {
+            videoWrapper.hidden = true;
+        }
+        return;
+    }
+
+    if (placeholder) {
+        placeholder.hidden = true;
+    }
+    videoWrapper.hidden = false;
+    videoFrame.src = embedUrl;
+
+    let isPipMode = false;
+    let isDragging = false;
+    let dragOffset = { x: 0, y: 0 };
+
+    function enablePipMode() {
+        if (!videoContainer || isPipMode) {
+            return;
+        }
+        isPipMode = true;
+        videoContainer.classList.add('pip-mode');
+    }
+
+    function disablePipMode() {
+        if (!videoContainer || !isPipMode) {
+            return;
+        }
+        isPipMode = false;
+        videoContainer.classList.remove('pip-mode');
+        videoContainer.style.left = '';
+        videoContainer.style.top = '';
+        videoContainer.style.right = '';
+        videoContainer.style.bottom = '';
+    }
+
+    function togglePipMode() {
+        if (isPipMode) {
+            disablePipMode();
+        } else {
+            enablePipMode();
+        }
+    }
+
+    function startDrag(event) {
+        if (!isPipMode) {
+            return;
+        }
+        isDragging = true;
+        const clientX = event.touches ? event.touches[0].clientX : event.clientX;
+        const clientY = event.touches ? event.touches[0].clientY : event.clientY;
+        const rect = videoContainer.getBoundingClientRect();
+        dragOffset.x = clientX - rect.left;
+        dragOffset.y = clientY - rect.top;
+        event.preventDefault();
+    }
+
+    function drag(event) {
+        if (!isDragging || !isPipMode) {
+            return;
+        }
+        const clientX = event.touches ? event.touches[0].clientX : event.clientX;
+        const clientY = event.touches ? event.touches[0].clientY : event.clientY;
+        const newX = clientX - dragOffset.x;
+        const newY = clientY - dragOffset.y;
+        const maxX = window.innerWidth - videoContainer.offsetWidth;
+        const maxY = window.innerHeight - videoContainer.offsetHeight;
+        const constrainedX = Math.max(0, Math.min(newX, maxX));
+        const constrainedY = Math.max(0, Math.min(newY, maxY));
+
+        videoContainer.style.left = `${constrainedX}px`;
+        videoContainer.style.top = `${constrainedY}px`;
+        videoContainer.style.right = 'auto';
+        videoContainer.style.bottom = 'auto';
+        event.preventDefault();
+    }
+
+    function stopDrag() {
+        isDragging = false;
+    }
+
+    if (pipToggleBtn) {
+        pipToggleBtn.addEventListener('click', (event) => {
+            event.stopPropagation();
+            togglePipMode();
+        });
+    }
+
+    videoContainer.addEventListener('mousedown', startDrag);
+    document.addEventListener('mousemove', drag);
+    document.addEventListener('mouseup', stopDrag);
+    videoContainer.addEventListener('touchstart', startDrag, { passive: false });
+    document.addEventListener('touchmove', drag, { passive: false });
+    document.addEventListener('touchend', stopDrag);
+}
+
+let activeCameraStream = null;
+
+function getLiveStreamCopy() {
+    return translations.en?.liveStream || {};
+}
+
+function stopCameraStream() {
+    if (activeCameraStream) {
+        activeCameraStream.getTracks().forEach((track) => track.stop());
+        activeCameraStream = null;
+    }
+
+    const cameraVideo = document.getElementById('cameraStreamVideo');
+    if (cameraVideo) {
+        cameraVideo.srcObject = null;
+    }
+}
+
+function restoreLiveStreamViewAfterCamera() {
+    const placeholder = document.getElementById('videoPlaceholder');
+    const videoWrapper = document.getElementById('videoWrapper');
+    const cameraWrapper = document.getElementById('cameraWrapper');
+    const livePageUrl = getFacebookLivePageUrl();
+    const hasFacebookEmbed = Boolean(livePageUrl && buildFacebookEmbedUrl(livePageUrl));
+
+    if (cameraWrapper) {
+        cameraWrapper.hidden = true;
+    }
+
+    if (hasFacebookEmbed && videoWrapper) {
+        if (placeholder) {
+            placeholder.hidden = true;
+        }
+        videoWrapper.hidden = false;
+        return;
+    }
+
+    if (videoWrapper) {
+        videoWrapper.hidden = true;
+    }
+    if (placeholder) {
+        placeholder.hidden = false;
+    }
+}
+
+function setCameraStreamButtonState(isStreaming) {
+    const cameraStreamButton = document.getElementById('cameraStreamButton');
+    if (!cameraStreamButton) {
+        return;
+    }
+
+    const copy = getLiveStreamCopy();
+    const label = isStreaming ? copy.stopCamera : copy.streamFromCamera;
+    const iconSvg = cameraStreamButton.querySelector('.camera-stream-btn-icon');
+
+    cameraStreamButton.classList.toggle('is-streaming', isStreaming);
+    cameraStreamButton.setAttribute('aria-pressed', isStreaming ? 'true' : 'false');
+
+    if (iconSvg) {
+        cameraStreamButton.replaceChildren(iconSvg.cloneNode(true));
+        cameraStreamButton.append(document.createTextNode(` ${label || ''}`));
+    } else {
+        cameraStreamButton.textContent = label || '';
+    }
+}
+
+function showCameraStreamError(message) {
+    const placeholder = document.getElementById('videoPlaceholder');
+    const placeholderText = placeholder?.querySelector('p');
+    if (!placeholder || !placeholderText || !message) {
+        return;
+    }
+
+    const originalText = placeholderText.dataset.originalText || placeholderText.textContent;
+    placeholderText.dataset.originalText = originalText;
+    placeholderText.textContent = message;
+    placeholder.hidden = false;
+
+    setTimeout(() => {
+        if (placeholderText.dataset.originalText) {
+            placeholderText.textContent = placeholderText.dataset.originalText;
+        }
+        restoreLiveStreamViewAfterCamera();
+    }, 5000);
+}
+
+function initCameraStream() {
+    const cameraStreamButton = document.getElementById('cameraStreamButton');
+    const cameraWrapper = document.getElementById('cameraWrapper');
+    const cameraVideo = document.getElementById('cameraStreamVideo');
+    const placeholder = document.getElementById('videoPlaceholder');
+    const videoWrapper = document.getElementById('videoWrapper');
+
+    if (!cameraStreamButton || !cameraWrapper || !cameraVideo) {
+        return;
+    }
+
+    if (!navigator.mediaDevices?.getUserMedia || !window.isSecureContext) {
+        cameraStreamButton.hidden = true;
+        return;
+    }
+
+    let isCameraStreaming = false;
+
+    async function startCameraStream() {
+        const copy = getLiveStreamCopy();
+
+        if (!window.isSecureContext) {
+            showCameraStreamError(copy.cameraNotSupported);
+            return;
+        }
+
+        try {
+            const mediaStream = await navigator.mediaDevices.getUserMedia({
+                video: {
+                    facingMode: 'user',
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 }
+                },
+                audio: false
+            });
+
+            activeCameraStream = mediaStream;
+            cameraVideo.srcObject = mediaStream;
+            isCameraStreaming = true;
+
+            if (placeholder) {
+                placeholder.hidden = true;
+            }
+            if (videoWrapper) {
+                videoWrapper.hidden = true;
+            }
+            cameraWrapper.hidden = false;
+
+            setCameraStreamButtonState(true);
+
+            await cameraVideo.play().catch(() => {});
+        } catch (error) {
+            console.error('Camera stream failed:', error);
+
+            stopCameraStream();
+            isCameraStreaming = false;
+            setCameraStreamButtonState(false);
+
+            if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
+                showCameraStreamError(copy.cameraPermissionDenied);
+                return;
+            }
+
+            showCameraStreamError(copy.cameraUnavailable);
+        }
+    }
+
+    function endCameraStream() {
+        stopCameraStream();
+        isCameraStreaming = false;
+        setCameraStreamButtonState(false);
+        restoreLiveStreamViewAfterCamera();
+    }
+
+    cameraStreamButton.addEventListener('click', () => {
+        if (isCameraStreaming) {
+            endCameraStream();
+            return;
+        }
+        startCameraStream();
+    });
+
+    setCameraStreamButtonState(false);
+}
 
 // Cleanup on page unload
 window.addEventListener('beforeunload', () => {
     if (timerInterval) clearInterval(timerInterval);
+    stopCameraStream();
 });
