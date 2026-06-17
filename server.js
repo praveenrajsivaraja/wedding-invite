@@ -68,15 +68,6 @@ app.get('/api/header-images', (req, res) => {
     res.json({ images: [], folder: 'none' });
 });
 
-const streamStatusHandler = require('./api/stream/status');
-const streamPeerHandler = require('./api/stream/peer');
-const streamSignalHandler = require('./api/stream/signal');
-
-app.get('/api/stream/status', (req, res) => streamStatusHandler(req, res));
-app.post('/api/stream/peer', (req, res) => streamPeerHandler(req, res));
-app.get('/api/stream/signal', (req, res) => streamSignalHandler(req, res));
-app.post('/api/stream/signal', (req, res) => streamSignalHandler(req, res));
-
 app.use('/photos', express.static(path.join(__dirname, 'photos')));
 app.use(express.static(__dirname));
 
