@@ -1197,9 +1197,13 @@ const translations = {
             streamFromCamera: 'Stream from Camera',
             stopCamera: 'Stop Camera',
             cameraLive: 'Live',
+            watchingLive: 'Watching Live',
+            switchCamera: 'Switch camera',
+            broadcasterBusy: 'Another device is already broadcasting.',
             cameraNotSupported: 'Camera streaming requires HTTPS or localhost. Please open this site through your local server.',
             cameraPermissionDenied: 'Camera access was denied. Please allow camera permission in your browser settings.',
-            cameraUnavailable: 'Could not access your camera. Please check that it is connected and not in use by another app.'
+            cameraUnavailable: 'Could not access your camera. Please check that it is connected and not in use by another app.',
+            viewerConnectionFailed: 'Could not connect to the live broadcast. Please refresh and try again.'
         },
         footer: {
             title: 'Forever & Always',
@@ -1645,6 +1649,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         initImageModal();
         initLiveStream();
         initCameraStream();
+        initLiveStreamViewer();
 
         window.staticEngagementImages = [
             
@@ -2376,9 +2381,79 @@ function initLiveStream() {
 }
 
 let activeCameraStream = null;
+let currentFacingMode = 'user';
+let broadcasterPeerId = null;
+let viewerPeerId = null;
+let viewerPeerConnection = null;
+let broadcasterViewerConnections = new Map();
+let lastSignalMessageId = 0;
+let signalPollTimer = null;
+let heartbeatTimer = null;
+let liveStatusPollTimer = null;
+let isBroadcasting = false;
+let isWatchingLive = false;
+
+const RTC_CONFIG = {
+    iceServers: [
+        { urls: 'stun:stun.l.google.com:19302' },
+        { urls: 'stun:stun1.l.google.com:19302' }
+    ]
+};
+const SIGNAL_POLL_MS = 1000;
+const HEARTBEAT_MS = 5000;
+const LIVE_STATUS_POLL_MS = 3000;
+
+function getStreamApiUrl(path) {
+    return `/api/stream/${path}`;
+}
+
+async function streamApiRequest(path, options = {}) {
+    const method = options.method || 'GET';
+    const headers = { ...(options.headers || {}) };
+
+    if (method !== 'GET' && !headers['Content-Type']) {
+        headers['Content-Type'] = 'application/json';
+    }
+
+    const response = await fetch(getStreamApiUrl(path), {
+        ...options,
+        method,
+        headers
+    });
+
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+        const error = new Error(data.error || `Stream API failed (${response.status})`);
+        error.status = response.status;
+        throw error;
+    }
+
+    return data;
+}
 
 function getLiveStreamCopy() {
     return translations.en?.liveStream || {};
+}
+
+function stopSignalPolling() {
+    if (signalPollTimer) {
+        clearInterval(signalPollTimer);
+        signalPollTimer = null;
+    }
+}
+
+function stopHeartbeat() {
+    if (heartbeatTimer) {
+        clearInterval(heartbeatTimer);
+        heartbeatTimer = null;
+    }
+}
+
+function stopLiveStatusPolling() {
+    if (liveStatusPollTimer) {
+        clearInterval(liveStatusPollTimer);
+        liveStatusPollTimer = null;
+    }
 }
 
 function stopCameraStream() {
@@ -2393,15 +2468,278 @@ function stopCameraStream() {
     }
 }
 
+function closePeerConnection(peerConnection) {
+    if (!peerConnection) {
+        return;
+    }
+    peerConnection.onicecandidate = null;
+    peerConnection.ontrack = null;
+    peerConnection.close();
+}
+
+function closeAllViewerConnections() {
+    broadcasterViewerConnections.forEach((peerConnection) => closePeerConnection(peerConnection));
+    broadcasterViewerConnections.clear();
+}
+
+function closeViewerConnection() {
+    closePeerConnection(viewerPeerConnection);
+    viewerPeerConnection = null;
+
+    const viewerVideo = document.getElementById('viewerStreamVideo');
+    if (viewerVideo) {
+        viewerVideo.srcObject = null;
+    }
+}
+
+async function leaveStreamPeer(peerId) {
+    if (!peerId) {
+        return;
+    }
+
+    try {
+        await streamApiRequest('peer', {
+            method: 'POST',
+            body: JSON.stringify({ action: 'leave', peerId })
+        });
+    } catch (error) {
+        console.warn('Failed to leave stream peer session:', error);
+    }
+}
+
+async function sendStreamSignal(from, to, type, payload) {
+    await streamApiRequest('signal', {
+        method: 'POST',
+        body: JSON.stringify({ from, to, type, payload })
+    });
+}
+
+async function pollStreamSignals(peerId) {
+    const query = new URLSearchParams({
+        peerId,
+        after: String(lastSignalMessageId)
+    });
+    const response = await fetch(`${getStreamApiUrl('signal')}?${query.toString()}`);
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(data.error || 'Failed to poll stream signals.');
+    }
+
+    if (!data.isLive && isWatchingLive) {
+        endLiveViewerSession();
+        return data;
+    }
+
+    if (Array.isArray(data.messages)) {
+        for (const message of data.messages) {
+            lastSignalMessageId = Math.max(lastSignalMessageId, message.id);
+            await handleStreamSignalMessage(message);
+        }
+    }
+
+    return data;
+}
+
+async function handleStreamSignalMessage(message) {
+    if (!message || !message.type) {
+        return;
+    }
+
+    if (message.type === 'viewer-joined' && isBroadcasting) {
+        await createBroadcasterOfferForViewer(message.payload?.viewerId || message.from);
+        return;
+    }
+
+    if (message.type === 'viewer-left' && isBroadcasting) {
+        const viewerId = message.payload?.viewerId || message.from;
+        const peerConnection = broadcasterViewerConnections.get(viewerId);
+        if (peerConnection) {
+            closePeerConnection(peerConnection);
+            broadcasterViewerConnections.delete(viewerId);
+        }
+        return;
+    }
+
+    if (message.type === 'offer' && !isBroadcasting) {
+        await handleViewerOffer(message);
+        return;
+    }
+
+    if (message.type === 'answer' && isBroadcasting) {
+        await handleBroadcasterAnswer(message);
+        return;
+    }
+
+    if (message.type === 'ice-candidate') {
+        await handleIceCandidate(message);
+    }
+}
+
+async function createBroadcasterOfferForViewer(viewerId) {
+    if (!viewerId || !activeCameraStream || broadcasterViewerConnections.has(viewerId)) {
+        return;
+    }
+
+    const peerConnection = new RTCPeerConnection(RTC_CONFIG);
+    broadcasterViewerConnections.set(viewerId, peerConnection);
+
+    activeCameraStream.getTracks().forEach((track) => {
+        peerConnection.addTrack(track, activeCameraStream);
+    });
+
+    peerConnection.onicecandidate = (event) => {
+        if (!event.candidate || !broadcasterPeerId) {
+            return;
+        }
+        sendStreamSignal(broadcasterPeerId, viewerId, 'ice-candidate', event.candidate).catch((error) => {
+            console.warn('Failed to send ICE candidate:', error);
+        });
+    };
+
+    peerConnection.onconnectionstatechange = () => {
+        if (peerConnection.connectionState === 'failed' || peerConnection.connectionState === 'closed') {
+            closePeerConnection(peerConnection);
+            broadcasterViewerConnections.delete(viewerId);
+        }
+    };
+
+    const offer = await peerConnection.createOffer();
+    await peerConnection.setLocalDescription(offer);
+    await sendStreamSignal(broadcasterPeerId, viewerId, 'offer', offer);
+}
+
+async function handleBroadcasterAnswer(message) {
+    const viewerId = message.from;
+    const peerConnection = broadcasterViewerConnections.get(viewerId);
+    if (!peerConnection || !message.payload) {
+        return;
+    }
+
+    await peerConnection.setRemoteDescription(new RTCSessionDescription(message.payload));
+}
+
+async function handleViewerOffer(message) {
+    if (!message.payload || viewerPeerConnection) {
+        return;
+    }
+
+    const peerConnection = new RTCPeerConnection(RTC_CONFIG);
+    viewerPeerConnection = peerConnection;
+
+    peerConnection.ontrack = (event) => {
+        const viewerVideo = document.getElementById('viewerStreamVideo');
+        if (viewerVideo && event.streams[0]) {
+            viewerVideo.srcObject = event.streams[0];
+            viewerVideo.play().catch(() => {});
+        }
+    };
+
+    peerConnection.onicecandidate = (event) => {
+        if (!event.candidate || !viewerPeerId) {
+            return;
+        }
+        sendStreamSignal(viewerPeerId, message.from, 'ice-candidate', event.candidate).catch((error) => {
+            console.warn('Failed to send viewer ICE candidate:', error);
+        });
+    };
+
+    peerConnection.onconnectionstatechange = () => {
+        if (peerConnection.connectionState === 'failed') {
+            endLiveViewerSession();
+        }
+    };
+
+    await peerConnection.setRemoteDescription(new RTCSessionDescription(message.payload));
+    const answer = await peerConnection.createAnswer();
+    await peerConnection.setLocalDescription(answer);
+    await sendStreamSignal(viewerPeerId, message.from, 'answer', answer);
+}
+
+async function handleIceCandidate(message) {
+    const peerConnection = isBroadcasting
+        ? broadcasterViewerConnections.get(message.from)
+        : viewerPeerConnection;
+
+    if (!peerConnection || !message.payload) {
+        return;
+    }
+
+    try {
+        await peerConnection.addIceCandidate(new RTCIceCandidate(message.payload));
+    } catch (error) {
+        console.warn('Failed to add ICE candidate:', error);
+    }
+}
+
+function startSignalPolling(peerId) {
+    stopSignalPolling();
+    signalPollTimer = setInterval(() => {
+        pollStreamSignals(peerId).catch((error) => {
+            console.warn('Stream signal polling failed:', error);
+        });
+    }, SIGNAL_POLL_MS);
+}
+
+function startHeartbeat(peerId) {
+    stopHeartbeat();
+    heartbeatTimer = setInterval(() => {
+        streamApiRequest('peer', {
+            method: 'POST',
+            body: JSON.stringify({ action: 'heartbeat', peerId })
+        }).catch((error) => {
+            console.warn('Stream heartbeat failed:', error);
+            if (isBroadcasting) {
+                endCameraBroadcast();
+            } else if (isWatchingLive) {
+                endLiveViewerSession();
+            }
+        });
+    }, HEARTBEAT_MS);
+}
+
+function hideLiveStreamPanels() {
+    const placeholder = document.getElementById('videoPlaceholder');
+    const videoWrapper = document.getElementById('videoWrapper');
+    const cameraWrapper = document.getElementById('cameraWrapper');
+    const viewerWrapper = document.getElementById('viewerWrapper');
+
+    if (placeholder) {
+        placeholder.hidden = true;
+    }
+    if (videoWrapper) {
+        videoWrapper.hidden = true;
+    }
+    if (cameraWrapper) {
+        cameraWrapper.hidden = true;
+    }
+    if (viewerWrapper) {
+        viewerWrapper.hidden = true;
+    }
+}
+
 function restoreLiveStreamViewAfterCamera() {
     const placeholder = document.getElementById('videoPlaceholder');
     const videoWrapper = document.getElementById('videoWrapper');
     const cameraWrapper = document.getElementById('cameraWrapper');
+    const viewerWrapper = document.getElementById('viewerWrapper');
     const livePageUrl = getFacebookLivePageUrl();
     const hasFacebookEmbed = Boolean(livePageUrl && buildFacebookEmbedUrl(livePageUrl));
 
     if (cameraWrapper) {
         cameraWrapper.hidden = true;
+    }
+
+    if (isWatchingLive && viewerWrapper) {
+        if (placeholder) {
+            placeholder.hidden = true;
+        }
+        viewerWrapper.hidden = false;
+        return;
+    }
+
+    if (viewerWrapper) {
+        viewerWrapper.hidden = true;
     }
 
     if (hasFacebookEmbed && videoWrapper) {
@@ -2441,6 +2779,42 @@ function setCameraStreamButtonState(isStreaming) {
     }
 }
 
+function setCameraSwitchVisibility(shouldShow) {
+    const cameraSwitchButton = document.getElementById('cameraSwitchButton');
+    if (cameraSwitchButton) {
+        cameraSwitchButton.hidden = !shouldShow;
+    }
+}
+
+function updateCameraMirrorState() {
+    const cameraVideo = document.getElementById('cameraStreamVideo');
+    if (cameraVideo) {
+        cameraVideo.classList.toggle('is-mirrored', currentFacingMode === 'user');
+    }
+}
+
+async function getCameraMediaStream(facingMode = currentFacingMode) {
+    return navigator.mediaDevices.getUserMedia({
+        video: {
+            facingMode,
+            width: { ideal: 1280 },
+            height: { ideal: 720 }
+        },
+        audio: false
+    });
+}
+
+function replaceBroadcasterVideoTrack(newVideoTrack) {
+    broadcasterViewerConnections.forEach((peerConnection) => {
+        const sender = peerConnection.getSenders().find((item) => item.track?.kind === 'video');
+        if (sender) {
+            sender.replaceTrack(newVideoTrack).catch((error) => {
+                console.warn('Failed to replace broadcaster video track:', error);
+            });
+        }
+    });
+}
+
 function showCameraStreamError(message) {
     const placeholder = document.getElementById('videoPlaceholder');
     const placeholderText = placeholder?.querySelector('p');
@@ -2461,8 +2835,111 @@ function showCameraStreamError(message) {
     }, 5000);
 }
 
+async function startLiveViewerSession() {
+    if (isWatchingLive || isBroadcasting) {
+        return;
+    }
+
+    try {
+        const joinResult = await streamApiRequest('peer', {
+            method: 'POST',
+            body: JSON.stringify({ action: 'join', role: 'viewer' })
+        });
+
+        viewerPeerId = joinResult.peerId;
+        isWatchingLive = true;
+        lastSignalMessageId = 0;
+
+        hideLiveStreamPanels();
+        const viewerWrapper = document.getElementById('viewerWrapper');
+        if (viewerWrapper) {
+            viewerWrapper.hidden = false;
+        }
+
+        startSignalPolling(viewerPeerId);
+        startHeartbeat(viewerPeerId);
+        await pollStreamSignals(viewerPeerId);
+    } catch (error) {
+        console.warn('Failed to start live viewer session:', error);
+        endLiveViewerSession();
+    }
+}
+
+function endLiveViewerSession() {
+    const wasWatching = isWatchingLive;
+    isWatchingLive = false;
+    stopSignalPolling();
+    stopHeartbeat();
+    closeViewerConnection();
+
+    const previousViewerPeerId = viewerPeerId;
+    viewerPeerId = null;
+    lastSignalMessageId = 0;
+
+    if (previousViewerPeerId) {
+        leaveStreamPeer(previousViewerPeerId);
+    }
+
+    if (wasWatching) {
+        restoreLiveStreamViewAfterCamera();
+    }
+}
+
+async function endCameraBroadcast() {
+    const wasBroadcasting = isBroadcasting;
+    isBroadcasting = false;
+    stopSignalPolling();
+    stopHeartbeat();
+    closeAllViewerConnections();
+    stopCameraStream();
+    setCameraStreamButtonState(false);
+    setCameraSwitchVisibility(false);
+
+    const previousBroadcasterPeerId = broadcasterPeerId;
+    broadcasterPeerId = null;
+    lastSignalMessageId = 0;
+
+    if (previousBroadcasterPeerId) {
+        await leaveStreamPeer(previousBroadcasterPeerId);
+    }
+
+    if (wasBroadcasting) {
+        restoreLiveStreamViewAfterCamera();
+    }
+}
+
+function initLiveStreamViewer() {
+    if (!window.isSecureContext || !window.RTCPeerConnection) {
+        return;
+    }
+
+    const checkLiveStatus = async () => {
+        if (isBroadcasting || isWatchingLive) {
+            return;
+        }
+
+        try {
+            const response = await fetch(getStreamApiUrl('status'));
+            const status = await response.json();
+            if (!response.ok) {
+                throw new Error(status.error || 'Failed to check live status.');
+            }
+            if (status.isLive) {
+                await startLiveViewerSession();
+            }
+        } catch (error) {
+            console.warn('Live status check failed:', error);
+        }
+    };
+
+    checkLiveStatus();
+    stopLiveStatusPolling();
+    liveStatusPollTimer = setInterval(checkLiveStatus, LIVE_STATUS_POLL_MS);
+}
+
 function initCameraStream() {
     const cameraStreamButton = document.getElementById('cameraStreamButton');
+    const cameraSwitchButton = document.getElementById('cameraSwitchButton');
     const cameraWrapper = document.getElementById('cameraWrapper');
     const cameraVideo = document.getElementById('cameraStreamVideo');
     const placeholder = document.getElementById('videoPlaceholder');
@@ -2472,12 +2949,10 @@ function initCameraStream() {
         return;
     }
 
-    if (!navigator.mediaDevices?.getUserMedia || !window.isSecureContext) {
+    if (!navigator.mediaDevices?.getUserMedia || !window.isSecureContext || !window.RTCPeerConnection) {
         cameraStreamButton.hidden = true;
         return;
     }
-
-    let isCameraStreaming = false;
 
     async function startCameraStream() {
         const copy = getLiveStreamCopy();
@@ -2488,36 +2963,39 @@ function initCameraStream() {
         }
 
         try {
-            const mediaStream = await navigator.mediaDevices.getUserMedia({
-                video: {
-                    facingMode: 'user',
-                    width: { ideal: 1280 },
-                    height: { ideal: 720 }
-                },
-                audio: false
+            const joinResult = await streamApiRequest('peer', {
+                method: 'POST',
+                body: JSON.stringify({ action: 'join', role: 'broadcaster' })
             });
 
-            activeCameraStream = mediaStream;
-            cameraVideo.srcObject = mediaStream;
-            isCameraStreaming = true;
+            const mediaStream = await getCameraMediaStream(currentFacingMode);
 
-            if (placeholder) {
-                placeholder.hidden = true;
-            }
-            if (videoWrapper) {
-                videoWrapper.hidden = true;
-            }
+            broadcasterPeerId = joinResult.peerId;
+            activeCameraStream = mediaStream;
+            isBroadcasting = true;
+            lastSignalMessageId = 0;
+
+            cameraVideo.srcObject = mediaStream;
+            updateCameraMirrorState();
+
+            hideLiveStreamPanels();
             cameraWrapper.hidden = false;
 
             setCameraStreamButtonState(true);
+            setCameraSwitchVisibility(true);
 
+            startSignalPolling(broadcasterPeerId);
+            startHeartbeat(broadcasterPeerId);
+            await pollStreamSignals(broadcasterPeerId);
             await cameraVideo.play().catch(() => {});
         } catch (error) {
             console.error('Camera stream failed:', error);
+            await endCameraBroadcast();
 
-            stopCameraStream();
-            isCameraStreaming = false;
-            setCameraStreamButtonState(false);
+            if (error.status === 409) {
+                showCameraStreamError(copy.broadcasterBusy);
+                return;
+            }
 
             if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
                 showCameraStreamError(copy.cameraPermissionDenied);
@@ -2528,26 +3006,59 @@ function initCameraStream() {
         }
     }
 
-    function endCameraStream() {
-        stopCameraStream();
-        isCameraStreaming = false;
-        setCameraStreamButtonState(false);
-        restoreLiveStreamViewAfterCamera();
+    async function switchCamera() {
+        if (!isBroadcasting || !activeCameraStream) {
+            return;
+        }
+
+        const nextFacingMode = currentFacingMode === 'user' ? 'environment' : 'user';
+
+        try {
+            const mediaStream = await getCameraMediaStream(nextFacingMode);
+            const previousStream = activeCameraStream;
+            const newVideoTrack = mediaStream.getVideoTracks()[0];
+
+            replaceBroadcasterVideoTrack(newVideoTrack);
+
+            previousStream.getTracks().forEach((track) => track.stop());
+            activeCameraStream = mediaStream;
+            currentFacingMode = nextFacingMode;
+            cameraVideo.srcObject = mediaStream;
+            updateCameraMirrorState();
+            await cameraVideo.play().catch(() => {});
+        } catch (error) {
+            console.error('Camera switch failed:', error);
+            showCameraStreamError(getLiveStreamCopy().cameraUnavailable);
+        }
     }
 
     cameraStreamButton.addEventListener('click', () => {
-        if (isCameraStreaming) {
-            endCameraStream();
+        if (isBroadcasting) {
+            endCameraBroadcast();
             return;
         }
         startCameraStream();
     });
 
+    if (cameraSwitchButton) {
+        cameraSwitchButton.addEventListener('click', switchCamera);
+    }
+
     setCameraStreamButtonState(false);
+    setCameraSwitchVisibility(false);
 }
 
 // Cleanup on page unload
 window.addEventListener('beforeunload', () => {
     if (timerInterval) clearInterval(timerInterval);
+    stopLiveStatusPolling();
+    if (isBroadcasting) {
+        leaveStreamPeer(broadcasterPeerId);
+    }
+    if (isWatchingLive) {
+        leaveStreamPeer(viewerPeerId);
+    }
     stopCameraStream();
+    closeAllViewerConnections();
+    closeViewerConnection();
 });
